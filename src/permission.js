@@ -13,7 +13,6 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['login', 'register', 'registerResult'] // no redirect whitelist
 const loginRoutePath = '/user/login'
 const defaultRoutePath = '/dashboard/workplace'
-
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${i18nRender(to.meta.title)} - ${domTitle}`))
@@ -34,6 +33,7 @@ router.beforeEach((to, from, next) => {
             store.dispatch('GenerateRoutes', { roles }).then(() => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
+            //   console.log(store.getters.addRouters)
               router.addRoutes(store.getters.addRouters)
               // 请求带有 redirect 重定向时，登录自动重定向到该地址
               const redirect = decodeURIComponent(from.query.redirect || to.path)
@@ -53,6 +53,7 @@ router.beforeEach((to, from, next) => {
             })
             // 失败时，获取用户信息失败时，调用登出，来清空历史保留信息
             store.dispatch('Logout').then(() => {
+                console.log('logout')
               next({ path: loginRoutePath, query: { redirect: to.fullPath } })
             })
           })

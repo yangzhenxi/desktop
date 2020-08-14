@@ -5,7 +5,7 @@ import app from './modules/app'
 import user from './modules/user'
 
 // default router permission control
-import permission from './modules/permission'
+import permission from './modules/async-router'
 
 // dynamic router permission control (Experimental)
 // import permission from './modules/async-router'

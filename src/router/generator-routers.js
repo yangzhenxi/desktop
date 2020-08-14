@@ -10,49 +10,35 @@ const constantRouterComponents = {
   BlankLayout: BlankLayout,
   RouteView: RouteView,
   PageView: PageView,
-  '403': () => import(/* webpackChunkName: "error" */ '@/views/exception/403'),
-  '404': () => import(/* webpackChunkName: "error" */ '@/views/exception/404'),
-  '500': () => import(/* webpackChunkName: "error" */ '@/views/exception/500'),
-
   // 你需要动态引入的页面组件
   'Workplace': () => import('@/views/dashboard/Workplace'),
-  'Analysis': () => import('@/views/dashboard/Analysis'),
+  'Dashboard': () => import('@/views/dashboard'),
 
-  // form
-  'BasicForm': () => import('@/views/form/basicForm'),
-  'StepForm': () => import('@/views/form/stepForm/StepForm'),
-  'AdvanceForm': () => import('@/views/form/advancedForm/AdvancedForm'),
+  // CloudDesktop
+  'userManagement': () => import('@/views/cloudDesktop/userManagement'),
+  'DesktopManagem': () => import('@/views/cloudDesktop/DesktopManagem'),
+  'cloudDesktopmanage': () => import('@/views/cloudDesktop/cloudDesktopmanage'),
+  'terminalmanage': () => import('@/views/cloudDesktop/terminalmanage'),
+  'Desktopuse': () => import('@/views/cloudDesktop/Desktopuse'),
 
-  // list
-  'TableList': () => import('@/views/list/TableList'),
-  'StandardList': () => import('@/views/list/BasicList'),
-  'CardList': () => import('@/views/list/CardList'),
-  'SearchLayout': () => import('@/views/list/search/SearchLayout'),
-  'SearchArticles': () => import('@/views/list/search/Article'),
-  'SearchProjects': () => import('@/views/list/search/Projects'),
-  'SearchApplications': () => import('@/views/list/search/Applications'),
-  'ProfileBasic': () => import('@/views/profile/basic'),
-  'ProfileAdvanced': () => import('@/views/profile/advanced/Advanced'),
+  // 云桌面架构
+  'server': () => import('@/views/Cloud/server'),
+  'network': () => import('@/views/Cloud/network'),
+  'operating': () => import('@/views/Cloud/operating'),
+  'config': () => import('@/views/Cloud/config'),
 
-  // result
-  'ResultSuccess': () => import(/* webpackChunkName: "result" */ '@/views/result/Success'),
-  'ResultFail': () => import(/* webpackChunkName: "result" */ '@/views/result/Error'),
+  // 系统
+  'aboutus': () => import('@/views/system/aboutus'),
+  'alarm': () => import('@/views/system/alarm'),
+  'Authorization': () => import('@/views/system/Authorization'),
+  'Log': () => import('@/views/system/Log'),
+  'organization': () => import('@/views/system/organization'),
+  'role': () => import('@/views/system/role'),
+  'SystemSet': () => import('@/views/system/SystemSet'),
+  'task': () => import('@/views/system/task'),
+  'user': () => import('@/views/system/user'),
 
-  // exception
-  'Exception403': () => import(/* webpackChunkName: "fail" */ '@/views/exception/403'),
-  'Exception404': () => import(/* webpackChunkName: "fail" */ '@/views/exception/404'),
-  'Exception500': () => import(/* webpackChunkName: "fail" */ '@/views/exception/500'),
-
-  // account
-  'AccountCenter': () => import('@/views/account/center'),
-  'AccountSettings': () => import('@/views/account/settings/Index'),
-  'BaseSettings': () => import('@/views/account/settings/BaseSetting'),
-  'SecuritySettings': () => import('@/views/account/settings/Security'),
-  'CustomSettings': () => import('@/views/account/settings/Custom'),
-  'BindingSettings': () => import('@/views/account/settings/Binding'),
-  'NotificationSettings': () => import('@/views/account/settings/Notification')
-
-  // 'TestWork': () => import(/* webpackChunkName: "TestWork" */ '@/views/dashboard/TestWork')
+  'index': () => import('@/views/framework/server')
 }
 
 // 前端未找到页面路由（固定不用改）
@@ -81,7 +67,6 @@ const rootRouter = {
 export const generatorDynamicRouter = (token) => {
   return new Promise((resolve, reject) => {
     loginService.getCurrentUserNav(token).then(res => {
-      console.log('res', res)
       const { result } = res
       const menuNav = []
       const childrenNav = []
@@ -89,10 +74,8 @@ export const generatorDynamicRouter = (token) => {
       listToTree(result, childrenNav, 0)
       rootRouter.children = childrenNav
       menuNav.push(rootRouter)
-      console.log('menuNav', menuNav)
       const routers = generator(menuNav)
       routers.push(notFoundRouter)
-      console.log('routers', routers)
       resolve(routers)
     }).catch(err => {
       reject(err)
