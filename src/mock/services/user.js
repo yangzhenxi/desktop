@@ -379,220 +379,221 @@ const userNav = (options) => {
       }
     },
     {
-        'name': 'CloudDesktop',
-        'parentId': 0,
-        'id': 2,
-        'meta': {
-          'icon': 'dashboard',
-          'title': '云桌面',
-          'show': true
-        },
-        'component': 'PageView'
+      'name': 'CloudDesktop',
+      'parentId': 0,
+      'id': 2,
+      'meta': {
+        'icon': 'dashboard',
+        'title': '云桌面',
+        'show': true
       },
-      {
-        'name': 'userManagement',
-        'parentId': 2,
-        'meta': {
-            'title': '用户管理',
-            'show': true
-        },
+      'component': 'PageView'
+    },
+    {
+      'name': 'userManagement',
+      // 'authority': 'admin', // 配置准入权限
+      'parentId': 2,
+      'meta': {
+        'title': '用户管理',
+        'show': true
+      },
       'component': 'userManagement'
+    },
+    {
+      'name': 'DesktopManagem',
+      'parentId': 2,
+      'meta': {
+        'title': '桌面模版管理',
+        'show': true
       },
-      {
-        'name': 'DesktopManagem',
-        'parentId': 2,
-        'meta': {
-          'title': '桌面模版管理',
-          'show': true
-        },
-        'component': 'DesktopManagem'
+      'component': 'DesktopManagem'
+    },
+    {
+      'name': 'cloudDesktopmanage',
+      'parentId': 2,
+      'id': 5,
+      'meta': {
+        'title': '云桌面管理',
+        'show': true
       },
-      {
-        'name': 'cloudDesktopmanage',
-        'parentId': 2,
-        'id': 5,
-        'meta': {
-          'title': '云桌面管理',
-          'show': true
-        },
-        'component': 'cloudDesktopmanage'
+      'component': 'cloudDesktopmanage'
+    },
+    {
+      'name': 'terminalmanage',
+      'parentId': 2,
+      'id': 6,
+      'meta': {
+        'title': '终端管理',
+        'show': true
       },
-      {
-        'name': 'terminalmanage',
-        'parentId': 2,
-        'id': 6,
-        'meta': {
-          'title': '终端管理',
-          'show': true
-        },
-        'component': 'terminalmanage'
+      'component': 'terminalmanage'
+    },
+    {
+      'name': 'Desktopuse',
+      'parentId': 2,
+      'id': 6,
+      'meta': {
+        'title': '桌面使用情况',
+        'show': true
       },
-      {
-        'name': 'Desktopuse',
-        'parentId': 2,
-        'id': 6,
-        'meta': {
-          'title': '桌面使用情况',
-          'show': true
-        },
-        'component': 'Desktopuse'
+      'component': 'Desktopuse'
+    },
+    {
+      'name': 'Cloud',
+      'parentId': 0,
+      'id': 3,
+      'meta': {
+        'icon': 'dashboard',
+        'title': '云基础架构',
+        'show': true
       },
-      {
-        'name': 'Cloud',
-        'parentId': 0,
-        'id': 3,
-        'meta': {
-          'icon': 'dashboard',
-          'title': '云基础架构',
-          'show': true
-        },
-        'component': 'PageView'
+      'component': 'PageView'
+    },
+    {
+      'name': 'server',
+      'parentId': 3,
+      'id': 7,
+      'meta': {
+        'title': '服务器管理',
+        'show': true
       },
-      {
-        'name': 'server',
-        'parentId': 3,
-        'id': 7,
-        'meta': {
-          'title': '服务器管理',
-          'show': true
-        },
-        'component': 'server'
+      'component': 'server'
+    },
+    {
+      'name': 'operating',
+      'parentId': 3,
+      'id': 8,
+      'meta': {
+        'title': '操作系统管理',
+        'show': true
       },
-      {
-        'name': 'operating',
-        'parentId': 3,
-        'id': 8,
-        'meta': {
-          'title': '操作系统管理',
-          'show': true
-        },
-        'component': 'operating'
+      'component': 'operating'
+    },
+    {
+      'name': 'config',
+      'parentId': 3,
+      'id': 9,
+      'meta': {
+        'title': '配置管理',
+        'show': true
       },
-      {
-        'name': 'config',
-        'parentId': 3,
-        'id': 9,
-        'meta': {
-          'title': '配置管理',
-          'show': true
-        },
-        'component': 'config'
+      'component': 'config'
+    },
+    {
+      'name': 'network',
+      'parentId': 3,
+      'id': 8,
+      'meta': {
+        'title': '网络管理',
+        'show': true
       },
-      {
-        'name': 'network',
-        'parentId': 3,
-        'id': 8,
-        'meta': {
-          'title': '网络管理',
-          'show': true
-        },
-        'component': 'network'
+      'component': 'network'
+    },
+    {
+      'name': 'system',
+      'parentId': 0,
+      'id': 4,
+      'meta': {
+        'icon': 'dashboard',
+        'title': '系统',
+        'show': true
       },
-      {
-        'name': 'system',
-        'parentId': 0,
-        'id': 4,
-        'meta': {
-          'icon': 'dashboard',
-          'title': '系统',
-          'show': true
-        },
-        'component': 'PageView'
+      'component': 'PageView'
+    },
+    {
+      'name': 'organization',
+      'parentId': 4,
+      'id': 9,
+      'meta': {
+        'title': '组织管理',
+        'show': true
       },
-      {
-        'name': 'organization',
-        'parentId': 4,
-        'id': 9,
-        'meta': {
-          'title': '组织管理',
-          'show': true
-        },
-        'component': 'organization'
+      'component': 'organization'
+    },
+    {
+      'name': 'role',
+      'parentId': 4,
+      'id': 10,
+      'meta': {
+        'title': '角色管理',
+        'show': true
       },
-      {
-        'name': 'role',
-        'parentId': 4,
-        'id': 10,
-        'meta': {
-          'title': '角色管理',
-          'show': true
-        },
-        'component': 'role'
+      'component': 'role'
+    },
+    {
+      'name': 'user',
+      'parentId': 4,
+      'id': 11,
+      'meta': {
+        'title': '用户管理',
+        'show': true
       },
-      {
-        'name': 'user',
-        'parentId': 4,
-        'id': 11,
-        'meta': {
-          'title': '用户管理',
-          'show': true
-        },
-        'component': 'user'
+      'component': 'user'
+    },
+    {
+      'name': 'SystemSet',
+      'parentId': 4,
+      'id': 12,
+      'meta': {
+        'title': '系统设置',
+        'show': true
       },
-      {
-        'name': 'SystemSet',
-        'parentId': 4,
-        'id': 12,
-        'meta': {
-          'title': '系统设置',
-          'show': true
-        },
-        'component': 'SystemSet'
+      'component': 'SystemSet'
+    },
+    {
+      'name': 'Log',
+      'parentId': 4,
+      'id': 13,
+      'meta': {
+        'title': '日志管理',
+        'show': true
       },
-      {
-        'name': 'Log',
-        'parentId': 4,
-        'id': 13,
-        'meta': {
-          'title': '日志管理',
-          'show': true
-        },
-        'component': 'Log'
+      'component': 'Log'
+    },
+    {
+      'name': 'aboutus',
+      'parentId': 4,
+      'id': 14,
+      'meta': {
+        'title': '关于我们',
+        'show': true
       },
-      {
-        'name': 'aboutus',
-        'parentId': 4,
-        'id': 14,
-        'meta': {
-          'title': '关于我们',
-          'show': true
-        },
-        'component': 'aboutus'
+      'component': 'aboutus'
+    },
+    {
+      'name': 'task',
+      'parentId': 4,
+      'id': 15,
+      'meta': {
+        'title': '任务管理',
+        'show': true
       },
-      {
-        'name': 'task',
-        'parentId': 4,
-        'id': 15,
-        'meta': {
-          'title': '任务管理',
-          'show': true
-        },
-        'component': 'task'
+      'component': 'task'
+    },
+    {
+      'name': 'alarm',
+      'parentId': 4,
+      'id': 16,
+      'meta': {
+        'title': '警报管理',
+        'show': true
       },
-      {
-        'name': 'alarm',
-        'parentId': 4,
-        'id': 16,
-        'meta': {
-          'title': '警报管理',
-          'show': true
-        },
-        'component': 'alarm'
+      'component': 'alarm'
+    },
+    {
+      'name': 'Authorization',
+      'parentId': 4,
+      'id': 17,
+      'meta': {
+        'title': '授权与服务',
+        'show': true
       },
-      {
-        'name': 'Authorization',
-        'parentId': 4,
-        'id': 17,
-        'meta': {
-          'title': '授权与服务',
-          'show': true
-        },
-        'component': 'Authorization'
-      }
+      'component': 'Authorization'
+    }
 
   ]
   const json = builder(nav)
-//   console.log('json', json)
+  //   console.log('json', json)
   return json
 }
 

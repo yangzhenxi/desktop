@@ -555,3 +555,29 @@ export function removeLoadingAnimate (id = '', timeout = 1500) {
     document.body.removeChild(document.getElementById(id))
   }, timeout)
 }
+
+/**
+ * @arr 原数组
+ * @delVal 要删除的元素
+ */
+export function arrayRemoveItem (arr, delVal) {
+    if (arr instanceof Array) {
+      var index = arr.indexOf(delVal)
+      if (index > -1) {
+        arr.splice(index, 1)
+      }
+    }
+}
+
+/**
+ *
+ */
+export function isContained (a, b) {
+    if (!(a instanceof Array) || !(b instanceof Array)) return false
+    if (a.length < b.length) return false
+    var aStr = a.toString()
+    for (var i = 0, len = b.length; i < len; i++) {
+      if (aStr.indexOf(b[i]) === -1) return false
+    }
+    return true
+}

@@ -12,7 +12,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['login', 'register', 'registerResult'] // no redirect whitelist
 const loginRoutePath = '/user/login'
-const defaultRoutePath = '/dashboard/workplace'
+const defaultRoutePath = '/dashboard'
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${i18nRender(to.meta.title)} - ${domTitle}`))
@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
             })
             // 失败时，获取用户信息失败时，调用登出，来清空历史保留信息
             store.dispatch('Logout').then(() => {
-                console.log('logout')
+              console.log('logout')
               next({ path: loginRoutePath, query: { redirect: to.fullPath } })
             })
           })

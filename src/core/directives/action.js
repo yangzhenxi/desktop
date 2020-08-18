@@ -22,7 +22,6 @@ const action = Vue.directive('action', {
     console.log(roles)
     const permissionId = elVal instanceof String && [elVal] || elVal
     roles.permissions.forEach(p => {
-        console.log(p)
       if (!permissionId.includes(p.permissionId)) {
         return
       }

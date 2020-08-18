@@ -7,7 +7,8 @@
             <div>
               <a-icon
                 type="smile"
-                theme="twoTone" />全部
+                theme="twoTone" />
+              <span>全部</span>
             </div>
             <div>
               <a-icon type="setting" @click="$refs.TreeSet.Set()" />
@@ -22,46 +23,54 @@
       </a-col>
       <a-col :span="18">
         <a-card>
-          <div class="btns">
-            <a-button
-              @click="$refs.TabAdd.add()"
-              type="primary"
-              size="large">
-              新增
-            </a-button>
-            <a-button
-              @click="$refs.BatchTabAdd.BatchAdd()"
-              type="primary"
-              size="large"
-              style="margin-left:15px">
-              批量新增
-            </a-button>
-            <a-button
-              type="primary"
-              disabled
-              size="large"
-              style="margin-left:15px">
-              权限设置
-            </a-button>
-            <a-button
-              type="primary"
-              disabled
-              size="large"
-              style="margin-left:15px">
-              重置密码
-            </a-button>
-            <a-button
-              type="danger"
-              size="large"
-              style="margin-left:15px">
-              删除
-            </a-button>
-            <a-button
-              type="danger"
-              size="large"
-              style="margin-left:15px">
-              批量删除
-            </a-button>
+          <div class="head">
+            <div class="btns">
+              <a-button
+                @click="$refs.TabAdd.add()"
+                type="primary"
+                size="large">
+                新增
+              </a-button>
+              <a-button
+                @click="$refs.BatchTabAdd.BatchAdd()"
+                type="primary"
+                size="large"
+                style="margin-left:15px">
+                批量新增
+              </a-button>
+              <a-button
+                type="primary"
+                size="large"
+                style="margin-left:15px">
+                权限设置
+              </a-button>
+              <!-- disabled -->
+              <a-button
+                type="primary"
+                size="large"
+                style="margin-left:15px"
+                @click="$refs.EditPass.Edit()">
+                重置密码
+              </a-button>
+              <a-button
+                type="danger"
+                size="large"
+                style="margin-left:15px">
+                删除
+              </a-button>
+              <a-button
+                type="danger"
+                size="large"
+                style="margin-left:15px">
+                批量删除
+              </a-button>
+            </div>
+            <div>
+              <a-input-search placeholder="input search text" style="width: 200px" @search="onSearch" />
+              <a-button type="primary" @click="$refs.SetColumns.Set()">
+                <a-icon type="setting" />
+              </a-button>
+            </div>
           </div>
           <s-table
             :columns="columns"
@@ -69,7 +78,6 @@
             rowKey="key"
             :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
             <template slot="action">
-              <a-button size="small">查看</a-button>
               <a-button size="small">修改</a-button>
               <a-button
                 size="small"
@@ -81,7 +89,8 @@
           <tree-add ref="TreeAdd" @ok="handleOk"></tree-add>
           <tree-edit ref="TreeEdit" @ok="handleOk"></tree-edit>
           <tree-set ref="TreeSet" @ok="handleOk"></tree-set>
-
+          <edit-pass ref="EditPass" @ok="handleOk"></edit-pass>
+          <setcolumns ref="SetColumns" :data="columns" @ok="handleOk"></setcolumns>
         </a-card>
       </a-col>
     </a-row>
@@ -96,6 +105,8 @@ import TreeAdd from './Tree_modules/TreeAdd'
 import TreeSet from './Tree_modules/TreeSet'
 import Tree from './Tree_modules/tree'
 import TreeEdit from './Tree_modules/TreeEdit'
+import EditPass from './Tab_modules/EditPass'
+import Setcolumns from './Tab_modules/Setcolumns'
 import { mixinTable } from '@/utils/mixin'
 
 const allBranchListGetter = [
@@ -232,14 +243,16 @@ export default {
     Tree,
     TreeAdd,
     TreeEdit,
-    TreeSet
+    TreeSet,
+    EditPass,
+    Setcolumns
   },
   data () {
     return {
       allBranchListGetter,
       columns,
       checkedval: 'null',
-    selectedRowKeys: [], // Check here to configure the default column
+      selectedRowKeys: [], // Check here to configure the default column
       loadData: async (parameter) => {
         return new Promise((resolve) => {
           resolve({
@@ -258,12 +271,12 @@ export default {
     }
   },
   methods: {
-     onSelectChange (selectedRowKeys) {
+    onSelectChange (selectedRowKeys) {
       console.log('selectedRowKeys changed: ', selectedRowKeys)
       this.selectedRowKeys = selectedRowKeys
     },
     TreeDelete () {
-        this.$confirm({
+      this.$confirm({
         title: '是否要删除当前组?',
         content: '点击确定即可删除当前组',
         onOk () {
@@ -274,11 +287,14 @@ export default {
       })
     },
     changecheckedval (value) {
-        this.checkedval = value
+      this.checkedval = value
+    },
+    onSearch (value) {
+      console.log(value)
     }
   },
-    mounted () {
-    }
+  mounted () {
+  }
 }
 </script>
 
@@ -286,7 +302,7 @@ export default {
 .tree_bens{
     display: flex;
     justify-content: space-between;
-    font-size: 20px;
+    font-size: 18px;
     div:first-of-type{
         margin: 0px 10px;
         i{
@@ -296,6 +312,18 @@ export default {
     div:last-of-type{
         i{
             margin: 0px 10px;
+        }
+    }
+}
+.head{
+    display:flex;
+    justify-content: space-between;
+    div:last-child {
+        button{
+            margin-left: 10px;
+        }
+        i{
+            font-size: 20px;
         }
     }
 }
