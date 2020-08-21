@@ -1,7 +1,6 @@
 <template>
-  <div>
-    日志
-  </div>
+  <page-header-wrapper>
+  </page-header-wrapper>
 </template>
 
 <script>

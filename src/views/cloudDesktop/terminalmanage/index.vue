@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <page-header-wrapper>
+
     终端管理
-  </div>
+  </page-header-wrapper>
 </template>
 
 <script>

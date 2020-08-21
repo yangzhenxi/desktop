@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <page-header-wrapper>
     <a-modal
       title="新建角色信息"
       :width="880"
@@ -58,7 +58,7 @@
         </a-form-item>
       </a-form>
     </a-modal>
-  </div>
+  </page-header-wrapper>
 </template>
 
 <script>

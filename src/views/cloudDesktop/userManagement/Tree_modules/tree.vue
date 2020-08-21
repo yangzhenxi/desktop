@@ -10,13 +10,17 @@
         slot-scope="item">
         <div
           class="tree-view-item"
-          @click="handleRadio(item.eventKey)">
+          @click="handleRadio(item)">
           <span class="tree-view-left">
+            <m-icon
+              v-if="item.dataRef.scopedSlots.icon"
+              type="guanyuwomen"
+              class="icon guanyuwomen" />
             <a-radio :value="item.eventKey"></a-radio> {{ item.title }}
           </span>
           <div class="tree-view-right">
             <a-badge
-              count="4"
+              :count="item.dataRef.childrenLength"
               :number-style="{
                 backgroundColor: '#fff',
                 color: '#999',
@@ -30,7 +34,11 @@
 
 </template>
 <script>
+import MIcon from '@/components/Icon'
 export default {
+  components: {
+    MIcon
+  },
   props: {
     treeData: {
       type: Array,
@@ -50,9 +58,9 @@ export default {
     }
   },
   methods: {
-    handleRadio (value) {
-      this.value = value
-      this.$emit('changecheckedval', value)
+    handleRadio (item) {
+      this.value = item.eventKey
+      this.$emit('changecheckedval', item)
     }
   }
 }
@@ -70,5 +78,9 @@ export default {
       justify-content: space-between;
     }
   }
+}
+.guanyuwomen {
+  font-size: 18px;
+  margin-right: 10px;
 }
 </style>

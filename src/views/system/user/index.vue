@@ -1,10 +1,15 @@
 <template>
-  <div>1</div>
+  <page-header-wrapper>
+  </page-header-wrapper>
 </template>
 
 <script>
-export default {
+import { MIcon } from '@/components'
 
+export default {
+  components: {
+    MIcon
+  }
 }
 </script>
 

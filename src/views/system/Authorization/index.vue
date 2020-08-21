@@ -1,7 +1,6 @@
 <template>
-  <div>
-    授权页面
-  </div>
+  <page-header-wrapper>
+  </page-header-wrapper>
 </template>
 
 <script>

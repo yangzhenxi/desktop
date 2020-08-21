@@ -1,45 +1,47 @@
 <template>
-  <a-card>
-    <div class="head">
-      <div class="btns">
-        <a-button
-          type="primary"
-          @click="$refs.Add.Add()">增加</a-button>
-        <a-button
-          type="primary"
-          style="margin-left:15px;"
-          @click="$refs.Set.Set()">设置部门</a-button>
-        <a-button
-          type="danger"
-          style="margin-left:15px;"
-          @click="Delete">删除</a-button>
+  <page-header-wrapper>
+    <a-card>
+      <div class="head">
+        <div class="btns">
+          <a-button
+            type="primary"
+            @click="$refs.Add.Add()">增加</a-button>
+          <a-button
+            type="primary"
+            style="margin-left:15px;"
+            @click="$refs.Set.Set()">设置部门</a-button>
+          <a-button
+            type="danger"
+            style="margin-left:15px;"
+            @click="Delete">删除</a-button>
+        </div>
+        <div>
+          <a-input-search
+            placeholder="input search text"
+            style="width: 200px"
+            @search="onSearch" />
+        </div>
       </div>
-      <div>
-        <a-input-search
-          placeholder="input search text"
-          style="width: 200px"
-          @search="onSearch" />
-      </div>
-    </div>
-    <s-table
-      ref="table"
-      :columns="columns"
-      :data="loadData"
-      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
-      <template slot="action" slot-scope="text,record">
-        <a-button type="primary" @click="$refs.Edit.Edit(record)">
-          修改
-        </a-button>
-      </template>
-    </s-table>
-    <add
-      ref="Add"
-      @ok="handleOk"></add>
-    <set
-      ref="Set"
-      @ok="handleOk"></set>
-    <edit ref="Edit" @ok="handleOk"></edit>
-  </a-card>
+      <s-table
+        ref="table"
+        :columns="columns"
+        :data="loadData"
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
+        <template slot="action" slot-scope="text,record">
+          <a-button type="primary" @click="$refs.Edit.Edit(record)">
+            修改
+          </a-button>
+        </template>
+      </s-table>
+      <add
+        ref="Add"
+        @ok="handleOk"></add>
+      <set
+        ref="Set"
+        @ok="handleOk"></set>
+      <edit ref="Edit" @ok="handleOk"></edit>
+    </a-card>
+  </page-header-wrapper>
 </template>
 
 <script>

@@ -1,7 +1,6 @@
 <template>
-  <div>
-    网络管理
-  </div>
+  <page-header-wrapper>
+  </page-header-wrapper>
 </template>
 
 <script>

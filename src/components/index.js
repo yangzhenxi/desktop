@@ -20,6 +20,8 @@ import NumberInfo from '@/components/NumberInfo'
 import Tree from '@/components/Tree/Tree'
 import Trend from '@/components/Trend'
 import STable from '@/components/Table'
+import MTable from './Table/MTable'
+
 import MultiTab from '@/components/MultiTab'
 import IconSelector from '@/components/IconSelector'
 import TagSelect from '@/components/TagSelect'
@@ -53,5 +55,6 @@ export {
   StandardFormRow,
   ArticleListContent,
   MIcon,
-  Dialog
+  Dialog,
+  MTable
 }

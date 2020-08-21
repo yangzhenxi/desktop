@@ -1,9 +1,10 @@
 <template>
-  <div>
-    <a-button @click="handleClick">改变</a-button>
-    <p>hello,{{ SerMessage }}</p>
-    <p>{{ name }}</p>
-  </div>
+  <page-header-wrapper>
+
+    <a-button>
+      <a href="@/component/index.js" download="写入模版">点击下载</a>
+    </a-button>
+  </page-header-wrapper>
 </template>
 
 <script>

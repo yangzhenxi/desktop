@@ -1,39 +1,41 @@
 <template>
-  <a-card>
-    <div class="btns">
-      <a-button
-        type="primary"
-        @click="$refs.Add.Add()">增加</a-button>
-      <a-button
-        type="danger"
-        style="margin-left:15px;"
-        @click="Delete">删除</a-button>
-    </div>
-    <s-table
-      ref="table"
-      :columns="columns"
-      :data="loadData"
-      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      rowKey="key">
-      <template slot="action" slot-scope="text,record">
+  <page-header-wrapper>
+    <a-card>
+      <div class="btns">
         <a-button
           type="primary"
-          size="small"
-          @click="$refs.Increase.Add(record)" >增加子集</a-button>
+          @click="$refs.Add.Add()">增加</a-button>
         <a-button
-          size="small"
           type="danger"
-          style="margin-left:10px;"
-          @click="$refs.Edit.Add(record)">修改</a-button>
-      </template>
-    </s-table>
-    <add
-      ref="Add"
-      @ok="handleOk"></add>
-    <increase ref="Increase" @ok="handleOk"></increase>
-    <edit ref="Edit" @ok="handleOk"></edit>
+          style="margin-left:15px;"
+          @click="Delete">删除</a-button>
+      </div>
+      <s-table
+        ref="table"
+        :columns="columns"
+        :data="loadData"
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+        rowKey="key">
+        <template slot="action" slot-scope="text,record">
+          <a-button
+            type="primary"
+            size="small"
+            @click="$refs.Increase.Add(record)" >增加子集</a-button>
+          <a-button
+            size="small"
+            type="danger"
+            style="margin-left:10px;"
+            @click="$refs.Edit.Add(record)">修改</a-button>
+        </template>
+      </s-table>
+      <add
+        ref="Add"
+        @ok="handleOk"></add>
+      <increase ref="Increase" @ok="handleOk"></increase>
+      <edit ref="Edit" @ok="handleOk"></edit>
 
-  </a-card>
+    </a-card>
+  </page-header-wrapper>
 </template>
 
 <script>

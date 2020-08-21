@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <page-header-wrapper>
     配置
-  </div>
+  </page-header-wrapper>
 </template>
 
 <script>

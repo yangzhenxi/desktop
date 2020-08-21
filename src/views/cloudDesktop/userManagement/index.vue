@@ -1,104 +1,137 @@
 <template>
-  <div>
+  <page-header-wrapper>
     <a-row :gutter="16">
-      <a-col :span="6">
-        <a-card>
-          <div class="tree_bens">
-            <div>
-              <a-icon
-                type="smile"
-                theme="twoTone" />
-              <span>全部</span>
-            </div>
-            <div>
-              <a-icon type="setting" @click="$refs.TreeSet.Set()" />
-              <a-icon type="user-add" @click="$refs.TreeAdd.add()"/>
-              <a-icon type="edit" @click="$refs.TreeEdit.Edit()" />
-              <a-icon type="delete" @click="TreeDelete" />
-            </div>
-          </div>
-          <tree :treeData="allBranchListGetter" :checkedval="checkedval" @changecheckedval="changecheckedval"></tree>
-        </a-card>
+      <a-col
+        ref="left"
+        :xl="6"
+        :md="24"
+        :sm="24">
+        <a-card
+          style="height:790px;"
+          :loading="loading">
+          <a-row>
+            <a-col
+              :xl="8"
+              :md="8"
+              :sm="8">
+              <m-icon
+                type="guanyuwomen"
+                class="icon guanyuwomen" />
+              <span
+                class="All"
+                style="font-size:17px;">全部</span>
+            </a-col>
+            <a-col
+              :xl="16"
+              :md="16"
+              :sm="16">
+              <span @click="$refs.TreeAdd.add()">
+                <m-icon
+                  type="yonghutianjia"
+                  class="icon yonghutianjia" />
+              </span>
 
+              <span @click="$refs.TreeEdit.Edit()">
+                <m-icon
+                  type="xiugai"
+                  class="icon xiugai" />
+              </span>
+
+              <span @click="TreeDelete">
+                <m-icon
+                  type="shanchu"
+                  class="icon shanchu" /> </span>
+
+            </a-col>
+          </a-row>
+          <!-- <a-empty
+            v-if="!allBranchListGetter[0]"
+            style="margin-top:100px;" /> -->
+          <tree
+            :treeData="ouList"
+            :checkedval="checkedval"
+            @changecheckedval="changecheckedval"></tree>
+        </a-card>
       </a-col>
-      <a-col :span="18">
+
+      <a-col
+        ref="right"
+        :xl="18"
+        :md="24"
+        :sm="24">
         <a-card>
           <div class="head">
             <div class="btns">
               <a-button
                 @click="$refs.TabAdd.add()"
-                type="primary"
-                size="large">
+                type="primary">
                 新增
               </a-button>
               <a-button
                 @click="$refs.BatchTabAdd.BatchAdd()"
                 type="primary"
-                size="large"
-                style="margin-left:15px">
+                style="margin-left:10px">
                 批量新增
               </a-button>
               <a-button
                 type="primary"
-                size="large"
-                style="margin-left:15px">
-                权限设置
-              </a-button>
-              <!-- disabled -->
-              <a-button
-                type="primary"
-                size="large"
-                style="margin-left:15px"
+                style="margin-left:10px"
                 @click="$refs.EditPass.Edit()">
                 重置密码
               </a-button>
               <a-button
                 type="danger"
-                size="large"
-                style="margin-left:15px">
+                style="margin-left:10px">
                 删除
               </a-button>
               <a-button
                 type="danger"
-                size="large"
-                style="margin-left:15px">
+                style="margin-left:10px">
                 批量删除
               </a-button>
             </div>
-            <div>
-              <a-input-search placeholder="input search text" style="width: 200px" @search="onSearch" />
-              <a-button type="primary" @click="$refs.SetColumns.Set()">
-                <a-icon type="setting" />
-              </a-button>
-            </div>
           </div>
-          <s-table
+          <m-table
+            ref="table"
             :columns="columns"
             :data="loadData"
+            :scroll="{ x: 800 }"
             rowKey="key"
             :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
             <template slot="action">
               <a-button size="small">修改</a-button>
-              <a-button
-                size="small"
-                type="danger">删除</a-button>
             </template>
-          </s-table>
-          <tab-add ref="TabAdd" @ok="handleOk"></tab-add>
-          <tabbatch-add ref="BatchTabAdd" @ok="handleOk"></tabbatch-add>
-          <tree-add ref="TreeAdd" @ok="handleOk"></tree-add>
-          <tree-edit ref="TreeEdit" @ok="handleOk"></tree-edit>
-          <tree-set ref="TreeSet" @ok="handleOk"></tree-set>
-          <edit-pass ref="EditPass" @ok="handleOk"></edit-pass>
-          <setcolumns ref="SetColumns" :data="columns" @ok="handleOk"></setcolumns>
+          </m-table>
+          <tab-add
+            ref="TabAdd"
+            @ok="handleOk"></tab-add>
+          <tabbatch-add
+            ref="BatchTabAdd"
+            @ok="handleOk"></tabbatch-add>
+          <tree-add
+            ref="TreeAdd"
+            @ok="handleOk"></tree-add>
+          <tree-edit
+            ref="TreeEdit"
+            @ok="handleOk"></tree-edit>
+          <tree-set
+            ref="TreeSet"
+            @ok="handleOk"></tree-set>
+          <edit-pass
+            ref="EditPass"
+            @ok="handleOk"></edit-pass>
+          <setcolumns
+            ref="SetColumns"
+            :data="columns"
+            @ok="handleOk"></setcolumns>
         </a-card>
       </a-col>
     </a-row>
-  </div>
+  </page-header-wrapper>
 </template>
 
 <script>
-import { STable } from '@/components'
+import { MTable, MIcon } from '@/components'
 import TabAdd from './Tab_modules/Add'
 import TabbatchAdd from './Tab_modules/batchAdd'
 import TreeAdd from './Tree_modules/TreeAdd'
@@ -107,125 +140,43 @@ import Tree from './Tree_modules/tree'
 import TreeEdit from './Tree_modules/TreeEdit'
 import EditPass from './Tab_modules/EditPass'
 import Setcolumns from './Tab_modules/Setcolumns'
+import { Empty } from '@/components/Empty'
 import { mixinTable } from '@/utils/mixin'
+import { usermanageListOU, usermanageListuser } from '@/api/CloudDesktop/userManage'
 
-const allBranchListGetter = [
-  {
-    key: '99230713',
-    title: '豪联科技',
-    // ⚠️重点这这里⚠️每一条数据上都添加scopedSlots属性
-    scopedSlots: {
-      title: 'custom'
-    },
-    children: [
-      {
-        key: '99230992',
-        title: '软件部',
-        scopedSlots: {
-          title: 'custom'
-        },
-        children: [
-          {
-            key: '99230112',
-            title: '前端',
-            scopedSlots: {
-              title: 'custom'
-            },
-            children: []
-          },
-          {
-            key: '9923011222',
-            title: '后端',
-            scopedSlots: {
-              title: 'custom'
-            },
-            children: []
-          },
-          {
-            key: '992307222',
-            title: '测试',
-            scopedSlots: {
-              title: 'custom'
-            },
-            children: []
-          }
-        ]
-      },
-      {
-        key: '99230993',
-        title: '人事',
-        scopedSlots: {
-          title: 'custom',
-          id: '4'
-        },
-        children: [
-          {
-            key: '99230152',
-            title: '行政',
-            scopedSlots: {
-              title: 'custom'
-            },
-            children: []
-          },
-          {
-            key: '9923015222',
-            title: '商务助理',
-            scopedSlots: {
-              title: 'custom'
-            },
-            children: []
-          }
-        ]
-      },
-      {
-        key: '99231020',
-        title: '实施',
-        scopedSlots: {
-          title: 'custom'
-        },
-        children: []
-      },
-      {
-        key: '99231050',
-        title: '财务',
-        scopedSlots: {
-          title: 'custom'
-        },
-        children: []
-      }
-    ]
-  }
-]
 const columns = [
   {
     title: '名称',
-    dataIndex: 'name',
+    dataIndex: 'username',
     sorter: true
   },
   {
     title: '组',
-    dataIndex: 'host',
+    dataIndex: 'group',
     sorter: true
   },
   {
     title: '姓名',
-    dataIndex: 'userName',
+    dataIndex: 'displayName',
     sorter: true
   },
   {
     title: '电话',
-    dataIndex: 'status',
+    dataIndex: 'telephoneNumber',
     sorter: true
   },
   {
     title: '邮箱',
-    dataIndex: 'vmwareName',
+    dataIndex: 'mail',
     sorter: true
   },
   {
     title: '添加时间',
-    dataIndex: 'version',
-    sorter: true
+    dataIndex: 'whenCreated',
+    sorter: true,
+    width: '200px',
+    scopedSlots: { customRender: 'time' }
+
   },
   {
     title: '操作',
@@ -237,7 +188,7 @@ const columns = [
 export default {
   mixins: [mixinTable],
   components: {
-    STable,
+    MTable,
     TabAdd,
     TabbatchAdd,
     Tree,
@@ -245,29 +196,31 @@ export default {
     TreeEdit,
     TreeSet,
     EditPass,
-    Setcolumns
+    Setcolumns,
+    MIcon,
+    Empty
   },
   data () {
     return {
-      allBranchListGetter,
       columns,
-      checkedval: 'null',
+      loading: true,
+      checkedval: '0', // 单选框默认选中的值
+      queryParam: {},
+      sechar: [], // 找father
       selectedRowKeys: [], // Check here to configure the default column
+      // 加载数据方法 必须为 Promise 对象
       loadData: async (parameter) => {
-        return new Promise((resolve) => {
-          resolve({
-            data: [
-
-            ],
-            pageSize: 10,
-            pageNo: 1,
-            totalPage: 1,
-            totalCount: 0
-          })
-        }).then((res) => {
-          return res
-        })
-      }
+        if (this.checkedval === '0') {
+          const OuList = await usermanageListOU()
+          this.queryParam.name = 'ou=' + OuList.ou[0].children[0].name + ',ou=Citrix,dc=test,dc=com'
+        }
+        const data = this.deepGet(await usermanageListuser(this.queryParam), 'list')
+        return {
+          data
+        }
+      },
+      ouList: [],
+      obj: {}
     }
   },
   methods: {
@@ -286,51 +239,112 @@ export default {
         }
       })
     },
-    changecheckedval (value) {
-      this.checkedval = value
+    changecheckedval (item) {
+      this.sechar = []
+      this.checkedval = item.eventKey
+      // 判断当前是不是在子分支下
+      if (item.eventKey.search('-') !== -1) {
+        const key = item.eventKey.split('-', 1)
+        this.ouList.forEach((u) => {
+          if (u.key === key[0]) {
+            this.sechar.push(u.title)
+            this.eventKeyRecursion(u, item)
+          }
+        })
+        this.queryParam.name = ''
+        this.sechar.reverse()
+        this.sechar.forEach((u) => {
+          this.queryParam.name = this.queryParam.name + 'ou=' + u + ','
+        })
+        this.queryParam.name = this.queryParam.name + 'ou=Citrix,dc=test,dc=com'
+        this.$refs.table.refresh()
+        return true
+      }
+      this.queryParam.name = 'ou=' + item.title + ',ou=Citrix,dc=test,dc=com'
+      this.$refs.table.refresh()
     },
-    onSearch (value) {
-      console.log(value)
+    Recursion (Array, data) {
+      Array.forEach((item, index) => {
+        this.obj = {
+          key: index.toString(),
+          title: item.name,
+          scopedSlots: {
+            title: 'custom',
+            icon: 'smile'
+          },
+          children: [],
+          childrenLength: item.children.length
+        }
+        if (data) {
+          this.obj.key = data.key + '-' + index
+          data.children.push(this.obj)
+        } else {
+          this.ouList.push(this.obj)
+        }
+        if (item.children.length > 0) {
+          // 执行递归
+          this.Recursion(item.children, this.obj)
+        }
+      })
+    },
+    eventKeyRecursion (Array, item) {
+      Array.children.forEach((name) => {
+          console.log(item)
+          console.log(name.key)
+        this.sechar.push(name.title)
+        if (name.key === item.eventKey) {
+              return false
+          }
+        if (name.children.length > 0) {
+          this.eventKeyRecursion(name, item)
+        }
+      })
+    },
+    async getOuList () {
+      const OuList = await usermanageListOU()
+      this.queryParam.name = 'ou=' + OuList.ou[0].children[0].name + ',ou=Citrix,dc=test,dc=com'
+      this.Recursion(OuList.ou[0].children)
+      this.loading = false
     }
   },
-  mounted () {
+  created () {
+    this.getOuList()
   }
 }
 </script>
 
 <style lang="less" scoped>
-.tree_bens{
-    display: flex;
-    justify-content: space-between;
-    font-size: 18px;
-    div:first-of-type{
-        margin: 0px 10px;
-        i{
-            margin-right: 20px;
-        }
+.head {
+  display: flex;
+  justify-content: space-between;
+  div:last-child {
+    button {
+      margin-left: 10px;
     }
-    div:last-of-type{
-        i{
-            margin: 0px 10px;
-        }
+    i {
+      font-size: 20px;
     }
-}
-.head{
-    display:flex;
-    justify-content: space-between;
-    div:last-child {
-        button{
-            margin-left: 10px;
-        }
-        i{
-            font-size: 20px;
-        }
-    }
+  }
 }
 .btns {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
   button {
     border-radius: 8px;
+  }
+}
+.icon {
+  cursor: pointer;
+  font-size: 20px;
+  margin: 0px 10px;
+}
+.All {
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1470px) {
+  .All {
+    display: none;
   }
 }
 </style>

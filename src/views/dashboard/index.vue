@@ -2,14 +2,13 @@
   <div>
     <a-card>
       <div slot="title">
-        虚拟主机 总共5746台 其中:
-        <a-icon
-          type="smile"
-          theme="twoTone" />2354
-        <a-icon
-          type="heart"
-          theme="twoTone"
-          two-tone-color="#eb2f96" />3392
+        <span style="margin-right: 10px;">虚拟主机</span>
+        <span style="margin-right: 10px;">总共5746台 </span>
+        其中:
+        <m-icon type="shape" class="icon shape blue"/>
+        2354
+        <m-icon type="shape" class="icon shape" style="margin-left:10px;"/>
+        392
       </div>
       <a-row :gutter="16">
         <a-col
@@ -20,11 +19,8 @@
             <!-- title -->
             <template slot="title">
               <div class="crea_title">
-                <a-icon
-                  type="check-circle"
-                  theme="twoTone"
-                  two-tone-color="#52c41a"
-                  style="font-size:70px" />
+                <m-icon :type="item.Text.icon" :class="['icon',item.Text.icon]"/>
+
                 <span>
                   {{ item.Text.title }}
                   <br>
@@ -43,13 +39,10 @@
     <a-card style="margin-top:30px;">
       <template slot="title">
         桌面  总共660个  其中
-        <a-icon
-          type="smile"
-          theme="twoTone" />2354
-        <a-icon
-          type="heart"
-          theme="twoTone"
-          two-tone-color="#eb2f96" />3392
+        <m-icon type="shape" class="icon shape blue"/>
+        2354
+        <m-icon type="shape" class="icon shape"/>
+        3392
       </template>
       <a-card-grid style="width:25%;text-align:center;padding: 12px;">
         场景名
@@ -85,7 +78,6 @@
         0
       </a-card-grid>
       <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-
         350
       </a-card-grid>
     </a-card>
@@ -114,13 +106,14 @@ export default {
       chartsData: [
         {
           headStyle: {
-            background: 'rgba(129, 211, 248, 1)'
+            background: 'rgba(117, 204, 244, 1)'
           },
           icon: {
             color: null
           },
           Text: {
             title: 'CPU',
+            icon: 'shizhong',
             used: ['总共', '6666', '个物理核心'],
             Remaining: ['运行', '2222', ' 个虚拟核心']
           },
@@ -137,9 +130,10 @@ export default {
         },
         {
           headStyle: {
-            background: 'rgba(129, 211, 248, 1)'
+            background: 'rgba(78, 219, 195, 1)'
           },
           Text: {
+            icon: 'storage',
             title: '内存',
             used: ['已用', '2124', 'GB'],
             Remaining: ['剩余', '3019', 'GB']
@@ -157,9 +151,10 @@ export default {
         },
         {
           headStyle: {
-            background: 'rgba(129, 211, 248, 1)'
+            background: 'rgba(233, 208, 103, 1)'
           },
           Text: {
+            icon: 'cunchu',
             title: '存储',
             used: ['已用', '2313', 'GB'],
             Remaining: ['剩余', '9809', ' GB']
@@ -198,4 +193,25 @@ export default {
     color: white;
   }
 }
+    .icon {
+        &.shape{
+            font-size: 20px;
+        }
+      &.blue {
+        color: #1c84c6
+      }
+      &.shizhong {
+        color: white;
+        font-size:70px;
+      }
+      &.storage {
+        color: white;
+        font-size:70px;
+      }
+      &.cunchu {
+        color: white;
+        font-size:70px;
+
+      }
+    }
 </style>

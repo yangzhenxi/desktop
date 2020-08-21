@@ -1,7 +1,6 @@
 <template>
-  <div>
-    关于我们
-  </div>
+  <page-header-wrapper>
+  </page-header-wrapper>
 </template>
 
 <script>

@@ -25,6 +25,6 @@ export default {
   },
   title: '云桌面管理系统',
   pwa: false,
-  iconfontUrl: '',
+  iconfontUrl: 'at.alicdn.com/t/font_1689170_ylcoyb8kp6.js',
   production: process.env.NODE_ENV === 'production' && process.env.VUE_APP_PREVIEW !== 'true'
 }

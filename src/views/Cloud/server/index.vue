@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <page-header-wrapper>
     服务器
-  </div>
+  </page-header-wrapper>
 </template>
 
 <script>

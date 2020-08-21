@@ -1,7 +1,6 @@
 <template>
-  <div>
-    警报管理
-  </div>
+  <page-header-wrapper>
+  </page-header-wrapper>
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 import moment from 'moment'
 import os from 'os'
-// import dict from './dict'
+import dict from './dict'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
 
@@ -106,64 +106,64 @@ export function addDate (date, n, unit = 'd') {
 //   }
 // }
 
-// /**
-//  * 过滤器
-//  * @param { any } val 值
-//  * @param { String } filter 过滤器
-//  * @param { String } args 过滤器参数
-//  */
-// export function convert (val, filter, args) {
-//   if (!val && val !== false && val !== 0) {
-//     return '-'
-//   }
-//   if (!filter) {
-//     return val
-//   }
-//   if (dict[filter]) {
-//     return deepGet(dict[filter].find(e => e.key === val), 'val')
-//   } else {
-//     switch (filter) {
-//       // 时间戳
-//       case 'text':
-//         return textTo(val, args)
-//       // 时间戳
-//       case 'unix':
-//         return unixToDate(val, args)
-//         // 时间戳
-//       case 'dateToUnix':
-//         return dateToUnix(val, args)
-//       // 时间差
-//       case 'unixDiff':
-//         return unixDiff(val)
-//       // 压缩比
-//       case 'ratio':
-//         return `${val} : 1`
-//       // + 单位
-//       case 'unit':
-//         return `${val} ${args}`
-//       // 容量大小
-//       case 'unitSize':
-//         const size = unitSize(val, args)
-//         return `${size.size} ${size.unit}`
-//       // 速率大小
-//       case 'unitSpeed':
-//         const speed = unitSpeed(val, args)
-//         return `${speed.speed} ${speed.unit}`
-//       // 电压
-//       case 'unitVoltage':
-//         const voltage = unitVoltage(val, args)
-//         return `${voltage.voltage} ${voltage.unit}`
-//       // 功率
-//       case 'unitWatt':
-//         const watt = unitWatt(val, args)
-//         return `${watt.watt} ${watt.unit}`
-//       // 频率
-//       case 'unitHz':
-//         const hz = unitHz(val, args)
-//         return `${hz.hz} ${hz.unit}`
-//     }
-//   }
-// }
+/**
+ * 过滤器
+ * @param { any } val 值
+ * @param { String } filter 过滤器
+ * @param { String } args 过滤器参数
+ */
+export function convert (val, filter, args) {
+  if (!val && val !== false && val !== 0) {
+    return '-'
+  }
+  if (!filter) {
+    return val
+  }
+  if (dict[filter]) {
+    return deepGet(dict[filter].find(e => e.key === val), 'val')
+  } else {
+    switch (filter) {
+      // 时间戳
+      case 'text':
+        return textTo(val, args)
+      // 时间戳
+      case 'unix':
+        return unixToDate(val, args)
+        // 时间戳
+      case 'dateToUnix':
+        return dateToUnix(val, args)
+      // 时间差
+      case 'unixDiff':
+        return unixDiff(val)
+      // 压缩比
+      case 'ratio':
+        return `${val} : 1`
+      // + 单位
+      case 'unit':
+        return `${val} ${args}`
+      // 容量大小
+      case 'unitSize':
+        const size = unitSize(val, args)
+        return `${size.size} ${size.unit}`
+      // 速率大小
+      case 'unitSpeed':
+        const speed = unitSpeed(val, args)
+        return `${speed.speed} ${speed.unit}`
+      // 电压
+      case 'unitVoltage':
+        const voltage = unitVoltage(val, args)
+        return `${voltage.voltage} ${voltage.unit}`
+      // 功率
+      case 'unitWatt':
+        const watt = unitWatt(val, args)
+        return `${watt.watt} ${watt.unit}`
+      // 频率
+      case 'unitHz':
+        const hz = unitHz(val, args)
+        return `${hz.hz} ${hz.unit}`
+    }
+  }
+}
 
 /**
  * 文本转换

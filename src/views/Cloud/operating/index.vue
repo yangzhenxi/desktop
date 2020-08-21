@@ -1,7 +1,6 @@
 <template>
-  <div>
-    操作系统
-  </div>
+  <page-header-wrapper>
+  </page-header-wrapper>
 </template>
 
 <script>
