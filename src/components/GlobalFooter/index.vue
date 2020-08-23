@@ -21,3 +21,9 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+a{
+    color: white !important;
+}
+</style>

@@ -140,7 +140,7 @@ import Tree from './Tree_modules/tree'
 import TreeEdit from './Tree_modules/TreeEdit'
 import EditPass from './Tab_modules/EditPass'
 import Setcolumns from './Tab_modules/Setcolumns'
-import { Empty } from '@/components/Empty'
+// import { Empty } from '@/components/Empty'
 import { mixinTable } from '@/utils/mixin'
 import { usermanageListOU, usermanageListuser } from '@/api/CloudDesktop/userManage'
 
@@ -197,8 +197,8 @@ export default {
     TreeSet,
     EditPass,
     Setcolumns,
-    MIcon,
-    Empty
+    MIcon
+    // Empty
   },
   data () {
     return {

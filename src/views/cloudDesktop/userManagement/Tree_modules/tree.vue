@@ -1,6 +1,7 @@
 <template>
   <a-radio-group v-model="checkedval">
     <a-tree
+      :style="style"
       :tree-data="treeData"
       show-icon
       :blockNode="blockNode"
@@ -54,7 +55,11 @@ export default {
       value: this.checkedval,
       blockNode: true,
       item1: false,
-      item2: false
+      item2: false,
+      style: {
+                  background: '#063478'
+
+      }
     }
   },
   methods: {

@@ -88,11 +88,8 @@ const vueConfig = {
     loaderOptions: {
       less: {
         modifyVars: {
-          // less vars，customize ant design theme
-
-          // 'primary-color': '#F5222D',
-          // 'link-color': '#F5222D',
-          'border-radius-base': '2px'
+          'layout-body-background': '#0B2A53', // body颜色
+          'border-radius-base': '5px'
         },
         // DO NOT REMOVE THIS LINE
         javascriptEnabled: true

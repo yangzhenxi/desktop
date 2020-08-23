@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-card>
+    <a-card :headStyle="headStyle" :bodyStyle="bodyStyle">
       <div slot="title">
         <span style="margin-right: 10px;">虚拟主机</span>
         <span style="margin-right: 10px;">总共5746台 </span>
@@ -36,7 +36,7 @@
         </a-col>
       </a-row>
     </a-card>
-    <a-card style="margin-top:30px;">
+    <a-card style="margin-top:30px;" :headStyle="headStyle" :bodyStyle="bodyStyle">
       <template slot="title">
         桌面  总共660个  其中
         <m-icon type="shape" class="icon shape blue"/>
@@ -96,12 +96,16 @@ export default {
   data () {
     return {
       headStyle: {
-        background: 'rgba(238, 240, 243)',
-        border: '2px solid white'
+        background: '#063478',
+        color: '#fff'
+        // border: '2px solid white'
       },
       bodyStyle: {
-          background: 'rgba(238, 240, 243)',
-          border: '2px solid white'
+          background: '#12305f',
+        color: '#fff',
+        cursor: 'pointer',
+        boxShadow: 'none'
+
       },
       chartsData: [
         {
@@ -193,6 +197,9 @@ export default {
     color: white;
   }
 }
+.ant-card-bordered {
+    border: none;
+}
     .icon {
         &.shape{
             font-size: 20px;
@@ -211,7 +218,9 @@ export default {
       &.cunchu {
         color: white;
         font-size:70px;
-
       }
     }
+.ant-card-grid {
+    box-shadow: none;
+}
 </style>
