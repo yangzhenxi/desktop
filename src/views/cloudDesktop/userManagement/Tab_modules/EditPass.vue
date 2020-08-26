@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="修改密码"
+    title="重置密码"
     :width="640"
     :visible="visible"
     :confirmLoading="confirmLoading"
@@ -10,14 +10,30 @@
     <a-spin :spinning="loading">
       <a-form :form="form">
         <a-form-item
-          label="姓名"
+          label="密码"
           :labelCol="labelCol"
           :wrapperCol="wrapperCol">
           <a-input
-            placeholder="请输入名称"
-            v-decorator="['name',
+            type="password"
+            placeholder="请输入密码"
+            v-decorator="['password',
                           { rules: [
-                              { required: true, message: '请输入名称！' },
+                              { required: true, message: '请输入密码' },
+                            ],
+                            validateFirst: true
+                          }]" />
+        </a-form-item>
+        <a-form-item
+          label="确认密码"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol">
+          <a-input
+            type="password"
+            placeholder="请再次输入密码"
+            v-decorator="['confirmPassword',
+                          { rules: [
+                              { required: true, message: '请再次输入密码' },
+                              { validator:confirmPassword}
                             ],
                             validateFirst: true
                           }]" />
@@ -29,29 +45,46 @@
 
 <script>
 import { mixinFormModal } from '@/utils/mixin'
-
+import { usermanageEditpassword } from '@/api/CloudDesktop/userManage'
 export default {
   mixins: [mixinFormModal],
   name: 'UserManageTabAdd',
   data () {
     return {
-        departmentList: []
+        departmentList: [],
+        record: {}
     }
   },
   methods: {
-    Edit () {
-      this.visible = true
+    Edit (record) {
+        this.record = {}
+        this.record.name = record.username
+        this.visible = true
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
+          this.confirmLoading = true
         if (!errors) {
-          console.log('todo...')
+        this.record.password = values.password
+        console.log(this.record)
+        usermanageEditpassword(this.record).then(res => {
+        this.$message.success('修改成功')
+        this.$emit('ok')
         this.visible = false
+        })
+        this.confirmLoading = false
         }
       })
     },
     handleCancel () {
       this.visible = false
+    },
+    confirmPassword (rule, value, callback) {
+        const password = this.form.getFieldValue('password')
+        if (value !== password) {
+            callback(new Error('两次密码输入不正确，请重新输入'))
+        }
+        callback()
     }
   }
 }

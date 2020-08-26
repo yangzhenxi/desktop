@@ -39,7 +39,25 @@ export const asyncRouterMap = [
             path: '/CloudDesktop/DesktopManagem',
             name: 'DesktopManagem',
             component: () => import('@/views/cloudDesktop/DesktopManagem'),
-            meta: { title: '桌面模版管理', keepAlive: true, icon: icon.DesktopManagem, permission: ['dashboard'] }
+            redirect: '/CloudDesktop/DesktopManagem/Allmodules',
+            hideChildrenInMenu: true,
+            meta: { title: '桌面模版管理', keepAlive: true, icon: icon.DesktopManagem, permission: ['dashboard'] },
+            children: [
+                {
+                    path: '/CloudDesktop/DesktopManagem/Allmodules',
+                    name: 'Allmodules',
+                    component: () => import('@/views/cloudDesktop/DesktopManagem/Tab_modules/Allmodules'),
+                    meta: { title: '全部模版', keepAlive: true, icon: icon.DesktopManagem, permission: ['dashboard'], hiddenHeaderContent: true }
+
+                },
+                {
+                    path: '/CloudDesktop/DesktopManagem/:id/singlemodules',
+                    name: 'singlemodules',
+                    component: () => import('@/views/cloudDesktop/DesktopManagem/Tab_modules/singlemodules'),
+                    meta: { title: '单个模版', keepAlive: true, icon: icon.DesktopManagem, permission: ['dashboard'], hiddenHeaderContent: true }
+
+                }
+            ]
           },
           {
             path: '/CloudDesktop/cloudDesktopmanage',

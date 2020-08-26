@@ -26,3 +26,9 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+#app{
+    min-width: 1400px;
+}
+</style>

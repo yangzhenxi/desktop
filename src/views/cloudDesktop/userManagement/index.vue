@@ -25,13 +25,13 @@
               :xl="16"
               :md="16"
               :sm="16">
-              <span @click="$refs.TreeAdd.add()">
+              <span @click="$refs.TreeAdd.add(queryParam)">
                 <m-icon
                   type="yonghutianjia"
                   class="icon yonghutianjia" />
               </span>
 
-              <span @click="$refs.TreeEdit.Edit()">
+              <span @click="$refs.TreeEdit.Edit(queryParam)">
                 <m-icon
                   type="xiugai"
                   class="icon xiugai" />
@@ -44,9 +44,6 @@
 
             </a-col>
           </a-row>
-          <!-- <a-empty
-            v-if="!allBranchListGetter[0]"
-            style="margin-top:100px;" /> -->
           <tree
             :treeData="ouList"
             :checkedval="checkedval"
@@ -63,7 +60,7 @@
           <div class="head">
             <div class="btns">
               <a-button
-                @click="$refs.TabAdd.add()"
+                @click="$refs.TabAdd.add(ouList)"
                 type="primary">
                 新增
               </a-button>
@@ -74,17 +71,13 @@
                 批量新增
               </a-button>
               <a-button
-                type="primary"
-                style="margin-left:10px"
-                @click="$refs.EditPass.Edit()">
-                重置密码
-              </a-button>
-              <a-button
+                @click="Delete()"
                 type="danger"
                 style="margin-left:10px">
                 删除
               </a-button>
               <a-button
+                @click="BatchDelUser()"
                 type="danger"
                 style="margin-left:10px">
                 批量删除
@@ -93,18 +86,32 @@
           </div>
           <m-table
             ref="table"
+            bordered
             :columns="columns"
             :data="loadData"
-            :scroll="{ x: 800 }"
             rowKey="key"
             :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
-            <template slot="action">
-              <a-button size="small">修改</a-button>
+            <template
+              slot="action"
+              slot-scope="text,record">
+              <a-button
+                size="small"
+                @click="$refs.TabEdit.Edit(record)">修改</a-button>
+              <a-button
+                type="primary"
+                size="small"
+                style="margin-left:10px"
+                @click="$refs.EditPass.Edit(record)">
+                重置密码
+              </a-button>
             </template>
           </m-table>
           <tab-add
             ref="TabAdd"
             @ok="handleOk"></tab-add>
+          <tab-edit
+            ref="TabEdit"
+            @ok="handleOk"></tab-edit>
           <tabbatch-add
             ref="BatchTabAdd"
             @ok="handleOk"></tabbatch-add>
@@ -134,19 +141,25 @@
 import { MTable, MIcon } from '@/components'
 import TabAdd from './Tab_modules/Add'
 import TabbatchAdd from './Tab_modules/batchAdd'
+import TabEdit from './Tab_modules/Edit'
+
 import TreeAdd from './Tree_modules/TreeAdd'
 import TreeSet from './Tree_modules/TreeSet'
 import Tree from './Tree_modules/tree'
 import TreeEdit from './Tree_modules/TreeEdit'
 import EditPass from './Tab_modules/EditPass'
 import Setcolumns from './Tab_modules/Setcolumns'
-// import { Empty } from '@/components/Empty'
 import { mixinTable } from '@/utils/mixin'
-import { usermanageListOU, usermanageListuser } from '@/api/CloudDesktop/userManage'
+import {
+  usermanageListOU,
+  usermanageListuser,
+  usermanageBatchDelUser,
+  usermanageDeluser
+} from '@/api/CloudDesktop/userManage'
 
 const columns = [
   {
-    title: '名称',
+    title: '用户名',
     dataIndex: 'username',
     sorter: true
   },
@@ -176,7 +189,6 @@ const columns = [
     sorter: true,
     width: '200px',
     scopedSlots: { customRender: 'time' }
-
   },
   {
     title: '操作',
@@ -197,7 +209,8 @@ export default {
     TreeSet,
     EditPass,
     Setcolumns,
-    MIcon
+    MIcon,
+    TabEdit
     // Empty
   },
   data () {
@@ -208,13 +221,17 @@ export default {
       queryParam: {},
       sechar: [], // 找father
       selectedRowKeys: [], // Check here to configure the default column
+      deleteTabName: [], // 删除用户的数组
       // 加载数据方法 必须为 Promise 对象
       loadData: async (parameter) => {
         if (this.checkedval === '0') {
           const OuList = await usermanageListOU()
           this.queryParam.name = 'ou=' + OuList.ou[0].children[0].name + ',ou=Citrix,dc=test,dc=com'
         }
-        const data = this.deepGet(await usermanageListuser(this.queryParam), 'list')
+        let data = this.deepGet(await usermanageListuser(this.queryParam), 'list')
+        if (data === undefined) {
+          data = []
+        }
         return {
           data
         }
@@ -224,8 +241,11 @@ export default {
     }
   },
   methods: {
-    onSelectChange (selectedRowKeys) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys)
+    onSelectChange (selectedRowKeys, selectedRows) {
+      this.deleteTabName = []
+      selectedRows.forEach((u) => {
+        this.deleteTabName.push(u.username)
+      })
       this.selectedRowKeys = selectedRowKeys
     },
     TreeDelete () {
@@ -241,21 +261,20 @@ export default {
     },
     changecheckedval (item) {
       this.sechar = []
+      this.selectedRowKeys = []
       this.checkedval = item.eventKey
+      if (item.ouSort[0] === this.ouList[0].title) {
+        item.ouSort.reverse()
+      }
+      this.queryParam.name = ''
+
       // 判断当前是不是在子分支下
       if (item.eventKey.search('-') !== -1) {
-        const key = item.eventKey.split('-', 1)
-        this.ouList.forEach((u) => {
-          if (u.key === key[0]) {
-            this.sechar.push(u.title)
-            this.eventKeyRecursion(u, item)
-          }
-        })
-        this.queryParam.name = ''
-        this.sechar.reverse()
-        this.sechar.forEach((u) => {
+        item.ouSort.forEach((u) => {
           this.queryParam.name = this.queryParam.name + 'ou=' + u + ','
         })
+        console.log(this.queryParam.name)
+
         this.queryParam.name = this.queryParam.name + 'ou=Citrix,dc=test,dc=com'
         this.$refs.table.refresh()
         return true
@@ -273,12 +292,16 @@ export default {
             icon: 'smile'
           },
           children: [],
-          childrenLength: item.children.length
+          childrenLength: item.children.length,
+          ouSort: []
         }
         if (data) {
           this.obj.key = data.key + '-' + index
           data.children.push(this.obj)
+          this.obj.ouSort.push(...data.ouSort)
+          this.obj.ouSort.push(item.name)
         } else {
+          this.obj.ouSort.push(item.name)
           this.ouList.push(this.obj)
         }
         if (item.children.length > 0) {
@@ -288,13 +311,13 @@ export default {
       })
     },
     eventKeyRecursion (Array, item) {
+      console.log(Array.children)
       Array.children.forEach((name) => {
-          console.log(item)
-          console.log(name.key)
-        this.sechar.push(name.title)
+        //   if()
         if (name.key === item.eventKey) {
-              return false
-          }
+          return false
+        }
+        this.sechar.push(name.title)
         if (name.children.length > 0) {
           this.eventKeyRecursion(name, item)
         }
@@ -305,6 +328,57 @@ export default {
       this.queryParam.name = 'ou=' + OuList.ou[0].children[0].name + ',ou=Citrix,dc=test,dc=com'
       this.Recursion(OuList.ou[0].children)
       this.loading = false
+    },
+    Delete () {
+      const deleteData = {
+        baseDN: this.queryParam.name,
+        username: this.deleteTabName[0]
+      }
+      if (this.selectedRowKeys.length === 1) {
+        this.$confirm({
+          title: '是否要删除' + this.deleteTabName[0],
+          content: '点击确定即可删除',
+          okType: 'danger',
+          onOk: () => {
+            usermanageDeluser(deleteData).then((res) => {
+                this.$message.success('删除成功！')
+                this.$refs.table.refresh()
+                this.selectedRowKeys = []
+            })
+          }
+        })
+      } else if (this.selectedRowKeys.length === 0) {
+        this.$message.info('请选择要删除的用户')
+      } else if (this.selectedRowKeys.length > 1) {
+        this.$message.info('不能选择多个删除')
+      }
+    },
+    BatchDelUser () {
+      const BatchDel = {}
+      BatchDel.users = this.deleteTabName.map((u) => {
+        const deleteData = {
+          baseDN: this.queryParam.name,
+          username: u
+        }
+        return deleteData
+      })
+
+      if (this.selectedRowKeys.length === 0) {
+        this.$message.info('请选择要删除的用户')
+      } else {
+      this.$confirm({
+        title: '确认要批量删除用户？',
+        content: '点击确定即可删除',
+        okType: 'danger',
+        onOk: () => {
+          usermanageBatchDelUser(BatchDel).then((res) => {
+            this.$message.success('删除成功')
+            this.selectedRowKeys = []
+            this.$refs.table.refresh()
+          })
+        }
+      })
+      }
     }
   },
   created () {
@@ -346,5 +420,53 @@ export default {
   .All {
     display: none;
   }
+}
+.ant-card {
+  background: rgb(18, 48, 95);
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  box-shadow: none;
+  border: none;
+  height: 712px;
+}
+/deep/.ant-card-head {
+  color: white;
+  border: none;
+}
+.ant-pagination {
+  float: right;
+  margin-right: 20px;
+  margin-top: 20px;
+  color: white;
+}
+/deep/.ant-tree li .ant-tree-node-content-wrapper,
+/deep/.ant-table-thead > tr > th,
+/deep/.ant-table-tbody {
+  color: white;
+}
+/deep/.ant-table-body,
+/deep/.ant-table-placeholder {
+  background: none !important;
+}
+/deep/.ant-table-header,
+/deep/.ant-table-thead > tr > th {
+  background: none !important;
+}
+/deep/.ant-modal-header {
+  background: none;
+}
+/deep/.ant-modal-content {
+  background-image: linear-gradient(#12397e, #027cb3);
+  color: white;
+  font-weight: 500;
+}
+/deep/.ant-modal-title,
+/deep/.ant-modal-close-x {
+  color: white;
+}
+/deep/.ant-steps-item-title,
+/deep/.ant-empty-description,
+/deep/.ant-form-item-required {
+  color: white !important;
 }
 </style>

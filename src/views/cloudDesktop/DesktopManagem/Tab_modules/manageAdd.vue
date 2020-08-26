@@ -1,48 +1,55 @@
 <template>
-  <a-modal
-    title="新建模版"
-    :width="840"
-    :visible="visible"
-    :confirmLoading="confirmLoading"
-    @ok="handleSubmit"
-    @cancel="handleCancel"
-    :footer="null"
-    destroyOnClose>
-    <a-spin :spinning="loading">
-      <a-row style="padding-top:25px;">
-        <a-col :span="16" :offset="4">
-          <a-steps
-            class="steps"
-            size="small"
-            :current="currentTab">
-            <a-step title="填写模版信息" />
-            <a-step title="填写硬件信息" />
-            <a-step title="选择发布的服务器" />
-            <a-step title="完成" />
-          </a-steps>
-        </a-col>
-      </a-row>
+  <div>
+    <a-modal
+      :width="840"
+      :visible="visible"
+      :confirmLoading="confirmLoading"
+      @ok="handleSubmit"
+      @cancel="handleCancel"
+      :footer="null"
+      destroyOnClose>
+      <template slot="title">
+        新建模版
+      </template>
+      <a-spin :spinning="loading">
+        <a-row style="padding-top:25px;">
+          <a-col
+            :span="16"
+            :offset="4">
+            <a-steps
+              class="steps"
+              size="small"
+              :current="currentTab">
+              <a-step title="填写模版信息" />
+              <a-step title="填写硬件信息" />
+              <a-step title="选择发布的服务器" />
+              <a-step title="完成" />
+            </a-steps>
+          </a-col>
+        </a-row>
 
-      <div class="content">
-        <step1
-          v-if="currentTab === 0"
-          @close="close"
-          @nextStep="nextStep" />
-        <step2
-          v-if="currentTab === 1"
-          @nextStep="nextStep"
-          @prevStep="prevStep" />
-        <step3
-          v-if="currentTab === 2"
-          @nextStep="nextStep"
-          @prevStep="prevStep" />
-        <step4
-          v-if="currentTab === 3"
-          @prevStep="prevStep"
-          @finish="finish" />
-      </div>
-    </a-spin>
-  </a-modal>
+        <div class="content">
+          <step1
+            v-if="currentTab === 0"
+            @close="close"
+            @nextStep="nextStep" />
+          <step2
+            v-if="currentTab === 1"
+            @nextStep="nextStep"
+            @prevStep="prevStep" />
+          <step3
+            v-if="currentTab === 2"
+            @nextStep="nextStep"
+            @prevStep="prevStep" />
+          <step4
+            v-if="currentTab === 3"
+            @prevStep="prevStep"
+            @finish="finish" />
+        </div>
+      </a-spin>
+    </a-modal>
+  </div>
+
 </template>
 
 <script>
@@ -68,7 +75,6 @@ export default {
   },
   methods: {
     Add () {
-      console.log(1)
       this.visible = true
     },
     handleSubmit () {
@@ -92,7 +98,7 @@ export default {
       this.currentTab = 0
     },
     close () {
-        this.visible = false
+      this.visible = false
     }
   }
 }
@@ -102,5 +108,20 @@ export default {
 .ant-form-vertical .ant-form-item {
   padding-bottom: 0px;
   margin-bottom: 10px;
+}
+/deep/.ant-modal-header {
+  background: none;
+}
+/deep/.ant-modal-content {
+  background-image: linear-gradient(#12397e, #027cb3);
+  color: white;
+}
+/deep/.ant-modal-title,
+/deep/.ant-modal-close-x {
+  color: white;
+}
+/deep/.ant-steps-item-title,
+/deep/.ant-form-item-required {
+  color: white !important;
 }
 </style>

@@ -1,7 +1,6 @@
 <template>
   <a-radio-group v-model="checkedval">
     <a-tree
-      :style="style"
       :tree-data="treeData"
       show-icon
       :blockNode="blockNode"
@@ -55,15 +54,12 @@ export default {
       value: this.checkedval,
       blockNode: true,
       item1: false,
-      item2: false,
-      style: {
-                  background: '#063478'
-
-      }
+      item2: false
     }
   },
   methods: {
     handleRadio (item) {
+        console.log(item)
       this.value = item.eventKey
       this.$emit('changecheckedval', item)
     }
@@ -87,5 +83,21 @@ export default {
 .guanyuwomen {
   font-size: 18px;
   margin-right: 10px;
+}
+/deep/ .ant-tree li span.ant-tree-node-content-wrapper {
+  width: 100%;
+  span {
+    div {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
+.moban {
+  font-size: 16px;
+  margin-right: 10px;
+}
+/deep/.ant-tree-title{
+    color: white;
 }
 </style>

@@ -1,13 +1,12 @@
 <template>
   <a-modal
-    title="新增组"
+    title="编辑组"
     :width="640"
     :visible="visible"
     :confirmLoading="confirmLoading"
     @ok="handleSubmit"
     @cancel="handleCancel"
-    destroyOnClose
-  >
+    destroyOnClose>
     <a-spin :spinning="loading">
       <a-form :form="form">
         <a-form-item
@@ -35,26 +34,26 @@ export default {
   mixins: [mixinFormModal],
   name: 'UserManageTabAdd',
   data () {
-    return {
-    }
+    return {}
   },
   methods: {
-    Add () {
+    Edit (record) {
+      // console.log(record)
       this.visible = true
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
-          this.confirmLoading = true
         if (!errors) {
-        this.visible = false
-        this.confirmLoading = false
+          this.confirmLoading = true
+          this.visible = false
+          this.confirmLoading = false
         }
       })
     },
     handleCancel () {
       this.visible = false
     },
-      onChange (checked) {
+    onChange (checked) {
       console.log(`a-switch to ${checked}`)
     },
     nameValidator
@@ -64,14 +63,14 @@ export default {
 
 <style lang="less" scoped>
 .ant-form-vertical .ant-form-item {
-    padding-bottom: 0px;
-    margin-bottom: 10px;
+  padding-bottom: 0px;
+  margin-bottom: 10px;
 }
 /deep/.ant-modal-header {
   background: none;
-
 }
-/deep/.ant-modal-title,/deep/.ant-form-item-required{
+/deep/.ant-modal-title,
+/deep/.ant-form-item-required {
   color: white !important;
 }
 /deep/.ant-modal-content {

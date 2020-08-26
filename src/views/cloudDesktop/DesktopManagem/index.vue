@@ -1,40 +1,31 @@
 <template>
   <page-header-wrapper>
     <a-row :gutter="16">
-      <a-col
-        :xl="6"
-        :md="24"
-        :sm="24">
+      <a-col :span="6">
         <a-card>
           <a-row class="tree_head">
-            <a-col
-              :xl="11"
-              :md="11"
-              :sm="11">
+            <a-col :span="11">
               <m-icon
                 type="moban"
                 class="icon" />
               <span
+                @click="Allmodules"
                 class="All"
-                style="font-size:17px;">所有模版</span>
+                style="font-size:15px;">所有模版</span>
             </a-col>
-            <a-col
-              :xl="13"
-              :md="13"
-              :sm="13">
+            <a-col :span="13">
 
               <span @click="$refs.Add.Add()">
                 <m-icon
                   type="yonghutianjia"
                   class="icon" />
               </span>
-              <span>
+              <span @click="$refs.Edit.Edit()">
                 <m-icon
                   type="xiugai"
                   class="icon" />
               </span>
-              <span>
-
+              <span @click="TreeDelete">
                 <m-icon
                   type="shanchu"
                   class="icon" />
@@ -43,100 +34,39 @@
           </a-row>
           <tree
             :treeData="allBranchListGetter"
-            :checkedval="checkedval"
-            @changecheckedval="changecheckedval"></tree>
+            :checkedval="checkedLeftval"
+            @changecheckedval="changecheckedLeftval"></tree>
         </a-card>
       </a-col>
 
-      <a-col
-        :xl="18"
-        :md="24"
-        :sm="24">
-        <a-card title="全部">
-          <div class="btns">
-            <a-button
-              type="primary"
-              @click="$refs.ManageAdd.Add()">新建模版</a-button>
-            <a-button type="primary">在线编辑</a-button>
-            <a-button type="primary">发布模版</a-button>
-            <a-button type="primary">重新生成</a-button>
-            <a-button type="primary">还原版本</a-button>
-            <a-button type="primary">合并版本</a-button>
-            <a-button type="primary">模版恢复</a-button>
-            <a-button type="danger">删除</a-button>
-          </div>
-          <a-row :gutter="16">
-            <a-col
-              :xxl="8"
-              :xl="12"
-              :md="12"
-              :sm="24">
-              <a-row class="modules">
-                <a-col :xl="8" :md="12" :sm="24">
-                  <m-icon type="windows1" class="windows1"></m-icon>
-                </a-col>
-                <a-col :xl="16" :md="12" :sm="24">
-                  <div class="title">计算机基础</div>
-                  <div class="text">
-                    <span>所属分组: </span>
-                    <span>基础模版</span>
-                  </div>
-                  <div class="text">
-                    <span>创建者: </span>
-                    <span>基础模版</span>
-                  </div>
-                  <div class="text">
-                    <span>桌面数量: </span>
-                    <span>基础模版</span>
-                  </div>
-                  <div class="text">
-                    <span>所在服务器: </span>
-                    <span>基础模版</span>
-                  </div>
-                  <div class="text">
-                    <span>创建时间: </span>
-                    <span>基础模版</span>
-                  </div>
-                  <div class="text">
-                    <span>版本状态: </span>
-                    <span>基础模版</span>
-                  </div>
-                </a-col>
-              </a-row>
-            </a-col>
-            <a-col
-              :xxl="8"
-              :xl="12"
-              :md="12"
-              :sm="24">
-              abc
-            </a-col>
-            <a-col
-              :xl="8"
-              :md="12"
-              :sm="24">
-              abc
-            </a-col>
-          </a-row>
-        </a-card>
+      <a-col :span="18">
+        <router-view/>
       </a-col>
     </a-row>
     <x-treeadd
       ref="Add"
       @ok="handleOk"></x-treeadd>
+    <x-treeedit
+      ref="Edit"
+      @ok="handleOk"></x-treeedit>
     <x-manageadd
       ref="ManageAdd"
       @ok="handleOk"></x-manageadd>
+    <x-managerelease
+      ref="ManageRelease"
+      @ok="handleOk"></x-managerelease>
   </page-header-wrapper>
 </template>
 
 <script>
-import { mixinTable } from '@/utils/mixin'
-
 import MIcon from '@/components/Icon'
 import Tree from './Tree_modules/tree'
 import XTreeadd from './Tree_modules/Add'
+import XTreeedit from './Tree_modules/Edit'
 import XManageadd from './Tab_modules/manageAdd'
+import XManagerelease from './Tab_modules/release'
+import { mixinTable } from '@/utils/mixin'
+
 const allBranchListGetter = [
   {
     key: '99230713',
@@ -235,60 +165,66 @@ export default {
     MIcon,
     Tree,
     XTreeadd,
-    XManageadd
+    XManageadd,
+    XTreeedit,
+    XManagerelease
   },
   data () {
     return {
       allBranchListGetter,
-      checkedval: 'null'
+      checkedLeftval: 'null'
     }
   },
   methods: {
-    changecheckedval (value) {
-      this.checkedval = value
+    changecheckedLeftval (value) {
+      this.checkedLeftval = value
+      this.$router.push({ path: `/CloudDesktop/DesktopManagem/${value}/singlemodules` })
+    },
+
+    TreeDelete () {
+      this.$confirm({
+        title: '是否要删除当前组?',
+        content: '点击确定即可删除当前组',
+        onOk () {
+          return new Promise((resolve, reject) => {
+            setTimeout(Math.random() > 0.5 ? resolve : reject, 1000)
+          }).catch(() => console.log('Oops errors!'))
+        }
+      })
+    },
+    Allmodules () {
+        this.$router.push('/CloudDesktop/DesktopManagem/')
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.icon {
-  cursor: pointer;
-  font-size: 20px;
-  margin: 0px 10px;
-}
 .tree_head {
   margin-bottom: 15px;
 }
-.btns {
-  button {
-    margin-right: 10px;
-  }
-}
-@media screen and (min-width: 1200px) and (max-width: 1500) {
-  .All {
-    display: none;
-  }
-}
-.modules{
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    .title{
-        margin-top: 20px;
-    }
-    .text{
-        font-size: 15px;
-          margin: 5px 0px;
-    }
-    .text:last-child{
-        margin-bottom: 20px;
-    }
-}
-.windows1{
-    margin-top: 30px;
-    font-size: 100px;
-    width: 100%;
-}
 
+.icon {
+  cursor: pointer;
+  font-size: 18px;
+  margin: 0px 9px;
+}
+.ant-card {
+  background: rgb(18, 48, 95);
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  box-shadow: none;
+  border: none;
+  height: 712px;
+}
+/deep/.ant-card-head {
+  color: white;
+  border: none;
+}
+.ant-pagination {
+  float: right;
+  margin-right: 20px;
+  margin-top: 20px;
+  color: white;
+}
 </style>

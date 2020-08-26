@@ -1,40 +1,52 @@
 <template>
   <page-header-wrapper>
-
-    <a-button>
-      <a href="@/component/index.js" download="写入模版">点击下载</a>
-    </a-button>
+    <a-row :gutter="16">
+      <a-col :span="6">
+        <a-card>
+          <a-row class="tree_head">
+            <a-col :span="11">
+              <m-icon
+                type="moban"
+                class="icon" />
+              <span
+                @click="Allmodules"
+                class="All"
+                style="font-size:15px;">所有模版</span>
+            </a-col>
+            <a-col :span="13">
+              <span @click="$refs.Add.Add()">
+                <m-icon
+                  type="yonghutianjia"
+                  class="icon" />
+              </span>
+              <span @click="$refs.Edit.Edit()">
+                <m-icon
+                  type="xiugai"
+                  class="icon" />
+              </span>
+              <span @click="TreeDelete">
+                <m-icon
+                  type="shanchu"
+                  class="icon" />
+              </span>
+            </a-col>
+          </a-row>
+        </a-card>
+      </a-col>
+      <a-col :span="18"></a-col>
+    </a-row>
   </page-header-wrapper>
 </template>
 
 <script>
-export default {
-    data () {
-        return {
-            message: 'word',
-            name: 'yzx'
-        }
-    },
-    component: {
-        SerMessage () {
-            return this.message.split('').reverse().join('')
-        }
-    },
-    watch: {
-        name () {
-            this.name = 'abc' + this.message
-        },
-        message () {
-            return 'message'
-        }
-    },
-    methods: {
-        handleClick () {
-            this.name = '123'
-        }
-    },
-    filters: {
+import MIcon from '@/components/Icon'
 
+export default {
+    components: {
+        MIcon
+    },
+    data () {
+        return {}
     }
 }
 </script>

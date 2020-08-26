@@ -83,4 +83,7 @@ export default {
   margin: 10px;
   box-sizing: border-box;
 }
+/deep/.ant-descriptions-title,/deep/.ant-descriptions-item-label,/deep/.ant-descriptions-item-content {
+    color: white;
+}
 </style>

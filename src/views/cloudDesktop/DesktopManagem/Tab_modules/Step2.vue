@@ -58,7 +58,10 @@
             32GB
           </a-tag>
         </div>
-        <a-slider v-model="inputValue" :min="1" :max="32" />
+        <a-slider
+          v-model="inputValue"
+          :min="1"
+          :max="32" />
       </a-form-item>
       <a-form-item
         label="系统盘"
@@ -71,7 +74,10 @@
             32GB
           </a-tag>
         </div>
-        <a-slider v-model="inputValue1" :min="1" :max="32" />
+        <a-slider
+          v-model="inputValue1"
+          :min="1"
+          :max="32" />
       </a-form-item>
       <a-form-item
         label="网络"
@@ -84,8 +90,7 @@
         </a-select>
       </a-form-item>
       <a-form-item :wrapperCol="{span: 19, offset: 5}">
-        <a-button
-          @click="prevStep">上一步</a-button>
+        <a-button @click="prevStep">上一步</a-button>
         <a-button
           :loading="loading"
           style="margin-left: 8px"
@@ -101,8 +106,8 @@ export default {
   name: 'Step2',
   data () {
     return {
-              inputValue1: 1,
-              inputValue: 1,
+      inputValue1: 1,
+      inputValue: 1,
       labelCol: { lg: { span: 5 }, sm: { span: 5 } },
       wrapperCol: { lg: { span: 19 }, sm: { span: 19 } },
       form: this.$form.createForm(this),
@@ -147,16 +152,20 @@ export default {
     line-height: 22px;
   }
 }
-.ant-slider{
-    margin-top:0px;
+.ant-slider {
+  margin-top: 0px;
 }
-.slider_title{
-    display:flex;
-    justify-content: space-between;
+.slider_title {
+  display: flex;
+  justify-content: space-between;
 }
-.step2{
-    margin-top: 40px;
-    border:1px solid #cccccc;
-    border-radius: 5px;
+.step2 {
+  margin-top: 40px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+}
+/deep/label[title='内存'],
+/deep/label[title='系统盘'] {
+  color: white;
 }
 </style>

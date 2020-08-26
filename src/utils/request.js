@@ -12,33 +12,44 @@ const request = axios.create({
   timeout: 6000 // 请求超时时间
 })
 
+const codeMsg = {
+    200: '请求成功',
+    201: '新建或修改数据成功',
+    202: '正在处理流程...',
+    204: '删除数据成功',
+    400: '请求错误',
+    401: '用户验证错误',
+    403: 'token 失效',
+    404: '服务器找不到请求的资源',
+    406: '请求格式错误',
+    410: '请求的资源已不存在',
+    422: '验证错误',
+    500: '服务器错误',
+    502: '网关错误',
+    503: '服务器维护中',
+    504: '网关超时'
+  }
 // 异常拦截处理器
 const errorHandler = (error) => {
-  if (error.response) {
-    const data = error.response.data
-    // 从 localstorage 获取 token
-    const token = storage.get(ACCESS_TOKEN)
-    if (error.response.status === 403) {
-      notification.error({
-        message: 'Forbidden',
-        description: data.message
-      })
-    }
-    if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
-      notification.error({
-        message: 'Unauthorized',
-        description: 'Authorization verification failed'
-      })
-      if (token) {
-        store.dispatch('Logout').then(() => {
-          setTimeout(() => {
-            window.location.reload()
-          }, 1500)
-        })
+    if (error.response) {
+     const token = storage.get(ACCESS_TOKEN)
+        if (error.response.status === 401) {
+          if (token) {
+            store.dispatch('Exit').then(() => {
+              setTimeout(() => {
+                window.location.reload()
+              }, 500)
+            })
+          }
+        }
+        if (error.response.status >= 400) {
+          const data = this.deepGet(error.response.data, [], {})
+          const message = this.error.response.status + '  ' + codeMsg[error.response.status]
+          const description = this.deepGet(data, 'message')
+          notification.error({ message, description })
+        }
       }
-    }
-  }
-  return Promise.reject(error)
+      return Promise.reject(error)
 }
 
 // request interceptor

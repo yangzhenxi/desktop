@@ -28,7 +28,6 @@
         <s-table
           :columns="columns"
           :data="loadData"
-          :scroll="{ y: 200 }"
           bordered
           rowKey="key"
           :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
@@ -164,5 +163,15 @@ export default {
     margin-top: 40px;
     border:1px solid #cccccc;
     border-radius: 5px;
+}
+
+/deep/.ant-tree li .ant-tree-node-content-wrapper,/deep/.ant-table-thead > tr > th,/deep/.ant-table-tbody{
+    color: white;
+}
+/deep/.ant-table-body{
+    background: none !important;
+}
+/deep/.ant-table-header,/deep/.ant-table-thead > tr > th{
+    background: none !important;
 }
 </style>

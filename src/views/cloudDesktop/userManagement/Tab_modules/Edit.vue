@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="新增用户信息"
+    title="修改用户信息"
     :width="640"
     :visible="visible"
     :confirmLoading="confirmLoading"
@@ -157,14 +157,13 @@ export default {
     }
   },
   methods: {
-    add (record) {
+    Edit (record) {
         this.record = []
       this.visible = ''
       this.ouSort(record)
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
-          this.confirmLoading = true
         if (!errors) {
             values.accountControl = {
                 pwdNotSet: this.pwdNotSet,
@@ -175,7 +174,6 @@ export default {
             this.$emit('ok', res)
             this.visible = false
         }
-          this.confirmLoading = true
       })
     },
     handleCancel () {
@@ -187,9 +185,6 @@ export default {
     ouSort (record) {
         record.forEach(item => {
             let ouSortvalue = ' '
-            if (item.ouSort[0] === record[0].title) {
-                item.ouSort.reverse()
-            }
             item.ouSort.reverse()
             item.ouSort.forEach((u, index) => {
                 ouSortvalue = ouSortvalue + 'ou=' + u + ','

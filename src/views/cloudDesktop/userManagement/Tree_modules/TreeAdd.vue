@@ -29,34 +29,31 @@
 
 <script>
 import { mixinFormModal } from '@/utils/mixin'
+import { usermanageAddOu } from '@/api/CloudDesktop/userManage'
 
 export default {
   mixins: [mixinFormModal],
   name: 'UserManageTabAdd',
   data () {
     return {
-        groupList: [
-            {
-                id: 1,
-                name: 'one'
-            },
-            {
-                id: 2,
-                name: 'to'
-            }
-        ],
-        departmentList: []
+        baseDN: null
     }
   },
   methods: {
-    add () {
+    add (record) {
       this.visible = true
+      this.baseDN = null
+      this.baseDN = record.name
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
         if (!errors) {
-          console.log('todo...')
-        this.visible = false
+            values.baseDN = this.baseDN
+            usermanageAddOu(values).then(res => {
+            this.$message.success('添加成功')
+            this.$emit('ok', res)
+            this.visible = false
+            })
         }
       })
     },

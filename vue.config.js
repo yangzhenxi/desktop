@@ -89,7 +89,13 @@ const vueConfig = {
       less: {
         modifyVars: {
           'layout-body-background': '#0B2A53', // body颜色
-          'border-radius-base': '5px'
+          'table-row-hover-bg': '#262626',
+          'table-header-bg': '#1d1d1d',
+          'table-header-color': '#fff',
+          'able-header-sort-bg': '#262626',
+          'border-radius-base': '5px',
+          'table-body-sort-bg': '#fff',
+          'table-selected-row-color': 'inherit'
         },
         // DO NOT REMOVE THIS LINE
         javascriptEnabled: true
@@ -103,7 +109,7 @@ const vueConfig = {
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
       '/api': {
-        target: 'http://192.168.3.150:8090',
+        target: 'http://192.168.2.235:8090',
         ws: false,
         changeOrigin: true
       }
