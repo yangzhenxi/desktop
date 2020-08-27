@@ -1,5 +1,5 @@
 <template>
-  <page-header-wrapper>
+  <page-header-wrapper :title="false">
     <a-row :gutter="16">
       <a-col :span="6">
         <a-card>
@@ -210,7 +210,7 @@ export default {
   margin: 0px 9px;
 }
 .ant-card {
-  background: rgb(18, 48, 95);
+  background: #272E48;
   color: rgb(255, 255, 255);
   cursor: pointer;
   box-shadow: none;
@@ -227,4 +227,5 @@ export default {
   margin-top: 20px;
   color: white;
 }
+
 </style>

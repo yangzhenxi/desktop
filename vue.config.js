@@ -88,14 +88,16 @@ const vueConfig = {
     loaderOptions: {
       less: {
         modifyVars: {
-          'layout-body-background': '#0B2A53', // body颜色
-          'table-row-hover-bg': '#262626',
-          'table-header-bg': '#1d1d1d',
-          'table-header-color': '#fff',
-          'able-header-sort-bg': '#262626',
+          'layout-body-background': '#1A233A', // body颜色
+          'text-color': '#bcd0f7',
+          'menu-dark-submenu-bg': '#0c1425',
           'border-radius-base': '5px',
-          'table-body-sort-bg': '#fff',
-          'table-selected-row-color': 'inherit'
+          'table-row-hover-bg': 'none',
+          'table-selected-row-bg': 'none',
+          'table-selected-row-hover-bg': 'none',
+          'tree-directory-selected-bg': 'none',
+          'tree-directory-selected-color': '#fff'
+
         },
         // DO NOT REMOVE THIS LINE
         javascriptEnabled: true
@@ -109,7 +111,7 @@ const vueConfig = {
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
       '/api': {
-        target: 'http://192.168.2.235:8090',
+        target: 'http://192.168.3.150:8090',
         ws: false,
         changeOrigin: true
       }

@@ -1,5 +1,5 @@
 <template>
-  <a-card title="全部">
+  <a-card title="全部" style="">
     <div class="btns">
       <a-button
         type="primary"
@@ -35,13 +35,13 @@
     <modules-info
       :modulesData="modulesData"
       :checkedRightval="checkedRightval"
-      :span="span"
+      :span="8"
       @changecheckedval="changecheckedRightval"></modules-info>
 
     <a-pagination
       :total="6"
       :show-total="total => `共 ${total} 条数据`"
-      :page-size="6"
+      :page-size="10"
       :default-current="1" />
     <x-manageadd
       ref="ManageAdd"
@@ -68,62 +68,8 @@ const modulesData = [
             date: '计算机基础',
             status: '计算机基础'
           }
-        },
-        {
-          title: '计算机基础',
-          text: {
-            Belonging: '计算机基础',
-            creator: '计算机基础',
-            DesktopsNum: '计算机基础',
-            server: '计算机基础',
-            date: '计算机基础',
-            status: '计算机基础'
-          }
-        },
-        {
-          title: '计算机基础',
-          text: {
-            Belonging: '计算机基础',
-            creator: '计算机基础',
-            DesktopsNum: '计算机基础',
-            server: '计算机基础',
-            date: '计算机基础',
-            status: '计算机基础'
-          }
-        },
-        {
-          title: '计算机基础',
-          text: {
-            Belonging: '计算机基础',
-            creator: '计算机基础',
-            DesktopsNum: '计算机基础',
-            server: '计算机基础',
-            date: '计算机基础',
-            status: '计算机基础'
-          }
-        },
-        {
-          title: '计算机基础',
-          text: {
-            Belonging: '计算机基础',
-            creator: '计算机基础',
-            DesktopsNum: '计算机基础',
-            server: '计算机基础',
-            date: '计算机基础',
-            status: '计算机基础'
-          }
-        },
-        {
-          title: '计算机基础',
-          text: {
-            Belonging: '计算机基础',
-            creator: '计算机基础',
-            DesktopsNum: '计算机基础',
-            server: '计算机基础',
-            date: '计算机基础',
-            status: '计算机基础'
-          }
         }
+
 ]
 export default {
   mixins: [mixinTable],
@@ -217,4 +163,5 @@ export default {
   margin-top: 20px;
   color: white;
 }
+
 </style>

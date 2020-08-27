@@ -74,7 +74,7 @@ export default {
   color: white !important;
 }
 /deep/.ant-modal-content {
-  background-image: linear-gradient(#12397e, #027cb3);
+  background:#272E48;
   color: white;
 }
 </style>

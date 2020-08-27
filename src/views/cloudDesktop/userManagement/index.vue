@@ -1,5 +1,5 @@
 <template>
-  <page-header-wrapper>
+  <page-header-wrapper :title="false">
     <a-row :gutter="16">
       <a-col
         ref="left"
@@ -341,9 +341,9 @@ export default {
           okType: 'danger',
           onOk: () => {
             usermanageDeluser(deleteData).then((res) => {
-                this.$message.success('删除成功！')
-                this.$refs.table.refresh()
-                this.selectedRowKeys = []
+              this.$message.success('删除成功！')
+              this.$refs.table.refresh()
+              this.selectedRowKeys = []
             })
           }
         })
@@ -366,18 +366,18 @@ export default {
       if (this.selectedRowKeys.length === 0) {
         this.$message.info('请选择要删除的用户')
       } else {
-      this.$confirm({
-        title: '确认要批量删除用户？',
-        content: '点击确定即可删除',
-        okType: 'danger',
-        onOk: () => {
-          usermanageBatchDelUser(BatchDel).then((res) => {
-            this.$message.success('删除成功')
-            this.selectedRowKeys = []
-            this.$refs.table.refresh()
-          })
-        }
-      })
+        this.$confirm({
+          title: '确认要批量删除用户？',
+          content: '点击确定即可删除',
+          okType: 'danger',
+          onOk: () => {
+            usermanageBatchDelUser(BatchDel).then((res) => {
+              this.$message.success('删除成功')
+              this.selectedRowKeys = []
+              this.$refs.table.refresh()
+            })
+          }
+        })
       }
     }
   },

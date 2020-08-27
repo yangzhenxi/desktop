@@ -78,7 +78,7 @@ export default {
 
 <style lang="less" scoped>
 /deep/.ant-modal-content {
-  background-image: linear-gradient(#12397e, #027cb3);
+  background:#272E48;
   color: white;
 }
 /deep/.ant-modal-title,

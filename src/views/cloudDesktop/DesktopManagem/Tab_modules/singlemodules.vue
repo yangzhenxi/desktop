@@ -343,7 +343,8 @@ export default {
 
 <style lang="less" scoped>
 .box {
-  background: #17509d;
+  background: #272E48;
+  border-radius: 10px;
   padding: 10px 0px;
 }
 .icon {
@@ -358,7 +359,7 @@ export default {
   font-weight: 500;
 }
 .ant-card {
-  background: rgb(18, 48, 95);
+  background: none;
   color: rgb(255, 255, 255);
   cursor: pointer;
   box-shadow: none;
@@ -372,12 +373,12 @@ export default {
 }
 /deep/.ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {
   color: white;
-  background: #0d2a50;
+  background: #272E48;
   border: none;
   font-weight: 500;
 }
 /deep/.ant-tabs-tabpane-active {
-  background: #0d2a50;
+  background: #272E48;
   border-radius: 5px;
 }
 /deep/.ant-table-header,
@@ -414,9 +415,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-/deep/.ant-radio-group{
-    width:100%;
-}
+
 .header{
     display: flex;
     align-items: center;

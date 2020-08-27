@@ -107,4 +107,7 @@ export default {
   top: 0;
   left: 95%;
 }
+/deep/.ant-radio-group{
+    width:100%;
+}
 </style>
