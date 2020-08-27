@@ -1,42 +1,29 @@
 <template>
   <div>
-    <a-card :headStyle="headStyle" :bodyStyle="bodyStyle">
-      <div slot="title">
-        <span style="margin-right: 10px;">虚拟主机</span>
-        <span style="margin-right: 10px;">总共5746台 </span>
-        其中:
-        <m-icon type="shape" class="icon shape blue"/>
-        2354
-        <m-icon type="shape" class="icon shape" style="margin-left:10px;"/>
-        392
-      </div>
-      <a-row :gutter="16">
-        <a-col
-          :span="8"
-          v-for="(item,index) in chartsData"
-          :key="index">
-          <a-card :headStyle="item.headStyle">
-            <!-- title -->
-            <template slot="title">
-              <div class="crea_title">
-                <m-icon :type="item.Text.icon" :class="['icon',item.Text.icon]"/>
-
-                <span>
-                  {{ item.Text.title }}
-                  <br>
-                  {{ item.Text.used[0] }} {{ item.Text.used[1] }} {{ item.Text.used[2] }}
-                  <br>
-                  {{ item.Text.Remaining[0] }} {{ item.Text.Remaining[1] }} {{ item.Text.Remaining[2] }}
-
-                </span>
-              </div>
-            </template>
-            <Charts :data="item.data"></Charts>
-          </a-card>
-        </a-col>
-      </a-row>
-    </a-card>
-    <a-card style="margin-top:30px;" :headStyle="headStyle" :bodyStyle="bodyStyle">
+    <a-row :gutter="16">
+      <a-col
+        :span="8"
+        v-for="(item,index) in chartsData"
+        :key="index">
+        <a-card :headStyle="item.headStyle" :bodyStyle="bodyStyle">
+          <!-- title -->
+          <template slot="title">
+            <div class="crea_title">
+              <m-icon :type="item.Text.icon" :class="['icon',item.Text.icon]"/>
+              <span>
+                {{ item.Text.title }}
+                <br>
+                {{ item.Text.used[0] }} {{ item.Text.used[1] }} {{ item.Text.used[2] }}
+                <br>
+                {{ item.Text.Remaining[0] }} {{ item.Text.Remaining[1] }} {{ item.Text.Remaining[2] }}
+              </span>
+            </div>
+          </template>
+          <Charts :data="item.data"></Charts>
+        </a-card>
+      </a-col>
+    </a-row>
+    <a-card style="margin-top:30px;" :headStyle="headStyle" :bodyStyle="bodyStyle" >
       <template slot="title">
         桌面  总共660个  其中
         <m-icon type="shape" class="icon shape blue"/>
@@ -95,22 +82,19 @@ export default {
   },
   data () {
     return {
-      headStyle: {
-        background: '#063478',
-        color: '#fff'
-        // border: '2px solid white'
-      },
-      bodyStyle: {
-          background: '#12305f',
-        color: '#fff',
-        cursor: 'pointer',
-        boxShadow: 'none'
-
-      },
+        bodyStyle: {
+            background: '#272E48'
+        },
+        headStyle: {
+            background: '#272E48',
+            color: '#bcd0f7'
+          },
       chartsData: [
         {
           headStyle: {
-            background: 'rgba(117, 204, 244, 1)'
+            // background: 'rgba(117, 204, 244, 1)'
+            background: '#272E48',
+            color: '#bcd0f7'
           },
           icon: {
             color: null
@@ -134,7 +118,10 @@ export default {
         },
         {
           headStyle: {
-            background: 'rgba(78, 219, 195, 1)'
+            // background: 'rgba(78, 219, 195, 1)'
+            background: '#272E48',
+            color: '#bcd0f7'
+
           },
           Text: {
             icon: 'storage',
@@ -155,7 +142,10 @@ export default {
         },
         {
           headStyle: {
-            background: 'rgba(233, 208, 103, 1)'
+            // background: 'rgba(233, 208, 103, 1)'
+            background: '#272E48',
+            color: '#bcd0f7'
+
           },
           Text: {
             icon: 'cunchu',
@@ -198,29 +188,26 @@ export default {
   }
 }
 .ant-card-bordered {
-    border: none;
+     border: none;
+     border-radius: 10px;
 }
-    .icon {
-        &.shape{
-            font-size: 20px;
-        }
-      &.blue {
-        color: #1c84c6
-      }
-      &.shizhong {
-        color: white;
-        font-size:70px;
-      }
-      &.storage {
-        color: white;
-        font-size:70px;
-      }
-      &.cunchu {
-        color: white;
-        font-size:70px;
-      }
+.ant-card-grid{
+    box-shadow:none;
+}
+.icon{
+    &.shizhong{
+        color:wheat;
+    font-size: 72px;
+
     }
-.ant-card-grid {
-    box-shadow: none;
+    &.storage{
+        color: turquoise;
+    font-size: 72px;
+
+    }
+    &.cunchu{
+    font-size: 72px;
+
+    }
 }
 </style>
