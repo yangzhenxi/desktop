@@ -39,6 +39,7 @@
         <a-form-item label="管理权限">
           <s-table
             ref="table"
+            bordered
             :columns="columns"
             :data="loadData">
             <template

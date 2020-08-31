@@ -38,6 +38,16 @@
                             validateFirst: true
                           }]" />
         </a-form-item>
+        <a-form-item
+          label=" "
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol">
+          <a-checkbox
+            v-decorator="['first']"
+            style="color:white;">
+            首次登录是否修改密码
+          </a-checkbox>
+        </a-form-item>
       </a-form>
     </a-spin>
   </a-modal>
@@ -51,28 +61,42 @@ export default {
   name: 'UserManageTabAdd',
   data () {
     return {
-        departmentList: [],
-        record: {}
+      departmentList: [],
+      record: []
     }
   },
   methods: {
     Edit (record) {
-        this.record = {}
-        this.record.name = record.username
-        this.visible = true
+      this.record = []
+      const a = record.map((u) => u.username)
+      this.record = a
+      this.visible = true
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
-          this.confirmLoading = true
+        this.confirmLoading = true
         if (!errors) {
-        this.record.password = values.password
-        console.log(this.record)
-        usermanageEditpassword(this.record).then(res => {
-        this.$message.success('修改成功')
-        this.$emit('ok')
-        this.visible = false
-        })
-        this.confirmLoading = false
+          const BatchReset = {}
+          BatchReset.req = this.record.map((u) => {
+              if (values.first === undefined) {
+                  values.first = false
+              }
+            const BatchResetPass = {
+              name: u,
+              password: values.password,
+              pwdLastSet: values.first
+            }
+            return BatchResetPass
+          })
+          console.log(BatchReset)
+          usermanageEditpassword(BatchReset).then((res) => {
+            this.$message.success('修改成功')
+            this.$emit('ok')
+            this.visible = false
+             this.confirmLoading = false
+          }).catch(() => {
+             this.confirmLoading = false
+          })
         }
       })
     },
@@ -80,15 +104,16 @@ export default {
       this.visible = false
     },
     confirmPassword (rule, value, callback) {
-        const password = this.form.getFieldValue('password')
-        if (value !== password) {
-            callback(new Error('两次密码输入不正确，请重新输入'))
-        }
-        callback()
+      const password = this.form.getFieldValue('password')
+      if (value !== password) {
+        callback(new Error('两次密码输入不正确，请重新输入'))
+      }
+      callback()
     }
   }
 }
 </script>
 
-<style>
+<style lang="less" scoped>
+
 </style>

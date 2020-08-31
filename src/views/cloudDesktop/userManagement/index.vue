@@ -3,12 +3,8 @@
     <a-row :gutter="16">
       <a-col
         ref="left"
-        :xl="6"
-        :md="24"
-        :sm="24">
-        <a-card
-          style="height:790px;"
-          :loading="loading">
+        :span="6">
+        <a-card style="height:842px;" :loading="loading">
           <a-row>
             <a-col
               :xl="8"
@@ -46,91 +42,87 @@
           </a-row>
           <tree
             :treeData="ouList"
-            :checkedval="checkedval"
+            :checkedval="treeeventKey.checkedval"
             @changecheckedval="changecheckedval"></tree>
         </a-card>
       </a-col>
 
       <a-col
         ref="right"
-        :xl="18"
-        :md="24"
-        :sm="24">
-        <a-card>
-          <div class="head">
-            <div class="btns">
-              <a-button
-                @click="$refs.TabAdd.add(ouList)"
-                type="primary">
-                新增
-              </a-button>
-              <a-button
-                @click="$refs.BatchTabAdd.BatchAdd()"
-                type="primary"
-                style="margin-left:10px">
-                批量新增
-              </a-button>
-              <a-button
-                @click="Delete()"
-                type="danger"
-                style="margin-left:10px">
-                删除
-              </a-button>
-              <a-button
-                @click="BatchDelUser()"
-                type="danger"
-                style="margin-left:10px">
-                批量删除
-              </a-button>
-            </div>
+        :span="18">
+        <div class="head">
+          <div class="btns">
+            <a-button
+              @click="$refs.TabAdd.add(ouList)"
+              type="primary">
+              新增
+            </a-button>
+            <a-button
+              type="primary"
+              style="margin-left:10px"
+              @click="EditPass(selectedRows)">
+              重置密码
+            </a-button>
+            <a-button
+              @click="$refs.BatchTabAdd.BatchAdd()"
+              type="primary"
+              style="margin-left:10px">
+              批量新增
+            </a-button>
+            <a-button
+              @click="BatchDelUser()"
+              type="danger"
+              style="margin-left:10px">
+              批量删除
+            </a-button>
           </div>
+        </div>
+        <a-card>
           <m-table
             ref="table"
             bordered
             :columns="columns"
             :data="loadData"
             rowKey="key"
+            :scroll="Tablescroll?{x:1600}:none"
             :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
+            <template slot="accountControl" slot-scope="text">
+              {{ text.DisableCount }}
+            </template>
             <template
               slot="action"
               slot-scope="text,record">
               <a-button
                 size="small"
-                @click="$refs.TabEdit.Edit(record)">修改</a-button>
-              <a-button
                 type="primary"
+                @click="$refs.TabEdit.Edit(record,ouList)">修改</a-button>
+              <a-button
                 size="small"
-                style="margin-left:10px"
-                @click="$refs.EditPass.Edit(record)">
-                重置密码
+                @click="Delete(record)"
+                type="danger"
+                style="margin-left:10px">
+                删除
               </a-button>
             </template>
           </m-table>
           <tab-add
             ref="TabAdd"
-            @ok="handleOk"></tab-add>
+            @ok="handleTreeTableOk"></tab-add>
           <tab-edit
             ref="TabEdit"
-            @ok="handleOk"></tab-edit>
+            @ok="handleTreeTableOk"></tab-edit>
           <tabbatch-add
             ref="BatchTabAdd"
-            @ok="handleOk"></tabbatch-add>
+            @ok="handleTreeTableOk"></tabbatch-add>
           <tree-add
             ref="TreeAdd"
-            @ok="handleOk"></tree-add>
+            @ok="handleTreeTableOk"></tree-add>
           <tree-edit
             ref="TreeEdit"
-            @ok="handleOk"></tree-edit>
-          <tree-set
-            ref="TreeSet"
-            @ok="handleOk"></tree-set>
+            @ok="handleTreeOk"></tree-edit>
           <edit-pass
             ref="EditPass"
             @ok="handleOk"></edit-pass>
-          <setcolumns
-            ref="SetColumns"
-            :data="columns"
-            @ok="handleOk"></setcolumns>
         </a-card>
       </a-col>
     </a-row>
@@ -144,7 +136,6 @@ import TabbatchAdd from './Tab_modules/batchAdd'
 import TabEdit from './Tab_modules/Edit'
 
 import TreeAdd from './Tree_modules/TreeAdd'
-import TreeSet from './Tree_modules/TreeSet'
 import Tree from './Tree_modules/tree'
 import TreeEdit from './Tree_modules/TreeEdit'
 import EditPass from './Tab_modules/EditPass'
@@ -154,7 +145,8 @@ import {
   usermanageListOU,
   usermanageListuser,
   usermanageBatchDelUser,
-  usermanageDeluser
+  usermanageDeluser,
+  usermanageDelOu
 } from '@/api/CloudDesktop/userManage'
 
 const columns = [
@@ -184,8 +176,21 @@ const columns = [
     sorter: true
   },
   {
+    title: '状态',
+    dataIndex: 'accountControl',
+    scopedSlots: { customRender: 'accountControl' },
+    sorter: true
+  },
+  {
     title: '添加时间',
     dataIndex: 'whenCreated',
+    sorter: true,
+    width: '200px',
+    scopedSlots: { customRender: 'time' }
+  },
+  {
+    title: '上次登录时间',
+    dataIndex: 'lastLogon',
     sorter: true,
     width: '200px',
     scopedSlots: { customRender: 'time' }
@@ -206,7 +211,6 @@ export default {
     Tree,
     TreeAdd,
     TreeEdit,
-    TreeSet,
     EditPass,
     Setcolumns,
     MIcon,
@@ -217,20 +221,26 @@ export default {
     return {
       columns,
       loading: true,
-      checkedval: '0', // 单选框默认选中的值
       queryParam: {},
       sechar: [], // 找father
       selectedRowKeys: [], // Check here to configure the default column
       deleteTabName: [], // 删除用户的数组
+      Tablescroll: true,
+      selectedRows: [],
+      treeeventKey: {
+          checkedval: '0'// 单选框默认选中的值
+      },
       // 加载数据方法 必须为 Promise 对象
       loadData: async (parameter) => {
-        if (this.checkedval === '0') {
+          this.Tablescroll = true
+        if (this.treeeventKey.checkedval === '0') {
           const OuList = await usermanageListOU()
           this.queryParam.name = 'ou=' + OuList.ou[0].children[0].name + ',ou=Citrix,dc=test,dc=com'
         }
         let data = this.deepGet(await usermanageListuser(this.queryParam), 'list')
         if (data === undefined) {
           data = []
+          this.Tablescroll = false
         }
         return {
           data
@@ -246,22 +256,30 @@ export default {
       selectedRows.forEach((u) => {
         this.deleteTabName.push(u.username)
       })
+      this.selectedRows = selectedRows
       this.selectedRowKeys = selectedRowKeys
     },
     TreeDelete () {
+        if (this.treeeventKey.dataRef.children.length !== 0) {
+            this.$message.info('当前选中的OU下还有子Ou暂不能删除')
+            return false
+        }
       this.$confirm({
-        title: '是否要删除当前组?',
+        title: '是否要删除' + this.queryParam.onName + '组?',
         content: '点击确定即可删除当前组',
-        onOk () {
-          return new Promise((resolve, reject) => {
-            setTimeout(Math.random() > 0.5 ? resolve : reject, 1000)
-          }).catch(() => console.log('Oops errors!'))
+        onOk: () => {
+            usermanageDelOu(this.queryParam).then(res => {
+                this.$message.success('删除成功')
+                this.handleTreeOk()
+            })
         }
       })
     },
     changecheckedval (item) {
       this.sechar = []
       this.selectedRowKeys = []
+      this.treeeventKey = item
+      this.treeeventKey.checkedval = item.eventKey
       this.checkedval = item.eventKey
       if (item.ouSort[0] === this.ouList[0].title) {
         item.ouSort.reverse()
@@ -273,13 +291,12 @@ export default {
         item.ouSort.forEach((u) => {
           this.queryParam.name = this.queryParam.name + 'ou=' + u + ','
         })
-        console.log(this.queryParam.name)
-
+        this.queryParam.onName = item.ouSort[0]
         this.queryParam.name = this.queryParam.name + 'ou=Citrix,dc=test,dc=com'
         this.$refs.table.refresh()
         return true
       }
-      this.queryParam.name = 'ou=' + item.title + ',ou=Citrix,dc=test,dc=com'
+      this.queryParam.name = 'ou=' + item.name + ',ou=Citrix,dc=test,dc=com'
       this.$refs.table.refresh()
     },
     Recursion (Array, data) {
@@ -292,7 +309,7 @@ export default {
             icon: 'smile'
           },
           children: [],
-          childrenLength: item.children.length,
+          childrenLength: item.userCount,
           ouSort: []
         }
         if (data) {
@@ -317,7 +334,7 @@ export default {
         if (name.key === item.eventKey) {
           return false
         }
-        this.sechar.push(name.title)
+        this.sechar.push(name.name)
         if (name.children.length > 0) {
           this.eventKeyRecursion(name, item)
         }
@@ -329,29 +346,25 @@ export default {
       this.Recursion(OuList.ou[0].children)
       this.loading = false
     },
-    Delete () {
+    Delete (record) {
+        console.log(record)
       const deleteData = {
         baseDN: this.queryParam.name,
-        username: this.deleteTabName[0]
+        username: record.username
       }
-      if (this.selectedRowKeys.length === 1) {
         this.$confirm({
-          title: '是否要删除' + this.deleteTabName[0],
+          title: '是否要删除' + record.username,
           content: '点击确定即可删除',
           okType: 'danger',
           onOk: () => {
             usermanageDeluser(deleteData).then((res) => {
               this.$message.success('删除成功！')
               this.$refs.table.refresh()
+              this.handleTreeOk()
               this.selectedRowKeys = []
             })
           }
         })
-      } else if (this.selectedRowKeys.length === 0) {
-        this.$message.info('请选择要删除的用户')
-      } else if (this.selectedRowKeys.length > 1) {
-        this.$message.info('不能选择多个删除')
-      }
     },
     BatchDelUser () {
       const BatchDel = {}
@@ -379,6 +392,13 @@ export default {
           }
         })
       }
+    },
+    EditPass () {
+        if (this.selectedRowKeys.length > 0) {
+            this.$refs.EditPass.Edit(this.selectedRows)
+        } else {
+            this.$message.info('请选选择要重置的用户(可多选)')
+        }
     }
   },
   created () {
@@ -391,6 +411,10 @@ export default {
 .head {
   display: flex;
   justify-content: space-between;
+  background: #272e48;
+//   border: 1px solid white;
+    border-radius: 10px;
+  margin-bottom: 20px;
   div:last-child {
     button {
       margin-left: 10px;
@@ -401,7 +425,7 @@ export default {
   }
 }
 .btns {
-  margin-bottom: 20px;
+    padding: 10px 0;
   button {
     border-radius: 8px;
   }
@@ -415,19 +439,13 @@ export default {
   font-size: 20px;
   margin-left: 10px;
 }
-
-@media screen and (min-width: 1200px) and (max-width: 1470px) {
-  .All {
-    display: none;
-  }
-}
 .ant-card {
-  background: rgb(18, 48, 95);
+  background: #272e48;
   color: rgb(255, 255, 255);
   cursor: pointer;
   box-shadow: none;
   border: none;
-  height: 712px;
+  height: 770px;
 }
 /deep/.ant-card-head {
   color: white;
@@ -439,24 +457,12 @@ export default {
   margin-top: 20px;
   color: white;
 }
-/deep/.ant-tree li .ant-tree-node-content-wrapper,
-/deep/.ant-table-thead > tr > th,
-/deep/.ant-table-tbody {
-  color: white;
-}
-/deep/.ant-table-body,
-/deep/.ant-table-placeholder {
-  background: none !important;
-}
-/deep/.ant-table-header,
-/deep/.ant-table-thead > tr > th {
-  background: none !important;
-}
+
 /deep/.ant-modal-header {
   background: none;
 }
 /deep/.ant-modal-content {
-  background-image: linear-gradient(#12397e, #027cb3);
+  background: #272e48;
   color: white;
   font-weight: 500;
 }
@@ -464,9 +470,5 @@ export default {
 /deep/.ant-modal-close-x {
   color: white;
 }
-/deep/.ant-steps-item-title,
-/deep/.ant-empty-description,
-/deep/.ant-form-item-required {
-  color: white !important;
-}
+
 </style>

@@ -1,36 +1,35 @@
 <template>
-  <a-radio-group v-model="checkedval">
-    <a-tree
-      :tree-data="treeData"
-      show-icon
-      :blockNode="blockNode"
-      default-expand-all>
-      <template
-        slot="custom"
-        slot-scope="item">
-        <div
-          class="tree-view-item"
-          @click="handleRadio(item)">
-          <span class="tree-view-left">
-            <m-icon
-              v-if="item.dataRef.scopedSlots.icon"
-              type="guanyuwomen"
-              class="icon guanyuwomen" />
-            <a-radio :value="item.eventKey"></a-radio> {{ item.title }}
-          </span>
-          <div class="tree-view-right">
-            <a-badge
-              :count="item.dataRef.childrenLength"
-              :number-style="{
-                backgroundColor: '#fff',
-                color: '#999',
-                boxShadow: '0 0 0 1px #d9d9d9 inset',
-              }" />
-          </div>
+  <a-tree
+    :tree-data="treeData"
+    show-icon
+    :blockNode="blockNode"
+    :defaultSelectedKeys="checkedval"
+    default-expand-all>
+    <template
+      slot="custom"
+      slot-scope="item">
+      <div
+        class="tree-view-item"
+        @click="handleRadio(item)">
+        <span class="tree-view-left">
+          <m-icon
+            v-if="item.dataRef.scopedSlots.icon"
+            type="guanyuwomen"
+            class="icon guanyuwomen" />
+          {{ item.title }}
+        </span>
+        <div class="tree-view-right">
+          <a-badge
+            :count="item.dataRef.childrenLength"
+            :number-style="{
+              backgroundColor: '#fff',
+              color: '#999',
+              boxShadow: '0 0 0 1px #d9d9d9 inset',
+            }" />
         </div>
-      </template>
-    </a-tree>
-  </a-radio-group>
+      </div>
+    </template>
+  </a-tree>
 
 </template>
 <script>
@@ -52,6 +51,7 @@ export default {
   data () {
     return {
       value: this.checkedval,
+      selectedKeys: [0],
       blockNode: true,
       item1: false,
       item2: false
@@ -59,10 +59,10 @@ export default {
   },
   methods: {
     handleRadio (item) {
-        console.log(item)
       this.value = item.eventKey
       this.$emit('changecheckedval', item)
     }
+
   }
 }
 </script>
@@ -71,14 +71,9 @@ export default {
 .ant-radio-group-default {
   width: 90%;
 }
-/deep/ .ant-tree li span.ant-tree-node-content-wrapper {
-  width: 100%;
-  span {
-    div {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
+
+.tree-view-right{
+    float: right;
 }
 .guanyuwomen {
   font-size: 18px;

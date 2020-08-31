@@ -31,7 +31,7 @@
               <span>{{ item.text.date }}</span>
             </div>
             <div class="text">
-              <span>版本状态: </span>
+              <span>虚拟机状态: </span>
               <span>{{ item.text.status }}</span>
             </div>
           </a-col>
@@ -105,7 +105,7 @@ export default {
 .radio {
   position: absolute;
   top: 0;
-  left: 95%;
+    right:0
 }
 /deep/.ant-radio-group{
     width:100%;

@@ -43,9 +43,8 @@ const errorHandler = (error) => {
           }
         }
         if (error.response.status >= 400) {
-          const data = this.deepGet(error.response.data, [], {})
-          const message = this.error.response.status + '  ' + codeMsg[error.response.status]
-          const description = this.deepGet(data, 'message')
+          const message = error.response.status + '  ' + codeMsg[error.response.status]
+          const description = error.response.data.msg
           notification.error({ message, description })
         }
       }

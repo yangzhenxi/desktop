@@ -48,13 +48,19 @@ export default {
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
         if (!errors) {
+            this.confirmLoading = true
             values.baseDN = this.baseDN
             usermanageAddOu(values).then(res => {
-            this.$message.success('添加成功')
-            this.$emit('ok', res)
-            this.visible = false
+                this.$message.success('添加成功')
+                this.$emit('ok', res)
+                this.visible = false
+                this.confirmLoading = false
+            }).cactch(err => {
+                this.confirmLoading = false
+                return err
             })
         }
+        this.confirmLoading = false
       })
     },
     handleCancel () {

@@ -48,11 +48,15 @@ baseDN: null
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
         if (!errors) {
-         values.baseDN = this.baseDN
+            this.confirmLoading = true
+            values.baseDN = this.baseDN
             usermanageEditOu(values).then(res => {
-            this.$message.success('添加成功')
-            this.$emit('ok', res)
-            this.visible = false
+                this.$message.success('修改成功')
+                this.$emit('ok')
+                this.visible = false
+                this.confirmLoading = false
+            }).catch(() => {
+                this.confirmLoading = false
             })
         }
       })

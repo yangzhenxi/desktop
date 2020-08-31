@@ -1,5 +1,6 @@
 <template>
-  <a-card title="全部" style="">
+  <div>
+    <div class="title"> 软件部 </div>
     <div class="btns">
       <a-button
         type="primary"
@@ -32,24 +33,26 @@
         :disabled="disabled"
         @click="ModuleDelete">删除</a-button>
     </div>
-    <modules-info
-      :modulesData="modulesData"
-      :checkedRightval="checkedRightval"
-      :span="8"
-      @changecheckedval="changecheckedRightval"></modules-info>
+    <a-card style="height:635px;">
+      <modules-info
+        :modulesData="modulesData"
+        :checkedRightval="checkedRightval"
+        :span="8"
+        @changecheckedval="changecheckedRightval"></modules-info>
 
-    <a-pagination
-      :total="6"
-      :show-total="total => `共 ${total} 条数据`"
-      :page-size="10"
-      :default-current="1" />
-    <x-manageadd
-      ref="ManageAdd"
-      @ok="handleOk"></x-manageadd>
-    <x-managerelease
-      ref="ManageRelease"
-      @ok="handleOk"></x-managerelease>
-  </a-card>
+      <a-pagination
+        :total="6"
+        :show-total="total => `共 ${total} 条数据`"
+        :page-size="10"
+        :default-current="1" />
+      <x-manageadd
+        ref="ManageAdd"
+        @ok="handleOk"></x-manageadd>
+      <x-managerelease
+        ref="ManageRelease"
+        @ok="handleOk"></x-managerelease>
+    </a-card>
+  </div>
 </template>
 
 <script>
@@ -58,7 +61,62 @@ import ModulesInfo from './modulesinfo'
 import XManageadd from './manageAdd'
 import XManagerelease from './release'
 const modulesData = [
- {
+        {
+          title: '计算机基础',
+          text: {
+            Belonging: '计算机基础',
+            creator: '计算机基础',
+            DesktopsNum: '计算机基础',
+            server: '计算机基础',
+            date: '计算机基础',
+            status: '计算机基础'
+          }
+        },
+        {
+          title: '计算机基础',
+          text: {
+            Belonging: '计算机基础',
+            creator: '计算机基础',
+            DesktopsNum: '计算机基础',
+            server: '计算机基础',
+            date: '计算机基础',
+            status: '计算机基础'
+          }
+        },
+        {
+          title: '计算机基础',
+          text: {
+            Belonging: '计算机基础',
+            creator: '计算机基础',
+            DesktopsNum: '计算机基础',
+            server: '计算机基础',
+            date: '计算机基础',
+            status: '计算机基础'
+          }
+        },
+        {
+          title: '计算机基础',
+          text: {
+            Belonging: '计算机基础',
+            creator: '计算机基础',
+            DesktopsNum: '计算机基础',
+            server: '计算机基础',
+            date: '计算机基础',
+            status: '计算机基础'
+          }
+        },
+        {
+          title: '计算机基础',
+          text: {
+            Belonging: '计算机基础',
+            creator: '计算机基础',
+            DesktopsNum: '计算机基础',
+            server: '计算机基础',
+            date: '计算机基础',
+            status: '计算机基础'
+          }
+        },
+        {
           title: '计算机基础',
           text: {
             Belonging: '计算机基础',
@@ -163,5 +221,17 @@ export default {
   margin-top: 20px;
   color: white;
 }
-
+.title,.btns{
+    margin-bottom: 20px;
+    // border: 2px solid red;
+      background: #272E48;
+      padding: 10px;
+      padding-left: 20px;
+      border-radius: 10px;
+      color: #bcd0f7;
+}
+.title{
+    font-size: 17px;
+    font-weight: 500;
+}
 </style>

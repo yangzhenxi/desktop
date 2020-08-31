@@ -32,13 +32,13 @@ export const asyncRouterMap = [
           {
             path: '/CloudDesktop/userManagement',
             name: 'userManagement',
-            component: () => import('@/views/cloudDesktop/userManagement'),
+            component: () => import('@/views/CloudDesktop/userManagement'),
             meta: { title: '用户管理', keepAlive: true, icon: icon.userManagement, permission: ['dashboard'] }
           },
           {
             path: '/CloudDesktop/DesktopManagem',
             name: 'DesktopManagem',
-            component: () => import('@/views/cloudDesktop/DesktopManagem'),
+            component: () => import('@/views/CloudDesktop/DesktopManagem'),
             redirect: '/CloudDesktop/DesktopManagem/Allmodules',
             hideChildrenInMenu: true,
             meta: { title: '桌面模版管理', keepAlive: true, icon: icon.DesktopManagem, permission: ['dashboard'] },
@@ -46,14 +46,14 @@ export const asyncRouterMap = [
                 {
                     path: '/CloudDesktop/DesktopManagem/Allmodules',
                     name: 'Allmodules',
-                    component: () => import('@/views/cloudDesktop/DesktopManagem/Tab_modules/Allmodules'),
+                    component: () => import('@/views/CloudDesktop/DesktopManagem/Tab_modules/Allmodules'),
                     meta: { title: '全部模版', keepAlive: true, icon: icon.DesktopManagem, permission: ['dashboard'], hiddenHeaderContent: true }
 
                 },
                 {
                     path: '/CloudDesktop/DesktopManagem/:id/singlemodules',
                     name: 'singlemodules',
-                    component: () => import('@/views/cloudDesktop/DesktopManagem/Tab_modules/singlemodules'),
+                    component: () => import('@/views/CloudDesktop/DesktopManagem/Tab_modules/singlemodules'),
                     meta: { title: '单个模版', keepAlive: true, icon: icon.DesktopManagem, permission: ['dashboard'], hiddenHeaderContent: true }
 
                 }
@@ -62,19 +62,19 @@ export const asyncRouterMap = [
           {
             path: '/CloudDesktop/cloudDesktopmanage',
             name: 'cloudDesktopmanage',
-            component: () => import('@/views/cloudDesktop/cloudDesktopmanage'),
+            component: () => import('@/views/CloudDesktop/cloudDesktopmanage'),
             meta: { title: '云桌面管理', keepAlive: true, icon: icon.cloudDesktopmanage, permission: ['dashboard'] }
           },
           {
             path: '/CloudDesktop/terminalmanage',
             name: 'terminalmanage',
-            component: () => import('@/views/cloudDesktop/terminalmanage'),
+            component: () => import('@/views/CloudDesktop/terminalmanage'),
             meta: { title: '终端管理', keepAlive: true, icon: icon.terminalmanage, permission: ['dashboard'] }
           },
           {
             path: '/CloudDesktop/Desktopuse',
             name: 'Desktopuse',
-            component: () => import('@/views/cloudDesktop/Desktopuse'),
+            component: () => import('@/views/CloudDesktop/Desktopuse'),
             meta: { title: '桌面使用情况', keepAlive: true, icon: icon.Desktopuse, permission: ['dashboard'] }
           }
         ]

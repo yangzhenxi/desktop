@@ -27,6 +27,15 @@ const mixinTable = {
     toggleAdvanced () {
       this.advanced = !this.advanced
     },
+    handleTreeOk () {
+        this.obj = {}
+        this.ouList = []
+        this.getOuList()
+    },
+    handleTreeTableOk () {
+        this.handleTreeOk()
+        this.handleOk()
+    },
     queryBuild,
     deepGet,
     columnsBuild

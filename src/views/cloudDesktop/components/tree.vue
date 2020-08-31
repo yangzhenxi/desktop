@@ -1,36 +1,35 @@
 <template>
-  <a-radio-group v-model="checkedval">
-    <a-tree
-      :tree-data="treeData"
-      show-icon
-      :blockNode="blockNode"
-      default-expand-all>
-      <template
-        slot="custom"
-        slot-scope="item">
-        <div
-          class="tree-view-item"
-          @click="handleRadio(item.eventKey)">
-          <span class="tree-view-left">
-            <m-icon
-              v-if="item.dataRef.scopedSlots.icon"
-              type="moban"
-              class="icon moban" />
-            <a-radio :value="item.eventKey"></a-radio> {{ item.title }}
-          </span>
-          <div class="tree-view-right">
-            <a-badge
-              count="4"
-              :number-style="{
-                backgroundColor: '#fff',
-                color: '#999',
-                boxShadow: '0 0 0 1px #d9d9d9 inset',
-              }" />
-          </div>
+  <a-tree
+    :tree-data="treeData"
+    show-icon
+    :blockNode="blockNode"
+    :defaultSelectedKeys="checkedval"
+    default-expand-all>
+    <template
+      slot="custom"
+      slot-scope="item">
+      <div
+        class="tree-view-item"
+        @click="handleRadio(item.eventKey)">
+        <span class="tree-view-left">
+          <m-icon
+            v-if="item.dataRef.scopedSlots.icon"
+            type="moban"
+            class="icon moban" />
+          {{ item.title }}
+        </span>
+        <div class="tree-view-right">
+          <a-badge
+            count="4"
+            :number-style="{
+              backgroundColor: '#fff',
+              color: '#999',
+              boxShadow: '0 0 0 1px #d9d9d9 inset',
+            }" />
         </div>
-      </template>
-    </a-tree>
-  </a-radio-group>
+      </div>
+    </template>
+  </a-tree>
 
 </template>
 <script>
@@ -45,7 +44,7 @@ export default {
       required: true
     },
     checkedval: {
-      type: String,
+      type: Array,
       required: true
     }
   },
@@ -70,14 +69,8 @@ export default {
 .ant-radio-group-default {
   width: 90%;
 }
-/deep/ .ant-tree li span.ant-tree-node-content-wrapper {
-  width: 100%;
-  span {
-    div {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
+.tree-view-right{
+    float: right;
 }
 .moban {
   font-size: 16px;
@@ -86,4 +79,14 @@ export default {
 /deep/.ant-tree-title{
     color: white;
 }
+.tree_head {
+  margin-bottom: 15px;
+}
+
+.icon {
+  cursor: pointer;
+  font-size: 18px;
+  margin: 0px 9px;
+}
+
 </style>

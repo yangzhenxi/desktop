@@ -209,13 +209,13 @@ export default {
   font-size: 18px;
   margin: 0px 9px;
 }
-.ant-card {
+/deep/.ant-card {
   background: #272E48;
   color: rgb(255, 255, 255);
   cursor: pointer;
   box-shadow: none;
   border: none;
-  height: 712px;
+  height: 770px;
 }
 /deep/.ant-card-head {
   color: white;

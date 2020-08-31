@@ -8,144 +8,46 @@
     @cancel="handleCancel"
     destroyOnClose>
     <a-spin :spinning="loading">
-      <a-form :form="form" layout="vertical">
-        <a-row :gutter="30">
-          <a-col :span="12">
-            <a-row>
-              <a-col :span="24">
-                <a-form-item
-                  label="组">
-                  <a-select
-                    placeholder="请选择组"
-                    v-decorator="['group', { rules: [{ required: true, message: '请选择对应的组' }] }]">
-                    <a-select-option
-                      v-for="item in groupList"
-                      :key="deepGet(item, 'id')"
-                      :value="deepGet(item, 'id')">{{ deepGet(item, 'name') }}</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-
-              <a-col :span="24">
-                <a-form-item
-                  label="用户数量">
-                  <a-input-number
-                    :min="1"
-                    :max="10"
-                    placeholder="请输入用户数量"
-                    v-decorator="['usersize',
-                                  { rules: [
-                                      { required: true, message: '请输入用户数量' },
-                                    ],
-                                    validateFirst: true
-                                  }]" />
-                </a-form-item>
-
-              </a-col>
-
-              <a-col :span="24">
-                <a-form-item
-                  label="用户名">
-                  <a-input
-                    placeholder="请输入用户名"
-                    v-decorator="['username',
-                                  { rules: [
-                                      { required: true, message: '请输入用户名' },
-                                    ],
-                                    validateFirst: true
-                                  }]" />
-                </a-form-item>
-
-              </a-col>
-
-              <a-col :span="24">
-                <a-form-item
-                  label="密码">
-                  <a-input
-                    placeholder="请输入密码"
-                    v-decorator="['password',
-                                  { rules: [
-                                      { required: true, message: '请输入密码' },
-                                    ],
-                                    validateFirst: true
-                                  }]" />
-                </a-form-item>
-              </a-col>
-
-            </a-row>
+      <a-form
+        :form="form"
+        layout="vertical">
+        <a-row
+          type="flex"
+          justify="center"
+          align="middle">
+          <a-col
+            :span="12"
+            style="display:flex;justify-content: center;">
+            <a-button
+              type="primary"
+              icon="download">
+              <a
+                style="color:white"
+                :href="`${path}assets/AD_USER.CSV`"
+                download="批量添加模版">下载模版</a>
+            </a-button>
           </a-col>
-
-          <a-col :span="12">
-            <a-row>
-              <a-col :span="24">
-                <a-form-item
-                  label="前缀">
-                  <a-input
-                    placeholder="请输入前缀"
-                    v-decorator="['Prefix',
-                                  { rules: [
-                                      { required: true, message: '请输入前缀！' },
-                                    ],
-                                    validateFirst: true
-                                  }]" />
-                </a-form-item>
-
-              </a-col>
-
-              <a-col :span="24">
-                <a-form-item
-                  label="部门">
-                  <a-select
-                    placeholder="请选择部门"
-                    v-decorator="['department', { rules: [{ required: true, message: '请选择部门' }] }]">
-                    <a-select-option
-                      v-for="item in groupList"
-                      :key="deepGet(item, 'id')"
-                      :value="deepGet(item, 'id')">{{ deepGet(item, 'name') }}</a-select-option>
-                  </a-select>
-                </a-form-item>
-
-              </a-col>
-
-              <a-col :span="24">
-                <a-form-item
-                  label="起始位数字">
-                  <a-input
-                    placeholder="请输入起始位数字"
-                    v-decorator="['Nuber',
-                                  { rules: [
-                                      { required: true, message: '请输入邮箱' },
-                                    ],
-                                    validateFirst: true
-                                  }]" />
-                </a-form-item>
-
-              </a-col>
-
-              <a-col :span="24">
-                <a-col :span="24">
-                  <a-row :gutter="24">
-                    <a-col :span="12">
-                      <a-form-item label="首次修改密码">
-                        <a-switch
-                          @change="onChange"
-                          v-decorator="['first']"/>
-                      </a-form-item>
-                    </a-col>
-                    <a-col :span="12">
-                      <a-form-item label="是否修改密码">
-                        <a-switch @change="onChange" v-decorator="['Editpass']"/>
-                      </a-form-item>
-                    </a-col>
-                  </a-row>
-                </a-col>
-              </a-col>
-
-            </a-row>
-
+          <a-col
+            :span="12"
+            style="display:flex;justify-content: center;">
+            <a-upload
+              name="file"
+              :multiple="true"
+              accept="text"
+              :headers="headers"
+              :beforeUpload="beforeUpload"
+              :fileList="fileList"
+              :remove="handleRemove">
+              <a-button type="primary">
+                <a-icon type="upload" /> 上传批量用户信息 </a-button>
+            </a-upload>
+          </a-col>
+          <a-col
+            :span="24"
+            style="margin-top:20px;color:white;text-align:center;">
+            请先下载模板，并按模板格式整理数据再上传
           </a-col>
         </a-row>
-
       </a-form>
     </a-spin>
   </a-modal>
@@ -153,43 +55,67 @@
 
 <script>
 import { mixinFormModal } from '@/utils/mixin'
+import { usermanageBatchAddUser } from '@/api/CloudDesktop/userManage'
 
 export default {
   mixins: [mixinFormModal],
   name: 'UserManageBatchTabAdd',
   data () {
     return {
-        groupList: [
-            {
-                id: 1,
-                name: 'CDM'
-            },
-            {
-                id: 2,
-                name: '云桌面组'
-            }
-        ],
-        departmentList: []
+      headers: {
+        authorization: 'authorization-text'
+      },
+      dataArr: [],
+      path: process.env.BASE_URL,
+      fileList: [],
+      filename: '',
+      filetype: ''
     }
   },
   methods: {
     BatchAdd () {
-        console.log('BatchAdd')
       this.visible = true
     },
+    beforeUpload (file) {
+      this.filename = file.name
+      this.filetype = file.type
+      var reader = new FileReader() // new一个FileReader实例
+      reader.readAsText(file, 'UTF-8')
+      reader.onloadend = (evt) => {
+        const res = evt.target.result
+        const dataArr = res.split('\n')
+        dataArr.forEach((u, index) => {
+          if (index < dataArr.length - 1) {
+            let add = dataArr[index].replace(new RegExp(',', 'g'), ' ')
+            if (index !== dataArr.length - 2) {
+              add += '\n'
+            }
+            const Base64 = require('js-base64').Base64
+            this.dataArr.push(Base64.encode(add)) // 加密
+          }
+        })
+      }
+      return false
+    },
+    handleRemove (file) {},
     handleSubmit () {
-      this.form.validateFields(async (errors, values) => {
-        if (!errors) {
-            console.log(values)
-this.visible = false
-        }
+      this.confirmLoading = true
+      const obj = {
+        filename: this.filename,
+        filetype: this.filetype,
+        fileData: [
+            '5aeT5ZCNIOeUqOaIt+WQjSDnu4Qg5omL5py65Y+356CBIOeUqOaIt+S4i+asoeeZu+W9leW/hemhu+S/ruaUueWvhueggSDnlKjmiLfkuI3og73kv67mlLnlr4bnoIEg6YKu566xIOaJi+acuuWPt+eggSDlr4bnoIE=',
+            '5p6X5Y2D5YevIGxxayBVc2VycyAxMzM1MzMwNTEyMiDlkKYg5pivIDQxNzM1MDM3MkBxcS5jb20gMTMzNTMzMDUxMjIgMTIzNDU2'
+        ]
+      }
+      usermanageBatchAddUser(obj).then((res) => {
+        this.$message.success('上传成功')
+        this.visible = false
       })
+        this.confirmLoading = false
     },
     handleCancel () {
       this.visible = false
-    },
-      onChange (checked) {
-      console.log(`a-switch to ${checked}`)
     }
   }
 }
@@ -197,10 +123,15 @@ this.visible = false
 
 <style lang="less" scoped>
 .ant-form-vertical .ant-form-item {
-    padding-bottom: 0px;
-    margin-bottom: 10px;
+  padding-bottom: 0px;
+  margin-bottom: 10px;
 }
-.ant-input-number{
-    width: 100%;
+.ant-input-number {
+  width: 100%;
+}
+/deep/label[title='首次修改密码'],
+/deep/label[title='是否修改密码'] {
+  color: white;
+  font-weight: 500;
 }
 </style>

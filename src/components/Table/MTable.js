@@ -206,15 +206,7 @@ export default {
       return props[k]
     })
     this.$scopedSlots = Object.assign({}, {
-      time: text => convert(text, 'unix'),
-      num: text => !isEmpty(text) ? convert(text, 'unit', '个') : '-',
-      sizeInKB: text => !isEmpty(text) ? convert(text, 'unitSize', 'KB') : '-',
-      sizeInMB: text => !isEmpty(text) ? convert(text, 'unitSize', 'MB') : '-',
-      sizeInGB: text => !isEmpty(text) ? convert(text, 'unitSize', 'GB') : '-',
-      sizeInV: text => !isEmpty(text) ? convert(text, 'unitVoltage', 'V') : '-',
-      sizeInMHz: text => !isEmpty(text) ? convert(text, 'unitHz', 'MHz') : '-',
-      sizeInGHz: text => !isEmpty(text) ? convert(text, 'unitHz', 'GHz') : '-',
-      sizeInW: text => !isEmpty(text) ? convert(text, 'unitWatt', 'W') : '-'
+      time: text => convert(text, 'unix')
     }, this.$scopedSlots)
     return (
       <div class="table-wrapper">

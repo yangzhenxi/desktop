@@ -88,18 +88,18 @@ const vueConfig = {
     loaderOptions: {
       less: {
         modifyVars: {
-          'layout-body-background': '#1A233A', // body颜色
-          'text-color': '#bcd0f7',
-          'menu-dark-submenu-bg': '#0c1425',
+          'layout-body-background': '#1A233A',
+        'menu-dark-submenu-bg': '#0c1425',
           'border-radius-base': '5px',
           'table-row-hover-bg': 'none',
           'table-selected-row-bg': 'none',
           'table-selected-row-hover-bg': 'none',
           'tree-directory-selected-bg': 'none',
-          'tree-directory-selected-color': '#fff'
+          'tree-directory-selected-color': '#fff',
+          'modal-header-bg': '#272e48',
+          'modal-footer-bg': '#272e48'
 
         },
-        // DO NOT REMOVE THIS LINE
         javascriptEnabled: true
       }
     }
@@ -111,7 +111,7 @@ const vueConfig = {
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
       '/api': {
-        target: 'http://192.168.3.150:8090',
+        target: 'http://192.168.2.235:8090',
         ws: false,
         changeOrigin: true
       }
@@ -120,9 +120,13 @@ const vueConfig = {
 
   // disable source map in production
   productionSourceMap: false,
+
   lintOnSave: undefined,
+
   // babel-loader no-ignore node_modules/*
-  transpileDependencies: []
+  transpileDependencies: [],
+
+  assetsDir: 'static'
 }
 
 // preview.pro.loacg.com only do not use in your production;

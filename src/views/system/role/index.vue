@@ -1,5 +1,5 @@
 <template>
-  <page-header-wrapper>
+  <page-header-wrapper :title="false">
     <a-card>
       <div class="head">
         <div class="btns">
@@ -22,8 +22,9 @@
             @search="onSearch" />
         </div>
       </div>
-      <s-table
+      <m-table
         ref="table"
+        bordered
         :columns="columns"
         :data="loadData"
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
@@ -32,7 +33,7 @@
             修改
           </a-button>
         </template>
-      </s-table>
+      </m-table>
       <add
         ref="Add"
         @ok="handleOk"></add>
@@ -45,7 +46,7 @@
 </template>
 
 <script>
-import { STable } from '@/components'
+import { MTable, MIcon } from '@/components'
 import { mixinTable } from '@/utils/mixin'
 import Add from './manage/Add'
 import Set from './manage/Set'
@@ -57,8 +58,9 @@ export default {
   components: {
     Set,
     Add,
-    STable,
-    Edit
+    MTable,
+    Edit,
+    MIcon
   },
   data () {
     return {

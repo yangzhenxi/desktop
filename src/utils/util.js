@@ -120,7 +120,10 @@ export function convert (val, filter, args) {
     return val
   }
   if (dict[filter]) {
-    return deepGet(dict[filter].find(e => e.key === val), 'val')
+    return deepGet(
+      dict[filter].find(e => e.key === val),
+      'val'
+    )
   } else {
     switch (filter) {
       // 时间戳
@@ -128,8 +131,11 @@ export function convert (val, filter, args) {
         return textTo(val, args)
       // 时间戳
       case 'unix':
+        if (val === '0') {
+          return '暂无数据'
+        }
         return unixToDate(val, args)
-        // 时间戳
+      // 时间戳
       case 'dateToUnix':
         return dateToUnix(val, args)
       // 时间差
@@ -367,8 +373,13 @@ export function columnsBuild (column, module) {
  * @param { String } defaultValue 默认值
  */
 export function deepGet (object, path, defaultValue) {
-  const s = (!Array.isArray(path) ? path.replace(/\[/g, '.').replace(/\]/g, '').split('.') : path)
-    .reduce((o, k) => (o || {})[k], object)
+  const s = (!Array.isArray(path)
+    ? path
+        .replace(/\[/g, '.')
+        .replace(/\]/g, '')
+        .split('.')
+    : path
+  ).reduce((o, k) => (o || {})[k], object)
   return s !== false && isEmpty(s) ? defaultValue : s
 }
 
@@ -403,13 +414,18 @@ export function uuid (length = 15) {
     if (i === 8 || i === 13 || i === 18 || i === 23) {
       uuid[i] = '-'
     } else {
-      if (rnd <= 0x02) { rnd = 0x2000000 + (Math.random() * 0x1000000) | 0 }
+      if (rnd <= 0x02) {
+        rnd = (0x2000000 + Math.random() * 0x1000000) | 0
+      }
       r = rnd & 0xf
       rnd = rnd >> 4
-      uuid[i] = chars[(i === 19) ? (r & 0x3) | 0x8 : r]
+      uuid[i] = chars[i === 19 ? (r & 0x3) | 0x8 : r]
     }
   }
-  return uuid.join('').replace(/-/gm, '').toLowerCase()
+  return uuid
+    .join('')
+    .replace(/-/gm, '')
+    .toLowerCase()
 }
 
 /**
@@ -508,7 +524,7 @@ export function handleScrollHeader (callback) {
 
 export function isIE () {
   const bw = window.navigator.userAgent
-  const compare = (s) => bw.indexOf(s) >= 0
+  const compare = s => bw.indexOf(s) >= 0
   const ie11 = (() => 'ActiveXObject' in window)()
   return compare('MSIE') || ie11
 }
@@ -517,7 +533,9 @@ export function isIE () {
  * 获取本机ip
  */
 export function getIP () {
-  return process.env.VUE_APP_WEBSOCKET_EVENT ? process.env.VUE_APP_WEBSOCKET_EVENT : `ws://${os.hostname()}/v1/Event/watch`
+  return process.env.VUE_APP_WEBSOCKET_EVENT
+    ? process.env.VUE_APP_WEBSOCKET_EVENT
+    : `ws://${os.hostname()}/v1/Event/watch`
 }
 
 export function timeFix () {
@@ -561,23 +579,23 @@ export function removeLoadingAnimate (id = '', timeout = 1500) {
  * @delVal 要删除的元素
  */
 export function arrayRemoveItem (arr, delVal) {
-    if (arr instanceof Array) {
-      var index = arr.indexOf(delVal)
-      if (index > -1) {
-        arr.splice(index, 1)
-      }
+  if (arr instanceof Array) {
+    var index = arr.indexOf(delVal)
+    if (index > -1) {
+      arr.splice(index, 1)
     }
+  }
 }
 
 /**
  *
  */
 export function isContained (a, b) {
-    if (!(a instanceof Array) || !(b instanceof Array)) return false
-    if (a.length < b.length) return false
-    var aStr = a.toString()
-    for (var i = 0, len = b.length; i < len; i++) {
-      if (aStr.indexOf(b[i]) === -1) return false
-    }
-    return true
+  if (!(a instanceof Array) || !(b instanceof Array)) return false
+  if (a.length < b.length) return false
+  var aStr = a.toString()
+  for (var i = 0, len = b.length; i < len; i++) {
+    if (aStr.indexOf(b[i]) === -1) return false
+  }
+  return true
 }

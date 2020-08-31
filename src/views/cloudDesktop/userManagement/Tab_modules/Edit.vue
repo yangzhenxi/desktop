@@ -6,17 +6,17 @@
     :confirmLoading="confirmLoading"
     @ok="handleSubmit"
     @cancel="handleCancel"
-    destroyOnClose
-  >
+    destroyOnClose>
     <a-spin :spinning="loading">
-      <a-form :form="form" layout="vertical">
+      <a-form
+        :form="form"
+        layout="vertical">
 
         <a-row :gutter="30">
           <a-col :span="12">
             <a-row>
               <a-col :span="24">
-                <a-form-item
-                  label="姓名">
+                <a-form-item label="姓名">
                   <a-input
                     placeholder="请输入名称"
                     v-decorator="['displayName',
@@ -28,8 +28,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="24">
-                <a-form-item
-                  label="联系电话">
+                <a-form-item label="联系电话">
                   <a-input
                     placeholder="请输入电话"
                     v-decorator="['telephoneNumber',
@@ -42,8 +41,7 @@
               </a-col>
 
               <a-col :span="24">
-                <a-form-item
-                  label="用户名">
+                <a-form-item label="用户名">
                   <a-input
                     placeholder="请输入用户名"
                     v-decorator="['username',
@@ -56,8 +54,7 @@
               </a-col>
 
               <a-col :span="24">
-                <a-form-item
-                  label="邮箱">
+                <a-form-item label="邮箱">
                   <a-input
                     placeholder="请输入邮箱"
                     v-decorator="['mail',
@@ -75,8 +72,7 @@
           <a-col :span="12">
             <a-row>
               <a-col :span="24">
-                <a-form-item
-                  label="组">
+                <a-form-item label="组">
                   <a-select
                     placeholder="请选择组"
                     v-decorator="['baseDN', { rules: [{ required: true, message: '请选择对应的组' }] }]">
@@ -87,25 +83,8 @@
                   </a-select>
                 </a-form-item>
               </a-col>
-
               <a-col :span="24">
-                <a-form-item
-                  label="部门">
-                  <a-select
-                    placeholder="请选择部门"
-                    v-decorator="['department', { rules: [{ required: true, message: '请选择部门' }] }]">
-                    <a-select-option value="awdawd">awdawd</a-select-option>
-                    <!-- <a-select-option
-                      v-for="item in groupList"
-                      :key="deepGet(item, 'id')"
-                      :value="deepGet(item, 'id')">{{ deepGet(item, 'name') }}</a-select-option> -->
-                  </a-select>
-                </a-form-item>
-              </a-col>
-
-              <a-col :span="24">
-                <a-form-item
-                  label="密码">
+                <a-form-item label="密码">
                   <a-input
                     placeholder="请输入密码"
                     v-decorator="['password',
@@ -116,27 +95,9 @@
                                   }]" />
                 </a-form-item>
               </a-col>
-
-              <a-col :span="24">
-                <a-row :gutter="24">
-                  <a-col :span="12">
-                    <a-form-item
-                      label="首次修改密码">
-                      <a-switch @change="onChange" v-model="cannotChangePWD"/>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="12">
-                    <a-form-item label="是否修改密码">
-                      <a-switch @change="onChange" v-model="pwdNotSet" />
-                    </a-form-item>
-                  </a-col>
-                </a-row>
-              </a-col>
             </a-row>
-
           </a-col>
         </a-row>
-
       </a-form>
     </a-spin>
   </a-modal>
@@ -145,62 +106,72 @@
 <script>
 import { mixinFormModal } from '@/utils/mixin'
 import { nameValidator, telValidator } from '@/utils/validator'
-import { usermanageAdduser } from '@/api/CloudDesktop/userManage'
+import { usermanageEdituser } from '@/api/CloudDesktop/userManage'
 export default {
   mixins: [mixinFormModal],
-  name: 'UserManageTabAdd',
+  name: 'UserManageTabEdit',
   data () {
     return {
-        record: [],
-        pwdNotSet: false,
-        cannotChangePWD: false
+      record: [],
+      pwdNotSet: false,
+      cannotChangePWD: false
     }
   },
   methods: {
-    Edit (record) {
-        this.record = []
+    Edit (record, ouList) {
+      this.record = []
       this.visible = ''
-      this.ouSort(record)
+      this.ouSort(ouList)
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.form.setFieldsValue(
+            this.pick(record, ['displayName', 'telephoneNumber', 'username', 'group', 'mail', 'password'])
+          )
+        })
+      })
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
         if (!errors) {
-            values.accountControl = {
-                pwdNotSet: this.pwdNotSet,
-                cannotChangePWD: this.cannotChangePWD
-            }
-            const res = await usermanageAdduser(values)
-             this.$message.success('添加成功')
-            this.$emit('ok', res)
+          this.confirmLoading = true
+          values.accountControl = {
+            pwdNotSet: this.pwdNotSet,
+            cannotChangePWD: this.cannotChangePWD
+          }
+          usermanageEdituser(values).then((res) => {
+            this.confirmLoading = false
+            this.$message.success('修改成功')
+            this.$emit('ok')
             this.visible = false
+          })
         }
+        this.confirmLoading = false
       })
     },
     handleCancel () {
       this.visible = false
     },
-    onChange (checked) {
-      console.log(`a-switch to ${checked}`)
-    },
     ouSort (record) {
-        record.forEach(item => {
-            let ouSortvalue = ' '
-            item.ouSort.reverse()
-            item.ouSort.forEach((u, index) => {
-                ouSortvalue = ouSortvalue + 'ou=' + u + ','
-            })
-            ouSortvalue = (ouSortvalue + 'ou=Citrix,dc=test,dc=com').replace(/(^\s*)/g, '')
-            const obj = {
-                name: item.title,
-                value: ouSortvalue,
-                key: item.key
-            }
-            this.record.push(obj)
-            if (item.children.length > 0) {
-                this.ouSort(item.children)
-            }
-            console.log(this.record)
+      record.forEach((item) => {
+        let ouSortvalue = ' '
+        if (item.ouSort[0] === record[0].title) {
+          item.ouSort.reverse()
+        }
+        item.ouSort.reverse()
+        item.ouSort.forEach((u, index) => {
+          ouSortvalue = ouSortvalue + 'ou=' + u + ','
         })
+        ouSortvalue = (ouSortvalue + 'ou=Citrix,dc=test,dc=com').replace(/(^\s*)/g, '')
+        const obj = {
+          name: item.title,
+          value: ouSortvalue,
+          key: item.key
+        }
+        this.record.push(obj)
+        if (item.children.length > 0) {
+          this.ouSort(item.children)
+        }
+      })
     },
     nameValidator,
     telValidator
@@ -210,8 +181,8 @@ export default {
 
 <style lang="less" scoped>
 .ant-form-vertical .ant-form-item {
-    padding-bottom: 0px;
-    margin-bottom: 10px;
+  padding-bottom: 0px;
+  margin-bottom: 10px;
 }
 /deep/.ant-modal-header {
   background: none;

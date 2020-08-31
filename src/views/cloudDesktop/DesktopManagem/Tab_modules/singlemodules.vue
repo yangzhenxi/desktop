@@ -3,16 +3,9 @@
     <a-card title="计算机基础">
       <a-row>
         <div class="header">
-          <a-col :span="8">
-            <modules-info
-              :modulesData="modulesData"
-              :checkedRightval="checkedRightval"
-              :span="span"
-              @changecheckedval="changecheckedRightval"></modules-info>
-          </a-col>
-          <a-col :span="16" style="margin: 15px 0px 0px 20px;">
+          <a-col :span="14">
             <a-row :gutter="[16,16]">
-              <a-col :span="6">
+              <a-col :span="8">
                 <div class="box">
                   <m-icon
                     type="zaixianbianji"
@@ -20,7 +13,7 @@
                   <span class="text">在线编辑</span>
                 </div>
               </a-col>
-              <a-col :span="6">
+              <a-col :span="8">
                 <div class="box" @click="$refs.ManageRelease.Add()">
                   <m-icon
                     type="shangchuanmoban"
@@ -28,7 +21,7 @@
                   <span class="text">发布模版</span>
                 </div>
               </a-col>
-              <a-col :span="6" @click="$refs.ManageAttributes.Add()">
+              <a-col :span="8" @click="$refs.ManageAttributes.Add()">
                 <div class="box">
                   <m-icon
                     type="tongji"
@@ -36,7 +29,7 @@
                   <span class="text">属性模版</span>
                 </div>
               </a-col>
-              <a-col :span="6" @click="reduction">
+              <a-col :span="12" @click="reduction">
                 <div class="box">
                   <m-icon
                     type="huanyuan1"
@@ -44,15 +37,15 @@
                   <span class="text">版本还原</span>
                 </div>
               </a-col>
-              <a-col :span="6">
+              <!-- <a-col :span="6">
                 <div class="box" @click="merge">
                   <m-icon
                     type="hebing"
                     class="icon hebing"></m-icon>
                   <span class="text">版本合并</span>
                 </div>
-              </a-col>
-              <a-col :span="6">
+              </a-col> -->
+              <a-col :span="12">
                 <div class="box" @click="ModuleDelete">
                   <m-icon
                     type="shanchu"
@@ -60,15 +53,22 @@
                   <span class="text">删除模版</span>
                 </div>
               </a-col>
-              <a-col :span="6">
+              <!-- <a-col :span="8">
                 <div class="box" @click="restore">
                   <m-icon
                     type="huifu"
                     class="icon huifu"></m-icon>
                   <span class="text">模版恢复</span>
                 </div>
-              </a-col>
+              </a-col> -->
             </a-row>
+          </a-col>
+          <a-col :span="10" style="margin: 0px 0px 0px 20px;">
+            <modules-info
+              :modulesData="modulesData"
+              :checkedRightval="checkedRightval"
+              :span="span"
+              @changecheckedval="changecheckedRightval"></modules-info>
           </a-col>
         </div>
       </a-row>
@@ -102,10 +102,6 @@
         </a-tab-pane>
         <a-tab-pane
           key="3"
-          tab="管理桌面(3个)">
-        </a-tab-pane>
-        <a-tab-pane
-          key="4"
           tab="硬件配置">
           <a-spin :spinning="loading">
             <a-form :form="form">
@@ -419,5 +415,14 @@ export default {
 .header{
     display: flex;
     align-items: center;
+}
+/deep/.ant-card-head-wrapper{
+    padding-left: 20px;
+    background: #272E48;
+    border-radius: 10px;
+}
+/deep/.modules{
+    border: none;
+    background-color: #272E48;
 }
 </style>
