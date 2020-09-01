@@ -39,7 +39,36 @@
                                   }]" />
                 </a-form-item>
               </a-col>
+              <a-col :span="24">
+                <a-form-item label="邮箱">
+                  <a-input
+                    placeholder="请输入邮箱"
+                    v-decorator="['mail',
+                                  { rules: [
+                                      { required: true, message: '请输入邮箱' },
+                                    ],
+                                    validateFirst: true
+                                  }]" />
 
+                </a-form-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-item label="组织单位">
+                  <a-select
+                    placeholder="请选择组织单位"
+                    v-decorator="['group', { rules: [{ required: true, message: '请选择对应的组织单位' }] }]">
+                    <a-select-option
+                      v-for="item in record"
+                      :key="deepGet(item,'key')"
+                      :value="deepGet(item, 'value')">{{ deepGet(item, 'name') }}</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-col>
+
+          <a-col :span="12">
+            <a-row>
               <a-col :span="24">
                 <a-form-item label="用户名">
                   <a-input
@@ -54,46 +83,38 @@
               </a-col>
 
               <a-col :span="24">
-                <a-form-item label="邮箱">
-                  <a-input
-                    placeholder="请输入邮箱"
-                    v-decorator="['mail',
-                                  { rules: [
-                                      { required: true, message: '请输入邮箱' },
-                                    ],
-                                    validateFirst: true
-                                  }]" />
-
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </a-col>
-
-          <a-col :span="12">
-            <a-row>
-              <a-col :span="24">
-                <a-form-item label="组">
-                  <a-select
-                    placeholder="请选择组"
-                    v-decorator="['baseDN', { rules: [{ required: true, message: '请选择对应的组' }] }]">
-                    <a-select-option
-                      v-for="item in record"
-                      :key="deepGet(item,'key')"
-                      :value="deepGet(item, 'value')">{{ deepGet(item, 'name') }}</a-select-option>
-                  </a-select>
-                </a-form-item>
+                <a-row :gutter="24">
+                  <a-col :span="12">
+                    <a-form-item label="用户密码用不过期">
+                      <a-switch
+                        v-model="passSet.pwdNeverExpires"
+                        @change="onChange"/>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="12">
+                    <a-form-item label="禁用账户">
+                      <a-switch v-model="passSet.DisableCount" />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
               </a-col>
               <a-col :span="24">
-                <a-form-item label="密码">
-                  <a-input
-                    placeholder="请输入密码"
-                    v-decorator="['password',
-                                  { rules: [
-                                      { required: true, message: '请输入密码' },{min:7,max:16,message:'密码长度应在7-16位'}
-                                    ],
-                                    validateFirst: true
-                                  }]" />
-                </a-form-item>
+                <a-row :gutter="24">
+                  <a-col :span="12">
+                    <a-form-item label="下次登录时修改密码">
+                      <a-switch
+                        :disabled="disabled"
+                        v-model="passSet.pwdNotSet"/>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="12">
+                    <a-form-item label="能否修改密码">
+                      <a-switch
+                        :disabled="disabled"
+                        v-model="passSet.cannotChangePWD"/>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
               </a-col>
             </a-row>
           </a-col>
@@ -106,26 +127,48 @@
 <script>
 import { mixinFormModal } from '@/utils/mixin'
 import { nameValidator, telValidator } from '@/utils/validator'
-import { usermanageEdituser } from '@/api/CloudDesktop/userManage'
+import { usermanageEdituser, usermanageGetuser } from '@/api/CloudDesktop/userManage'
 export default {
   mixins: [mixinFormModal],
   name: 'UserManageTabEdit',
   data () {
     return {
       record: [],
-      pwdNotSet: false,
-      cannotChangePWD: false
+      accountControl: {
+        DisableCount: true,
+        cannotChangePWD: false,
+        pwdNeverExpires: false,
+        pwdNotSet: false
+      },
+      oldData: {
+          name: String,
+          baseDN: String
+      },
+      disabled: false,
+      passSet: Object
     }
   },
   methods: {
-    Edit (record, ouList) {
+    async Edit (record, ouList) {
       this.record = []
-      this.visible = ''
+      // 保留之前老的数据
+      this.oldData.name = record.username
+      this.oldData.baseDN = record.baseDN
+      // 获取OU列表
       this.ouSort(ouList)
+      // 查询当前单个用户
+      const obj = {
+         baseCN: record.baseDN.replace(record.baseDN.split(',', 1)[0] + ',', ''),
+            username: record.username
+      }
+      const res = await usermanageGetuser(obj)
+      this.passSet = res.user.accountControl
+        this.visible = true
       this.$nextTick(() => {
         setTimeout(() => {
           this.form.setFieldsValue(
-            this.pick(record, ['displayName', 'telephoneNumber', 'username', 'group', 'mail', 'password'])
+            this.pick(res.user, ['displayName', 'telephoneNumber', 'username', 'mail', 'accountControl', 'group'])
+            // this.pick(res.user.accountControl, ['DisableCount', 'cannotChangePWD', 'pwdNeverExpires', 'pwdNotSet'])
           )
         })
       })
@@ -134,10 +177,9 @@ export default {
       this.form.validateFields(async (errors, values) => {
         if (!errors) {
           this.confirmLoading = true
-          values.accountControl = {
-            pwdNotSet: this.pwdNotSet,
-            cannotChangePWD: this.cannotChangePWD
-          }
+          values.name = this.oldData.name
+          values.baseDN = this.oldData.baseDN
+          values.accountControl = this.passSet
           usermanageEdituser(values).then((res) => {
             this.confirmLoading = false
             this.$message.success('修改成功')
@@ -173,6 +215,13 @@ export default {
         }
       })
     },
+    onChange (checked) {
+      this.disabled = !this.disabled
+      if (checked) {
+        this.accountControl.pwdNotSet = false
+        this.accountControl.cannotChangePWD = false
+      }
+    },
     nameValidator,
     telValidator
   }
@@ -189,8 +238,10 @@ export default {
 }
 
 /deep/label[title='邮箱'],
-/deep/label[title='是否修改密码'],
-/deep/label[title='首次修改密码'] {
+/deep/label[title='下次登录时修改密码'],
+/deep/label[title='用户密码用不过期'],
+/deep/label[title='禁用账户'],
+/deep/label[title='能否修改密码'] {
   color: white;
   font-weight: 500;
 }

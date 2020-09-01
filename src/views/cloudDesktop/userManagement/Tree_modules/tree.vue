@@ -44,7 +44,7 @@ export default {
       required: true
     },
     checkedval: {
-      type: String,
+      type: Array,
       required: true
     }
   },

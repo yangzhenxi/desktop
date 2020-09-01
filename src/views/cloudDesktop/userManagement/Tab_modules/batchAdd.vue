@@ -67,9 +67,10 @@ export default {
       },
       dataArr: [],
       path: process.env.BASE_URL,
-      fileList: [],
-      filename: '',
-      filetype: ''
+      fileList: Array,
+      filename: String,
+      filetype: String,
+      isboole: Boolean
     }
   },
   methods: {
@@ -77,8 +78,13 @@ export default {
       this.visible = true
     },
     beforeUpload (file) {
+    this.fileList = [...this.fileList, file]
+    this.fileList = file
       this.filename = file.name
       this.filetype = file.type
+      if (file.type !== 'text/csv') {
+          this.isboole = false
+      }
       var reader = new FileReader() // new一个FileReader实例
       reader.readAsText(file, 'UTF-8')
       reader.onloadend = (evt) => {
@@ -97,16 +103,18 @@ export default {
       }
       return false
     },
-    handleRemove (file) {},
+    handleRemove (file) {
+        // const index = fi
+    },
     handleSubmit () {
       this.confirmLoading = true
+      if (!this.isboole) {
+          this.$message.error('上传文件格式错误')
+      }
       const obj = {
         filename: this.filename,
         filetype: this.filetype,
-        fileData: [
-            '5aeT5ZCNIOeUqOaIt+WQjSDnu4Qg5omL5py65Y+356CBIOeUqOaIt+S4i+asoeeZu+W9leW/hemhu+S/ruaUueWvhueggSDnlKjmiLfkuI3og73kv67mlLnlr4bnoIEg6YKu566xIOaJi+acuuWPt+eggSDlr4bnoIE=',
-            '5p6X5Y2D5YevIGxxayBVc2VycyAxMzM1MzMwNTEyMiDlkKYg5pivIDQxNzM1MDM3MkBxcS5jb20gMTMzNTMzMDUxMjIgMTIzNDU2'
-        ]
+        fileData: this.dataArr
       }
       usermanageBatchAddUser(obj).then((res) => {
         this.$message.success('上传成功')

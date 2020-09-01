@@ -36,11 +36,18 @@ export function usermanageDelOu (data) {
 }
 
 /**
- *  添加用户
+ *  添加的用户
  */
 export function usermanageAdduser (data) {
     return request.post(`${desktop}/AddUser`, data)
 }
+/**
+ *  获取当前OU下的单个用户
+ */
+export function usermanageGetuser (data) {
+    return request.post(`${desktop}/GetUser`, data)
+}
+
 /**
  *  修改用户信息
  */
@@ -72,4 +79,10 @@ export function usermanageBatchDelUser (data) {
  */
 export function usermanageBatchAddUser (data) {
     return request.post(`${desktop}/BatchAddUser`, data)
+}
+/**
+ *  批量导出用户
+ */
+export function usermanageExportUser (data) {
+    return request.post(`${desktop}/ExportUser`, data)
 }

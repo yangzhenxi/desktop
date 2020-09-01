@@ -119,13 +119,13 @@
                 <a-row :gutter="24">
                   <a-col :span="12">
                     <a-form-item
-                      label="用户密码用不过期">
-                      <a-switch @change="onChange" v-model="cannotChangePWD"/>
+                      label="用户密码永不过期">
+                      <a-switch @change="onChange" v-model="pwdNeverExpires"/>
                     </a-form-item>
                   </a-col>
                   <a-col :span="12">
                     <a-form-item label="禁用账户">
-                      <a-switch v-model="pwdNotSet" />
+                      <a-switch v-model="DisableCount" />
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -135,12 +135,12 @@
                   <a-col :span="12">
                     <a-form-item
                       label="下次登录时修改密码">
-                      <a-switch :disabled="disabled" v-model="NextPass"/>
+                      <a-switch :disabled="disabled" v-model="pwdNotSet"/>
                     </a-form-item>
                   </a-col>
                   <a-col :span="12">
                     <a-form-item label="能否修改密码">
-                      <a-switch :disabled="disabled" v-model="canPass" />
+                      <a-switch :disabled="disabled" v-model="cannotChangePWD" />
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -164,10 +164,10 @@ export default {
   data () {
     return {
         record: [],
+        DisableCount: false,
+        pwdNeverExpires: false,
         pwdNotSet: false,
         cannotChangePWD: false,
-        NextPass: false,
-        canPass: false,
         disabled: false
     }
   },
@@ -183,7 +183,9 @@ export default {
         if (!errors) {
             values.accountControl = {
                 pwdNotSet: this.pwdNotSet,
-                cannotChangePWD: this.cannotChangePWD
+                cannotChangePWD: this.cannotChangePWD,
+                DisableCount: this.DisableCount,
+                pwdNeverExpires: this.pwdNeverExpires
             }
              usermanageAdduser(values).then(res => {
                 this.confirmLoading = false
@@ -202,8 +204,8 @@ export default {
     onChange (checked) {
             this.disabled = !this.disabled
         if (checked) {
-            this.NextPass = false
-            this.canPass = false
+            this.accountControl.pwdNotSet = false
+            this.accountControl.cannotChangePWD = false
         }
     },
     ouSort (record) {
@@ -252,7 +254,7 @@ export default {
 
 /deep/label[title='邮箱'],
 /deep/label[title='下次登录时修改密码'],
-/deep/label[title='用户密码用不过期'],
+/deep/label[title='用户密码永不过期'],
 /deep/label[title='禁用账户'],
 /deep/label[title='能否修改密码'] {
   color: white;

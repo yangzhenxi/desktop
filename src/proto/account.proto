@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package system.v1;
+
+option go_package="rpc/system/v1;system_v1";
+
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/account.proto
+// 登录用的server
+service Account {
+    // 登录接口
+    rpc Login (AccountLoginReq) returns (AccountLoginResp);
+}
+
+
+message AccountLoginReq {
+    string username = 1;
+    string password = 2;
+}
+
+message AccountLoginResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 用于接口验证的token
+    token data = 3;
+}
+
+message token {
+    // token值
+    string value = 1;
+    // 过期时间
+    int64 expired = 2;
+}
+

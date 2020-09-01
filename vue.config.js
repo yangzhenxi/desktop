@@ -112,8 +112,15 @@ const vueConfig = {
     proxy: {
       '/api': {
         target: 'http://192.168.2.235:8090',
-        ws: false,
-        changeOrigin: true
+        pathRewrite: {
+            '': ''
+        }
+      },
+      '/api/system': {
+        target: '192.168.2.194:8081',
+        pathRewrite: {
+            '^/api/system': '/api/v1'
+        }
       }
     }
   },

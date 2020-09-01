@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package system.v1;
+
+option go_package="rpc/system/v1;system_v1";
+
+
+// 权限资源列表
+service Resource {
+    // 获取所有资源
+    rpc List(ResourceListReq) returns (ResourceListResp);
+}
+
+
+// 权限资源和的结构
+message res {
+    string module = 1;
+    string object = 2;
+    string act = 3;
+    string name = 4;
+}
+
+message ResourceListReq { }
+
+message ResourceListResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string message = 2;
+    // 资源数据
+    repeated res data = 3;
+}

@@ -75,6 +75,12 @@
               style="margin-left:10px">
               批量删除
             </a-button>
+            <a-button
+              type="primary"
+              @click="$refs.ExportUser.ExportUser(ouList)"
+              style="margin-left:10px">
+              全部导出
+            </a-button>
           </div>
         </div>
         <a-card>
@@ -114,6 +120,7 @@
           <tabbatch-add
             ref="BatchTabAdd"
             @ok="handleTreeTableOk"></tabbatch-add>
+          <tab-exportUser ref="ExportUser"></tab-exportUser>
           <tree-add
             ref="TreeAdd"
             @ok="handleTreeTableOk"></tree-add>
@@ -134,6 +141,7 @@ import { MTable, MIcon } from '@/components'
 import TabAdd from './Tab_modules/Add'
 import TabbatchAdd from './Tab_modules/batchAdd'
 import TabEdit from './Tab_modules/Edit'
+import TabExportUser from './Tab_modules/ ExportUser'
 
 import TreeAdd from './Tree_modules/TreeAdd'
 import Tree from './Tree_modules/tree'
@@ -208,6 +216,7 @@ export default {
     MTable,
     TabAdd,
     TabbatchAdd,
+    TabExportUser,
     Tree,
     TreeAdd,
     TreeEdit,
@@ -228,7 +237,7 @@ export default {
       Tablescroll: true,
       selectedRows: [],
       treeeventKey: {
-          checkedval: '0'// 单选框默认选中的值
+          checkedval: ['0']// 单选框默认选中的值
       },
       // 加载数据方法 必须为 Promise 对象
       loadData: async (parameter) => {
@@ -251,6 +260,7 @@ export default {
     }
   },
   methods: {
+      // 导出用户
     onSelectChange (selectedRowKeys, selectedRows) {
       this.deleteTabName = []
       selectedRows.forEach((u) => {
