@@ -38,8 +38,10 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo)
           .then(response => {
-            const result = response.result
-            storage.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
+            const result = response.data
+            // const result = response.result
+            storage.set(ACCESS_TOKEN, result.value, 7 * 24 * 60 * 60 * 1000)
+            // storage.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
             commit('SET_TOKEN', result.token)
             resolve()
           })

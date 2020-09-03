@@ -17,26 +17,6 @@ function getGitHash () {
   return 'unknown'
 }
 
-const isProd = process.env.NODE_ENV === 'production'
-
-const assetsCDN = {
-  // webpack build externals
-  externals: {
-    vue: 'Vue',
-    'vue-router': 'VueRouter',
-    vuex: 'Vuex',
-    axios: 'axios'
-  },
-  css: [],
-  // https://unpkg.com/browse/vue@2.6.10/
-  js: [
-    '//cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js',
-    '//cdn.jsdelivr.net/npm/vue-router@3.1.3/dist/vue-router.min.js',
-    '//cdn.jsdelivr.net/npm/vuex@3.1.1/dist/vuex.min.js',
-    '//cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js'
-  ]
-}
-
 // vue.config.js
 const vueConfig = {
   configureWebpack: {
@@ -51,12 +31,11 @@ const vueConfig = {
       })
     ],
     // if prod, add externals
-    externals: isProd ? assetsCDN.externals : {}
+    externals: {}
   },
 
-  chainWebpack: (config) => {
-    config.resolve.alias
-      .set('@$', resolve('src'))
+  chainWebpack: config => {
+    config.resolve.alias.set('@$', resolve('src'))
 
     const svgRule = config.module.rule('svg')
     svgRule.uses.clear()
@@ -73,15 +52,6 @@ const vueConfig = {
       .options({
         name: 'assets/[name].[hash:8].[ext]'
       })
-
-    // if prod is on
-    // assets require on cdn
-    if (isProd) {
-      config.plugin('html').tap(args => {
-        args[0].cdn = assetsCDN
-        return args
-      })
-    }
   },
 
   css: {
@@ -89,7 +59,7 @@ const vueConfig = {
       less: {
         modifyVars: {
           'layout-body-background': '#1A233A',
-        'menu-dark-submenu-bg': '#0c1425',
+          'menu-dark-submenu-bg': '#0c1425',
           'border-radius-base': '5px',
           'table-row-hover-bg': 'none',
           'table-selected-row-bg': 'none',
@@ -98,7 +68,6 @@ const vueConfig = {
           'tree-directory-selected-color': '#fff',
           'modal-header-bg': '#272e48',
           'modal-footer-bg': '#272e48'
-
         },
         javascriptEnabled: true
       }
@@ -106,20 +75,20 @@ const vueConfig = {
   },
 
   devServer: {
-    // development server port 8000
     port: 8000,
-    // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
-      '/api': {
-        target: 'http://192.168.2.235:8090',
+      '/api/system': {
+        target: 'http://192.168.2.194:8081',
+        changeOrigin: true,
         pathRewrite: {
-            '': ''
+          '^/api/system': '/api/system.v1'
         }
       },
-      '/api/system': {
-        target: '192.168.2.194:8081',
+      '/api': {
+        target: 'http://192.168.2.235:8090',
+        changeOrigin: true,
         pathRewrite: {
-            '^/api/system': '/api/v1'
+          '': ''
         }
       }
     }
@@ -131,9 +100,9 @@ const vueConfig = {
   lintOnSave: undefined,
 
   // babel-loader no-ignore node_modules/*
-  transpileDependencies: [],
+  transpileDependencies: []
 
-  assetsDir: 'static'
+  //   assetsDir: 'static'
 }
 
 // preview.pro.loacg.com only do not use in your production;

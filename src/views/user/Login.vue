@@ -5,9 +5,13 @@
       class="user-layout-login"
       ref="formLogin"
       :form="form"
-      @submit="handleSubmit"
-    >
-      <a-alert v-if="isLoginError" type="error" showIcon style="margin-bottom: 24px;" message="账户或密码错误（admin/ant.design )" />
+      @submit="handleSubmit">
+      <a-alert
+        v-if="isLoginError"
+        type="error"
+        showIcon
+        style="margin-bottom: 24px;"
+        message="账户或密码错误（admin/ant.design )" />
       <a-form-item>
         <a-input
           size="large"
@@ -16,9 +20,11 @@
           v-decorator="[
             'username',
             {rules: [{ required: true, message: '请输入帐户名或邮箱地址' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
-          ]"
-        >
-          <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+          ]">
+          <a-icon
+            slot="prefix"
+            type="user"
+            :style="{ color: 'rgba(0,0,0,.25)' }" />
         </a-input>
       </a-form-item>
 
@@ -29,9 +35,11 @@
           v-decorator="[
             'password',
             {rules: [{ required: true, message: '请输入密码' }], validateTrigger: 'blur'}
-          ]"
-        >
-          <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+          ]">
+          <a-icon
+            slot="prefix"
+            type="lock"
+            :style="{ color: 'rgba(0,0,0,.25)' }" />
         </a-input-password>
       </a-form-item>
 
@@ -42,18 +50,18 @@
           htmlType="submit"
           class="login-button"
           :loading="state.loginBtn"
-          :disabled="state.loginBtn"
-        >确定</a-button>
+          :disabled="state.loginBtn">确定</a-button>
       </a-form-item>
-    </a-form></div>
+    </a-form>
+  </div>
 </template>
 
 <script>
-import md5 from 'md5'
+// import md5 from 'md5'
 import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
-
+// import { Login } from '@/api/system/role'
 export default {
   components: {
     TwoStepCaptcha
@@ -110,10 +118,10 @@ export default {
           const loginParams = { ...values }
           delete loginParams.username
           loginParams[!state.loginType ? 'email' : 'username'] = values.username
-          loginParams.password = md5(values.password)
+        //   loginParams.password = md5(values.password)
           Login(loginParams)
             .then((res) => this.loginSuccess(res))
-            .catch(err => this.requestFailed(err))
+            .catch((err) => this.requestFailed(err))
             .finally(() => {
               state.loginBtn = false
             })
@@ -149,9 +157,10 @@ export default {
 
 <style lang="less" scoped>
 .user-layout-login {
-    /deep/input#password,/deep/ input#username {
+  /deep/input#password,
+  /deep/ input#username {
     color: #000;
-}
+  }
   label {
     font-size: 14px;
   }
@@ -196,5 +205,4 @@ export default {
     }
   }
 }
-
 </style>

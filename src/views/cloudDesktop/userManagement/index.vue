@@ -242,7 +242,7 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: async (parameter) => {
           this.Tablescroll = true
-        if (this.treeeventKey.checkedval === '0') {
+        if (this.treeeventKey.checkedval[0] === '0') {
           const OuList = await usermanageListOU()
           this.queryParam.name = 'ou=' + OuList.ou[0].children[0].name + ',ou=Citrix,dc=test,dc=com'
         }
@@ -269,6 +269,7 @@ export default {
       this.selectedRows = selectedRows
       this.selectedRowKeys = selectedRowKeys
     },
+    // 删除Ou
     TreeDelete () {
         if (this.treeeventKey.dataRef.children.length !== 0) {
             this.$message.info('当前选中的OU下还有子Ou暂不能删除')
@@ -289,8 +290,8 @@ export default {
       this.sechar = []
       this.selectedRowKeys = []
       this.treeeventKey = item
-      this.treeeventKey.checkedval = item.eventKey
-      this.checkedval = item.eventKey
+      this.treeeventKey.checkedval = []
+      this.treeeventKey.checkedval.push(item.eventKey)
       if (item.ouSort[0] === this.ouList[0].title) {
         item.ouSort.reverse()
       }
