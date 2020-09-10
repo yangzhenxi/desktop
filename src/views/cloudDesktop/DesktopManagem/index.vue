@@ -38,7 +38,6 @@
             @changecheckedval="changecheckedLeftval"></tree>
         </a-card>
       </a-col>
-
       <a-col :span="18">
         <router-view/>
       </a-col>

@@ -77,15 +77,15 @@ const vueConfig = {
   devServer: {
     port: 8000,
     proxy: {
-      '/api/system': {
-        target: 'http://192.168.2.194:8081',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/system': '/api/system.v1'
-        }
-      },
+    //   '/api/system': {
+    //     target: 'http://192.168.2.194:8081',
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/api/system': '/api/system.v1'
+    //     }
+    //   },
       '/api': {
-        target: 'http://192.168.2.235:8090',
+        target: 'http://192.168.2.235:8082',
         changeOrigin: true,
         pathRewrite: {
           '': ''

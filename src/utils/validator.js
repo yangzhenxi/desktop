@@ -1,11 +1,39 @@
 /**
  * 名称验证
+ * 只能是数字和字母
+ *  @param {*} 验证参数
+ */
+export function namechineValidator (rule, value, callback) {
+    console.log(value)
+    const pattern = /^[0-9a-zA-Z\u4e00-\u9fa5]+$/
+    if (!pattern.test(value)) {
+        callback(new Error('名称必须由中文、数字和字母组成！'))
+    }
+    callback()
+}
+/**
+ * 名称验证
+ * 只能是数字和字母
  *  @param {*} 验证参数
  */
 export function nameValidator (rule, value, callback) {
-    const pattern = /^[a-zA-Z0-9,./;'[\]!@#$%^&*()_+-=/`]*$/
+    console.log(value)
+    const pattern = /^[\d\w]+$/
     if (!pattern.test(value)) {
-        callback(new Error('名称必须由字母、数字和英文符号组成！'))
+        callback(new Error('名称必须由字母、数字组成！'))
+    }
+    callback()
+}
+/**
+ * 名称验证
+ * 不能带空格
+ *  @param {*} 验证参数
+ */
+export function namekongValidator (rule, value, callback) {
+    console.log(value)
+    const pattern = /^[^\s]*$/
+    if (!pattern.test(value)) {
+        callback(new Error('名称不能带空格！'))
     }
     callback()
 }
@@ -18,7 +46,7 @@ export function nameValidator (rule, value, callback) {
 export function telValidator (rule, value, callback) {
     const pattern = /^1[0-9]{10}$/
     if (!pattern.test(value)) {
-        callback(new Error('手机号码格式不对，请重新输入'))
+        callback(new Error('手机号码格式不对'))
     }
     callback()
 }

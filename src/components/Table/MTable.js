@@ -43,7 +43,7 @@ export default {
     },
     rowClassName: {
       type: Function,
-      default: (record, index) => index % 2 !== 0 ? 'table-row-odd' : ''
+      default: (record, index) => (index % 2 !== 0 ? 'table-row-odd' : '')
     }
   }),
   components: {
@@ -51,12 +51,13 @@ export default {
   },
   created () {
     if (this.showPagination) {
-      this.localPagination = Object.assign({}, this.localPagination, {
-        current: this.pageNum,
-        pageSize: this.pageSize,
-        showSizeChanger: this.showSizeChanger,
-        showTotal: true
-      }) || false
+      this.localPagination =
+        Object.assign({}, this.localPagination, {
+          current: this.pageNum,
+          pageSize: this.pageSize,
+          showSizeChanger: this.showSizeChanger,
+          showTotal: true
+        }) || false
       this.parameter = {
         current: 1,
         pageSize: this.pageSize
@@ -94,18 +95,24 @@ export default {
       if ((typeof result === 'object' || typeof result === 'function') && typeof result.then === 'function') {
         result.then(r => {
           if (r) {
-            const data = r.data
+            let data = r.data
+            if (typeof data === 'object' && data.constructor !== Array) {
+                data = r.data.users
+            }
             this.localFirstDataSource = data // 总数据
             this.parameter = Object.assign({}, this.parameter, {
               queryParam: r.queryParam,
-              sorter: this.parameter && this.parameter.sorter || r.sorter
+              sorter: (this.parameter && this.parameter.sorter) || r.sorter
             })
-            this.localPagination = this.showPagination && Object.assign({}, this.localPagination, {
-              current: this.parameter.current,
-              pageSize: this.parameter.pageSize,
-              total: r.data.length,
-              showTotal: total => `共 ${total} 条数据`
-            }) || false
+            this.localPagination =
+              (this.showPagination &&
+                Object.assign({}, this.localPagination, {
+                  current: this.parameter.current,
+                  pageSize: this.parameter.pageSize,
+                  total: data.length,
+                  showTotal: total => `共 ${total} 条数据`
+                })) ||
+              false
             this.localDataSource = this.calculate(this.parameter)
             this.localLoading = false
             this.$emit('loaded', this.localDataSource)
@@ -144,16 +151,19 @@ export default {
         this.sorter = {}
       }
       this.parameter = Object.assign({}, this.parameter, {
-        current: (pagination && pagination.current),
-        pageSize: (pagination && pagination.pageSize),
+        current: pagination && pagination.current,
+        pageSize: pagination && pagination.pageSize,
         sorter: this.sorter,
         ...filters
       })
       this.localDataSource = this.calculate(this.parameter)
-      this.localPagination = this.showPagination && Object.assign({}, this.localPagination, {
-        current: this.parameter.current,
-        pageSize: this.parameter.pageSize
-      }) || false
+      this.localPagination =
+        (this.showPagination &&
+          Object.assign({}, this.localPagination, {
+            current: this.parameter.current,
+            pageSize: this.parameter.pageSize
+          })) ||
+        false
       this.localLoading = false
     },
     calculate (parameter) {
@@ -162,9 +172,12 @@ export default {
       // 查询
       if (!isEmpty(queryParam)) {
         data = data.filter(u => Object.keys(queryParam).every(i => `${deepGet(u, i)}`.indexOf(queryParam[i]) !== -1))
-        this.localPagination = this.showPagination && Object.assign({}, this.localPagination, {
-          total: data.length
-        }) || false
+        this.localPagination =
+          (this.showPagination &&
+            Object.assign({}, this.localPagination, {
+              total: data.length
+            })) ||
+          false
       }
       // 排序
       if (!isEmpty(sorter)) {
@@ -205,13 +218,19 @@ export default {
       this[k] && (props[k] = this[k])
       return props[k]
     })
-    this.$scopedSlots = Object.assign({}, {
-      time: text => convert(text, 'unix')
-    }, this.$scopedSlots)
+    this.$scopedSlots = Object.assign(
+      {},
+      {
+        time: text => convert(text, 'unix', 'YYYY-MM-DD')
+      },
+      this.$scopedSlots
+    )
     return (
       <div class="table-wrapper">
         <a-table {...{ props, scopedSlots: { ...this.$scopedSlots } }} onChange={this.changeData}>
-          { Object.keys(this.$slots).map(name => (<template slot={name}>{this.$slots[name]}</template>)) }
+          {Object.keys(this.$slots).map(name => (
+            <template slot={name}>{this.$slots[name]}</template>
+          ))}
         </a-table>
       </div>
     )

@@ -17,7 +17,6 @@ router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${i18nRender(to.meta.title)} - ${domTitle}`))
   /* has token */
-  console.log(storage.get(ACCESS_TOKEN))
   if (storage.get(ACCESS_TOKEN)) {
     if (to.path === loginRoutePath) {
       next({ path: defaultRoutePath })
@@ -29,12 +28,10 @@ router.beforeEach((to, from, next) => {
         store
           .dispatch('GetInfo')
           .then(res => {
-            const roles = res.result && res.result.role
-            // generate dynamic router
+            const roles = res.data && res.data.role
             store.dispatch('GenerateRoutes', { roles }).then(() => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
-            //   console.log(store.getters.addRouters)
               router.addRoutes(store.getters.addRouters)
               // 请求带有 redirect 重定向时，登录自动重定向到该地址
               const redirect = decodeURIComponent(from.query.redirect || to.path)

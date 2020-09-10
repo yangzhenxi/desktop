@@ -48,7 +48,8 @@ import {
   notification,
   Slider,
   Empty,
-  Pagination
+  Pagination,
+  Transfer
 } from 'ant-design-vue'
 import Viser from 'viser-vue'
 
@@ -105,6 +106,7 @@ Vue.use(Descriptions)
 Vue.use(Slider)
 Vue.use(Empty)
 Vue.use(Pagination)
+Vue.use(Transfer)
 
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message
@@ -121,4 +123,16 @@ Vue.use(PageLoading)
 Vue.use(PermissionHelper)
 Vue.use(VueCropper)
 
-process.env.NODE_ENV !== 'production' && console.warn('[antd-pro] NOTICE: Antd use lazy-load.')
+// process.env.NODE_ENV !== 'production' && console.warn('[antd-pro] NOTICE: Antd use lazy-load.')
+// Spin.setDefaultIndicator({
+//     indicator: {
+//       render () {
+//         return <div id="loading-center-absolute-inline">
+//           <div class="object_inline" id="object_one_inline"></div>
+//           <div class="object_inline" id="object_two_inline"></div>
+//           <div class="object_inline" id="object_three_inline"></div>
+//           <div class="object_inline" id="object_four_inline"></div>
+//         </div>
+//       }
+//     }
+//   })

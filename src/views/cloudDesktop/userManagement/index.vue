@@ -450,35 +450,11 @@ export default {
   font-size: 20px;
   margin-left: 10px;
 }
-.ant-card {
-  background: #272e48;
-  color: rgb(255, 255, 255);
-  cursor: pointer;
-  box-shadow: none;
-  border: none;
-  height: 770px;
-}
-/deep/.ant-card-head {
-  color: white;
-  border: none;
-}
+
 .ant-pagination {
   float: right;
   margin-right: 20px;
   margin-top: 20px;
-  color: white;
-}
-
-/deep/.ant-modal-header {
-  background: none;
-}
-/deep/.ant-modal-content {
-  background: #272e48;
-  color: white;
-  font-weight: 500;
-}
-/deep/.ant-modal-title,
-/deep/.ant-modal-close-x {
   color: white;
 }
 

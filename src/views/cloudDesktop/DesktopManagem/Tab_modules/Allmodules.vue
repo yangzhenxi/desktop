@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="title"> 软件部 </div>
-    <div class="btns">
+    <div class="title"> 基础模版 </div>
+    <!-- <div class="btns">
       <a-button
         type="primary"
         @click="$refs.ManageAdd.Add()">新建模版</a-button>
@@ -32,7 +32,7 @@
         type="danger"
         :disabled="disabled"
         @click="ModuleDelete">删除</a-button>
-    </div>
+    </div> -->
     <a-card style="height:635px;">
       <modules-info
         :modulesData="modulesData"

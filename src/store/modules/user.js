@@ -40,7 +40,7 @@ const user = {
           .then(response => {
             const result = response.data
             // const result = response.result
-            storage.set(ACCESS_TOKEN, result.value, 7 * 24 * 60 * 60 * 1000)
+            storage.set(ACCESS_TOKEN, result.value, parseInt(result.expired) * 1000)
             // storage.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
             commit('SET_TOKEN', result.token)
             resolve()
@@ -56,29 +56,46 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo()
           .then(response => {
-            const result = response.result // 角色信息
-            if (result.role && result.role.permissions.length > 0) { // 判断该用户是否有role
-              const role = result.role
-              role.permissions = result.role.permissions
-              role.permissions.map(per => {
-                if (per.actionEntitySet != null && per.actionEntitySet.length > 0) { // 判断该用户的权限是否存在
-                  const action = per.actionEntitySet.map(action => {
-                    return action.action
-                  })
-                  per.actionList = action // 所有页面的权限
+            // const result = response.result // 角色信息
+            const data = response.data // 角色信息
+            if (data.role && data.role.resources.length > 0) { // 判断该用户是否有role
+              const role = data.role
+              role.resources = data.role.resources
+            //   role.permissions = data.role.resources
+            //   console.log(role.permissions)
+            //   role.permissions.map(per => {
+            //     if (per.actionEntitySet != null && per.actionEntitySet.length > 0) { // 判断该用户的权限是否存在
+            //       const action = per.actionEntitySet.map(action => {
+            //         return action.action
+            //       })
+            //       per.actionList = action // 所有页面的权限
+            //     }
+            //   })
+                let Allarr = []
+                const menuArr = ['dashboard']
+                if (role.resources[0].name === 'all') {
+                     Allarr = ['dashboard', 'usergroup', 'system', 'user', 'role', 'template', 'machine', 'desktop', 'framwork', 'CloudDesktop', 'DesktopManagem', 'cloudDesktopmanage', 'terminalmanage', 'Desktopuse', 'server', 'operating', 'config', 'network', 'user', 'info']
+                } else {
+                    role.resources.forEach(u => {
+                        if (u.act === 'list') {
+                            menuArr.push(u.object)
+                            menuArr.push(u.module)
+                        }
+                    })
                 }
-              })
-              role.permissionList = role.permissions.map(permission => {
-                return permission.permissionId
-              })
-              commit('SET_ROLES', result.role)
-              commit('SET_INFO', result)
+                if (Allarr.length > 0) {
+                    role.permissionList = Allarr
+                } else if (menuArr.length > 0) {
+                    role.permissionList = menuArr
+                }
+                console.log(role.permissionList)
+              commit('SET_ROLES', data.role)
+              commit('SET_INFO', data)
             } else {
               reject(new Error('getInfo: roles must be a non-null array !'))
             }
-
-            commit('SET_NAME', { name: result.name, welcome: welcome() })
-            commit('SET_AVATAR', result.avatar)
+            commit('SET_NAME', { name: data.name, welcome: welcome() })
+            commit('SET_AVATAR', data.avatar)
             resolve(response)
           })
           .catch(error => {

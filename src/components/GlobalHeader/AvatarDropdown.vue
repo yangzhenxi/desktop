@@ -1,8 +1,8 @@
 <template>
-  <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight">
+  <a-dropdown v-if="this.$store.getters.userInfo && this.$store.getters.userInfo.name" placement="bottomRight">
     <span class="ant-pro-account-avatar">
       <a-avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" class="antd-pro-global-header-index-avatar" />
-      <span>{{ currentUser.name }}</span>
+      <span> {{ this.$store.getters.userInfo.name }}</span>
     </span>
     <template v-slot:overlay>
       <a-menu class="ant-pro-drop-down menu" :selected-keys="[]">
@@ -10,11 +10,7 @@
           <a-icon type="user" />
           个人中心
         </a-menu-item>
-        <a-menu-item v-if="menu" key="settings" @click="handleToSettings">
-          <a-icon type="setting" />
-          个人设置
-        </a-menu-item>
-        <a-menu-divider v-if="menu" />
+
         <a-menu-item key="logout" @click="handleLogout">
           <a-icon type="logout" />
           退出登录
@@ -33,10 +29,6 @@ import { Modal } from 'ant-design-vue'
 export default {
   name: 'AvatarDropdown',
   props: {
-    currentUser: {
-      type: Object,
-      default: () => null
-    },
     menu: {
       type: Boolean,
       default: true
@@ -44,21 +36,17 @@ export default {
   },
   methods: {
     handleToCenter () {
-      this.$router.push({ path: '/account/center' })
-    },
-    handleToSettings () {
-      this.$router.push({ path: '/account/settings' })
+      this.$router.push({ path: '/system/info' })
     },
     handleLogout (e) {
       Modal.confirm({
-        title: this.$t('layouts.usermenu.dialog.title'),
-        content: this.$t('layouts.usermenu.dialog.content'),
+        title: this.$t('退出提示'),
+        content: this.$t('确定要注销登录嘛'),
         onOk: () => {
-          // return new Promise((resolve, reject) => {
-          //   setTimeout(Math.random() > 0.5 ? resolve : reject, 1500)
-          // }).catch(() => console.log('Oops errors!'))
           return this.$store.dispatch('Logout').then(() => {
-            this.$router.push({ name: 'login' })
+            // this.$router.go(0)
+            location.reload()
+            // this.$router.push({ name: 'login' })
           })
         },
         onCancel () {}

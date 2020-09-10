@@ -1,7 +1,12 @@
 <template>
   <a-row :gutter="16">
     <a-radio-group v-model="value">
-      <a-col :span="span" v-for="(item,index) in modulesData" :key="index" @click="checked(index)">
+      <a-col>
+        <div class="add-wrap">
+          <a-icon type=""></a-icon>
+        </div>
+      </a-col>
+      <a-col v-for="(item,index) in modulesData" :key="index" :span="8" @click="checked(index)">
         <a-row class="modules">
           <a-col :span="8">
             <m-icon

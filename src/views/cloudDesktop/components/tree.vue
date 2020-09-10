@@ -12,10 +12,10 @@
         class="tree-view-item"
         @click="handleRadio(item.eventKey)">
         <span class="tree-view-left">
-          <m-icon
+          <a-icon
             v-if="item.dataRef.scopedSlots.icon"
-            type="moban"
-            class="icon moban" />
+            :type="icon"
+            :class="['icon',icon]" />
           {{ item.title }}
         </span>
         <div class="tree-view-right">
@@ -46,14 +46,16 @@ export default {
     checkedval: {
       type: Array,
       required: true
+    },
+    icon: {
+      type: String,
+      required: true
     }
   },
   data () {
     return {
       value: this.checkedval,
-      blockNode: true,
-      item1: false,
-      item2: false
+      blockNode: true
     }
   },
   methods: {

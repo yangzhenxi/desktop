@@ -1,26 +1,20 @@
 <template>
-  <div class="empty-wrapper" :style="{ minHeight: `${minHeight}px` }">
-    <template v-if="isEmpty">
-      <a-empty class="empty" :image="$EMPTY.PRESENTED_IMAGE_SIMPLE" />
-    </template>
-    <template v-else>
-      <slot></slot>
-    </template>
-  </div>
+  <a-empty v-if="isEmpty" :image="simpleImage"/>
 </template>
 
 <script>
+import { Empty } from 'ant-design-vue'
+
 export default {
   name: 'Empty',
   props: {
     isEmpty: {
       type: Boolean,
       default: false
-    },
-    minHeight: {
-      type: Number,
-      default: 400
     }
+  },
+      beforeCreate () {
+    this.simpleImage = Empty.PRESENTED_IMAGE_SIMPLE
   }
 }
 

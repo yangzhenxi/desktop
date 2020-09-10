@@ -27,13 +27,19 @@ export const asyncRouterMap = [
         path: '/CloudDesktop/userManagement',
         name: 'CloudDesktop',
         component: RouteView,
-        meta: { title: '云桌面', keepAlive: true, icon: icon.CloudDesktop, permission: ['dashboard'] },
+        meta: { title: '云桌面管理', keepAlive: true, icon: icon.CloudDesktop, permission: ['desktop'] },
         children: [
           {
             path: '/CloudDesktop/userManagement',
             name: 'userManagement',
             component: () => import('@/views/CloudDesktop/userManagement'),
-            meta: { title: '用户管理', keepAlive: true, icon: icon.userManagement, permission: ['dashboard'] }
+            meta: { title: '用户管理', keepAlive: true, icon: icon.userManagement, permission: ['CloudDesktop'] }
+          },
+          {
+            path: '/CloudDesktop/usergroup',
+            name: 'usergroup',
+            component: () => import('@/views/CloudDesktop/usergroup'),
+            meta: { title: '用户组管理', keepAlive: true, icon: icon.terminalmanage, permission: ['usergroup'] }
           },
           {
             path: '/CloudDesktop/DesktopManagem',
@@ -41,20 +47,20 @@ export const asyncRouterMap = [
             component: () => import('@/views/CloudDesktop/DesktopManagem'),
             redirect: '/CloudDesktop/DesktopManagem/Allmodules',
             hideChildrenInMenu: true,
-            meta: { title: '桌面模版管理', keepAlive: true, icon: icon.DesktopManagem, permission: ['dashboard'] },
+            meta: { title: '桌面模版管理', keepAlive: true, icon: icon.DesktopManagem, permission: ['template'] },
             children: [
                 {
                     path: '/CloudDesktop/DesktopManagem/Allmodules',
                     name: 'Allmodules',
                     component: () => import('@/views/CloudDesktop/DesktopManagem/Tab_modules/Allmodules'),
-                    meta: { title: '全部模版', keepAlive: true, icon: icon.DesktopManagem, permission: ['dashboard'], hiddenHeaderContent: true }
+                    meta: { title: '全部模版', keepAlive: true, icon: icon.DesktopManagem, permission: ['template'], hiddenHeaderContent: true }
 
                 },
                 {
                     path: '/CloudDesktop/DesktopManagem/:id/singlemodules',
                     name: 'singlemodules',
                     component: () => import('@/views/CloudDesktop/DesktopManagem/Tab_modules/singlemodules'),
-                    meta: { title: '单个模版', keepAlive: true, icon: icon.DesktopManagem, permission: ['dashboard'], hiddenHeaderContent: true }
+                    meta: { title: '单个模版', keepAlive: true, icon: icon.DesktopManagem, permission: ['template'], hiddenHeaderContent: true }
 
                 }
             ]
@@ -63,19 +69,7 @@ export const asyncRouterMap = [
             path: '/CloudDesktop/cloudDesktopmanage',
             name: 'cloudDesktopmanage',
             component: () => import('@/views/CloudDesktop/cloudDesktopmanage'),
-            meta: { title: '云桌面管理', keepAlive: true, icon: icon.cloudDesktopmanage, permission: ['dashboard'] }
-          },
-          {
-            path: '/CloudDesktop/terminalmanage',
-            name: 'terminalmanage',
-            component: () => import('@/views/CloudDesktop/terminalmanage'),
-            meta: { title: '终端管理', keepAlive: true, icon: icon.terminalmanage, permission: ['dashboard'] }
-          },
-          {
-            path: '/CloudDesktop/Desktopuse',
-            name: 'Desktopuse',
-            component: () => import('@/views/CloudDesktop/Desktopuse'),
-            meta: { title: '桌面使用情况', keepAlive: true, icon: icon.Desktopuse, permission: ['dashboard'] }
+            meta: { title: '云桌面管理', keepAlive: true, icon: icon.cloudDesktopmanage, permission: ['cloudDesktopmanage'] }
           }
         ]
       },
@@ -85,94 +79,75 @@ export const asyncRouterMap = [
         path: '/Cloud/server',
         name: '用户',
         component: RouteView,
-        meta: { title: '云桌面架构', keepAlive: true, icon: icon.cloud, permission: ['dashboard'] },
+        meta: { title: '云桌面基础架构', keepAlive: true, icon: icon.cloud, permission: ['framwork'] },
         children: [
             {
               path: '/Cloud/server',
               name: 'server',
               component: () => import('@/views/Cloud/server'),
-              meta: { title: '服务器管理', keepAlive: true, icon: icon.server, permission: ['dashboard'] }
+              meta: { title: '虚拟机管理', keepAlive: true, icon: icon.server, permission: ['machine'] }
             },
             {
               path: '/Cloud/operating',
               name: 'operating',
               component: () => import('@/views/Cloud/network'),
-              meta: { title: '操作系统管理', keepAlive: true, icon: icon.network, permission: ['dashboard'] }
+              meta: { title: '操作系统管理', keepAlive: true, icon: icon.network, permission: ['operating'] }
             },
             {
               path: '/Cloud/config',
               name: 'config',
               component: () => import('@/views/Cloud/operating'),
-              meta: { title: '配置管理', keepAlive: true, icon: icon.operating, permission: ['dashboard'] }
+              meta: { title: '配置管理', keepAlive: true, icon: icon.operating, permission: ['config'] }
             },
             {
               path: '/Cloud/network',
               name: 'network',
               component: () => import('@/views/Cloud/config'),
-              meta: { title: '网络管理', keepAlive: true, icon: icon.config, permission: ['dashboard'] }
+              meta: { title: '网络管理', keepAlive: true, icon: icon.config, permission: ['network'] }
             }
           ]
       },
       // 系统
       {
-        path: '/system/organization',
+        path: '/system/role',
         name: 'system',
         component: RouteView,
-        meta: { title: '系统', keepAlive: true, icon: icon.system, permission: ['dashboard'] },
+        meta: { title: '系统管理', keepAlive: true, icon: icon.system, permission: ['system'] },
         children: [
-          {
-            path: '/system/organization',
-            name: 'organization',
-            component: () => import('@/views/system/organization'),
-            meta: { title: '组织管理', keepAlive: true, icon: icon.organization, permission: ['dashboard'] }
-          },
           {
             path: '/system/role',
             name: 'role',
             component: () => import('@/views/system/role'),
-            meta: { title: '角色管理', keepAlive: true, icon: icon.role, permission: ['dashboard'] }
+            meta: { title: '角色管理', keepAlive: true, icon: icon.role, permission: ['role'] }
           },
           {
             path: '/system/user',
             name: 'user',
             component: () => import('@/views/system/user'),
-            meta: { title: '用户管理', keepAlive: true, icon: icon.user, permission: ['dashboard'] }
+            meta: { title: '用户管理', keepAlive: true, icon: icon.user, permission: ['user'] }
           },
           {
-            path: '/system/SystemSet',
-            name: 'SystemSet',
-            component: () => import('@/views/system/SystemSet'),
-            meta: { title: '系统设置', keepAlive: true, icon: icon.SystemSet, permission: ['dashboard'] }
-          },
-          {
-            path: '/system/Log',
-            name: 'Log',
-            component: () => import('@/views/system/Log'),
-            meta: { title: '日志管理', keepAlive: true, icon: icon.Log, permission: ['dashboard'] }
-          },
-          {
-            path: '/system/aboutus',
-            name: 'aboutus',
-            component: () => import('@/views/system/aboutus'),
-            meta: { title: '关于我们', keepAlive: true, icon: icon.aboutus, permission: ['dashboard'] }
-          },
-          {
-            path: '/system/task',
-            name: 'task',
-            component: () => import('@/views/system/task'),
-            meta: { title: '任务管理', keepAlive: true, icon: icon.task, permission: ['dashboard'] }
-          },
-          {
-            path: '/system/alarm',
-            name: 'alarm',
-            component: () => import('@/views/system/alarm'),
-            meta: { title: '警报管理', keepAlive: true, icon: icon.alarm, permission: ['dashboard'] }
-          },
-          {
-            path: '/system/Authorization',
-            name: 'Authorization',
-            component: () => import('@/views/system/Authorization'),
-            meta: { title: '授权与服务', keepAlive: true, icon: icon.Authorization, permission: ['dashboard'] }
+            path: '/system/info',
+            name: 'info',
+            component: () => import('@/views/system/info'),
+            meta: { title: '个人信息', keepAlive: false, icon: icon.user, permission: ['info'] },
+            redirect: '/system/info/modules/base',
+            hideChildrenInMenu: true,
+            hidden: true,
+            children: [
+                {
+                  path: '/system/info/modules/base',
+                  name: 'BaseSettings',
+                  component: () => import('@/views/system/info/modules/base'),
+                  meta: { title: '基本设置', hidden: true, permission: [ 'system' ] }
+                },
+                {
+                  path: '/system/info/modules/security',
+                  name: 'SecuritySettings',
+                  component: () => import('@/views/system/info/modules/Security'),
+                  meta: { title: '安全设置', hidden: true, keepAlive: true, permission: [ 'system' ] }
+                }
+            ]
           }
         ]
       }
