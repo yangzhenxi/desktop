@@ -1,22 +1,16 @@
 <template>
   <page-header-wrapper :title="false">
-    <a-spin :spinning="spinning">
-      <a-row :gutter="16">
-        <a-col :span="6">
-          <empty
-            v-if="!0"
-            :isEmpty="!0" ></empty>
-        </a-col>
-      </a-row>
-    </a-spin>
+    <div>
+      <a-progress type="circle" :percent="75" />
+      <a-progress type="circle" :percent="70" status="exception" />
+      <a-progress type="circle" :percent="100" />
+    </div>
   </page-header-wrapper>
 </template>
 
 <script>
 import MIcon from '@/components/Icon'
 import Tree from './Tree_modules/Tree'
-import Empty from '@/components/Empty'
-
 const allBranchListGetter = [
   {
     key: '99230713',
@@ -112,14 +106,12 @@ const allBranchListGetter = [
 export default {
   components: {
     MIcon,
-    Tree,
-    Empty
+    Tree
   },
   data () {
     return {
       allBranchListGetter,
-      checkedLeftval: ['99230713'],
-      spinning: false
+      checkedLeftval: ['99230713']
     }
   },
   methods: {

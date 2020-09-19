@@ -112,8 +112,7 @@ const allBranchListGetter = [
 export default {
   components: {
     MIcon,
-    Tree,
-    Empty
+    Tree
   },
   data () {
     return {

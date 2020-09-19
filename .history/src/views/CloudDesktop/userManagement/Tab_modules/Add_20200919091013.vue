@@ -168,10 +168,10 @@ export default {
     return {
         record: [],
         DisableCount: false,
-        pwdNeverExpires: true,
+        pwdNeverExpires: false,
         pwdNotSet: false,
         cannotChangePWD: false,
-        disabled: true,
+        disabled: false,
         validatorName: []
     }
   },
@@ -217,7 +217,6 @@ export default {
             this.accountControl.cannotChangePWD = false
         }
     },
-    // OU列表
     ouSort (record) {
         record.forEach(item => {
             const obj = {

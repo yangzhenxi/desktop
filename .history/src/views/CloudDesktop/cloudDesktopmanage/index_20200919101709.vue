@@ -2,11 +2,7 @@
   <page-header-wrapper :title="false">
     <a-spin :spinning="spinning">
       <a-row :gutter="16">
-        <a-col :span="6">
-          <empty
-            v-if="!0"
-            :isEmpty="!0" ></empty>
-        </a-col>
+        <a-col :span="6"></a-col>
       </a-row>
     </a-spin>
   </page-header-wrapper>
@@ -15,8 +11,6 @@
 <script>
 import MIcon from '@/components/Icon'
 import Tree from './Tree_modules/Tree'
-import Empty from '@/components/Empty'
-
 const allBranchListGetter = [
   {
     key: '99230713',
@@ -112,8 +106,7 @@ const allBranchListGetter = [
 export default {
   components: {
     MIcon,
-    Tree,
-    Empty
+    Tree
   },
   data () {
     return {

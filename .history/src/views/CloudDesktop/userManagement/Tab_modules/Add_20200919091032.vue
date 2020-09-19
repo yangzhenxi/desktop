@@ -168,10 +168,10 @@ export default {
     return {
         record: [],
         DisableCount: false,
-        pwdNeverExpires: true,
+        pwdNeverExpires: false,
         pwdNotSet: false,
         cannotChangePWD: false,
-        disabled: true,
+        disabled: false,
         validatorName: []
     }
   },

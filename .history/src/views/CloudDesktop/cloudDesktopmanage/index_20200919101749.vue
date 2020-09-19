@@ -15,8 +15,6 @@
 <script>
 import MIcon from '@/components/Icon'
 import Tree from './Tree_modules/Tree'
-import Empty from '@/components/Empty'
-
 const allBranchListGetter = [
   {
     key: '99230713',
@@ -112,8 +110,7 @@ const allBranchListGetter = [
 export default {
   components: {
     MIcon,
-    Tree,
-    Empty
+    Tree
   },
   data () {
     return {

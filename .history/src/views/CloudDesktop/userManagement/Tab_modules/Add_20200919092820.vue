@@ -167,11 +167,11 @@ export default {
   data () {
     return {
         record: [],
-        DisableCount: false,
-        pwdNeverExpires: true,
+        DisableCount: true,
+        pwdNeverExpires: false,
         pwdNotSet: false,
         cannotChangePWD: false,
-        disabled: true,
+        disabled: false,
         validatorName: []
     }
   },

@@ -154,7 +154,6 @@ export default {
   methods: {
     async Edit (record, ouList) {
       this.record = []
-      this.disabled = false
       // 保留之前老的数据
       this.oldData.name = record.username
       this.oldData.baseDN = record.baseDN
@@ -201,6 +200,7 @@ export default {
           usermanageEdituser(values).then((res) => {
             this.confirmLoading = false
             this.$message.success('修改成功')
+            this.disabled = false
             this.$emit('ok')
             this.visible = false
           })

@@ -171,7 +171,7 @@ export default {
         pwdNeverExpires: true,
         pwdNotSet: false,
         cannotChangePWD: false,
-        disabled: true,
+        disabled: false,
         validatorName: []
     }
   },

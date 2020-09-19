@@ -154,7 +154,6 @@ export default {
   methods: {
     async Edit (record, ouList) {
       this.record = []
-      this.disabled = false
       // 保留之前老的数据
       this.oldData.name = record.username
       this.oldData.baseDN = record.baseDN

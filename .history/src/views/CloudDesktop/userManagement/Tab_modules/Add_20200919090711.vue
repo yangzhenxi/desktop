@@ -168,10 +168,10 @@ export default {
     return {
         record: [],
         DisableCount: false,
-        pwdNeverExpires: true,
+        pwdNeverExpires: false,
         pwdNotSet: false,
         cannotChangePWD: false,
-        disabled: true,
+        disabled: false,
         validatorName: []
     }
   },
@@ -217,12 +217,21 @@ export default {
             this.accountControl.cannotChangePWD = false
         }
     },
-    // OU列表
     ouSort (record) {
         record.forEach(item => {
+            console.log(record)
+            // let ouSortvalue = ' '
+            // if (item.ouSort[0] === record[0].title) {
+            //     item.ouSort.reverse()
+            // }
+            // item.ouSort.reverse()
+            // item.ouSort.forEach((u, index) => {
+            //     ouSortvalue = ouSortvalue + 'ou=' + u + ','
+            // })
+            // ouSortvalue = (ouSortvalue + 'ou=Users,ou=Citrix,dc=test,dc=com').replace(/(^\s*)/g, '')
             const obj = {
                 name: item.title,
-                value: item.OU + ',ou=Users,ou=Citrix,dc=test,dc=com',
+                // value: ouSortvalue,
                 key: item.key
             }
             this.record.push(obj)
@@ -231,7 +240,6 @@ export default {
             }
         })
     },
-    // 校验重复密码
     confirmPassword (rule, value, callback) {
         const password = this.form.getFieldValue('password')
         if (value !== password) {
@@ -239,7 +247,7 @@ export default {
         }
         callback()
     },
-    // 校验重名称
+                    // 校验重名称
     validator: debounce(function (rule, value, callback) {
         nameRepeatValidator({
             data: () => {

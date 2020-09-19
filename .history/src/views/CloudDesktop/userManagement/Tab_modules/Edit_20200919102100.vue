@@ -153,8 +153,8 @@ export default {
   },
   methods: {
     async Edit (record, ouList) {
+        console.log(record)
       this.record = []
-      this.disabled = false
       // 保留之前老的数据
       this.oldData.name = record.username
       this.oldData.baseDN = record.baseDN
@@ -173,9 +173,7 @@ export default {
           }
       })
       this.passSet = res.user.accountControl
-        if (this.passSet.pwdNeverExpires) {
-            this.disabled = true
-        }
+      console.log(res.user.accountControl)
       this.visible = true
       this.$nextTick(() => {
         setTimeout(() => {
@@ -184,9 +182,11 @@ export default {
              displayName: res.user.displayName,
              telephoneNumber: res.user.telephoneNumber,
              username: res.user.username,
-             mail: res.user.mail
-            //  accountControl: this.passSet
+             mail: res.user.mail,
+             accountControl: this.passSet
              }
+
+            // this.pick(res.user, ['displayName', 'telephoneNumber', 'username', 'mail', 'accountControl']),
           )
         })
       })
