@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package system.v1;
+
+option go_package="rpc/system/v1;system_v1";
+
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/department.proto
+// Department 提供组织管理的相关接口
+service Department{
+    // List 获取组织列表
+    rpc List(DepartmentListReq) returns (DepartmentListResp); // casbin:system-department-list
+    // Add 添加组织
+    rpc Add(DepartmentAddReq) returns (DepartmentAddResp); // casbin:system-department-add
+    // Delete 删除组织
+    rpc Delete(DepartmentDeleteReq) returns (DepartmentDeleteResp); // casbin:system-department-delete
+    // Patch 修改组织信息
+    rpc Patch(DepartmentPatchReq) returns (DepartmentPatchResp); // casbin:system-department-delete
+}
+
+// 提供给前端的department数据
+message dep {
+    int64 id = 1;
+    string name = 2;
+    int64 parent = 3;
+    repeated dep departments = 4;
+    string description = 5;
+    int64 created = 6;
+}
+
+message DepartmentListReq {
+    // 根节点id
+    int64 root = 1;
+}
+
+message DepartmentListResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+    dep data = 3;
+}
+
+
+message DepartmentAddReq {
+    // 组织信息
+    dep department = 1;
+}
+
+message DepartmentAddResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 新增的departmentID
+    int64 data = 3;
+}
+
+message DepartmentDeleteReq {
+    int64 id = 1;
+}
+
+message DepartmentDeleteResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message DepartmentPatchReq {
+    // 组织信息
+    dep department = 1;
+}
+
+message DepartmentPatchResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
