@@ -23,6 +23,7 @@
                                     ],
                                     validateFirst: true
             }]" />
+          <!-- {validator:nameValidator} -->
         </a-form-item>
         <a-form-item
           label="用户名"

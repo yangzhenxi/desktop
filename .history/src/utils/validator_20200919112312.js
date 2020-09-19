@@ -91,7 +91,7 @@ export async function nameRepeatspecialValidator ({ data, message = '名称已�
       if (initialValue && value === initialValue) {
         callback()
       }
-      const pattern = /^[a-zA-Z][A-Za-z0-9]+$/
+      const pattern = /^[\d\w]+$/
       if (!pattern.test(value)) {
           callback(new Error('用户名必须以字母开头，且仅有英文和数字'))
       }

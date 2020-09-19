@@ -66,7 +66,7 @@
 <script>
 import { mixinFormModal } from '@/utils/mixin'
 import { systemUserAdd } from '@/api/system/user'
-import { nameValidator, telValidator, namechineValidator, nameRepeatspecialValidator } from '@/utils/validator'
+import { nameValidator, telValidator, namechineValidator } from '@/utils/validator'
 import { debounce } from '@/utils/util'
 
 export default {
@@ -112,10 +112,11 @@ export default {
     },
     // 校验重名称
     validator: debounce(function (rule, value, callback) {
-      nameRepeatspecialValidator(
+      nameRepeatValidator(
         {
           data: () => {
             try {
+              console.log(this.validatorName)
               const data = this.validatorName.users
               return data
             } catch (error) {

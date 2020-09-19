@@ -41,11 +41,6 @@ export default {
   methods: {
     Add (userList) {
       this.visible = true
-              this.$nextTick(() => {
-        setTimeout(() => {
-          this.form.setFieldsValue({ name: '' })
-        })
-      })
       this.validatorName = userList
     },
     handleSubmit () {
@@ -92,13 +87,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/input#name {
-  background: content-box;
-  height: 0;
-  padding: 1.2em 0.5em;
+/deep/.ant-checkbox-wrapper {
   color: white !important;
 }
-/deep/input#name::first-line {
-  color: white;
+/deep/.ant-form-item-label > label {
+  color: white !important;
 }
 </style>

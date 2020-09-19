@@ -29,7 +29,7 @@
           :wrapperCol="wrapperCol">
           <a-input
             placeholder="请输入用户名"
-            v-decorator="['username', { rules: [{required: true, message: '请输入用户名！'},{max:20,min:5,message:' 用户名长度为5-20个字符以内!'},{validator}],firstFields:true
+            v-decorator="['username', { rules: [{required: true, message: '请输入用户名！'},{max:20,min:5,message:' 用户名长度为5-20个字符以内!'},{validator:nameValidator}],validateFields: true
             }]" />
         </a-form-item>
         <a-form-item
@@ -66,7 +66,7 @@
 <script>
 import { mixinFormModal } from '@/utils/mixin'
 import { systemUserAdd } from '@/api/system/user'
-import { nameValidator, telValidator, namechineValidator, nameRepeatspecialValidator } from '@/utils/validator'
+import { nameValidator, telValidator, namechineValidator, nameRepeatValidator } from '@/utils/validator'
 import { debounce } from '@/utils/util'
 
 export default {
@@ -112,11 +112,11 @@ export default {
     },
     // 校验重名称
     validator: debounce(function (rule, value, callback) {
-      nameRepeatspecialValidator(
+      nameRepeatValidator(
         {
           data: () => {
             try {
-              const data = this.validatorName.users
+              const data = this.validatorName
               return data
             } catch (error) {
               return []

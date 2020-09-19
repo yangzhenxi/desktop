@@ -20,6 +20,7 @@
             v-decorator="['name', { rules: [
                                       { required: true, message: '请输入姓名' },
                                       {max:10,min:2,message:' 姓名长度为2-10个字符以内!'},
+                                      {validator:nameValidator}
                                     ],
                                     validateFirst: true
             }]" />
@@ -32,7 +33,7 @@
           <a-input
             placeholder="请输入用户名"
             disabled
-            v-decorator="['username', { rules: [{required: true, message: '请输入用户名！'},{max:20,min:5,message:' 用户名长度为5-20个字符以内!'},{validator}],validateFields: true
+            v-decorator="['username', { rules: [{required: true, message: '请输入用户名！'},{max:20,min:5,message:' 用户名长度为5-20个字符以内!'},{validator:nameValidator}],validateFields: true
             }]" />
         </a-form-item>
         <a-form-item
