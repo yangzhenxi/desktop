@@ -25,7 +25,7 @@
                   <a-icon
                     class="icon"
                     type="edit"
-                    @click="$refs.Edit.Edit(item,roleList)"></a-icon>
+                    @click="$refs.Edit.Edit(item)"></a-icon>
                 </a>
                 <a slot="actions">
                   <a-icon
@@ -53,9 +53,7 @@
             </a-list-item>
           </a-list>
         </a-col>
-        <empty
-          v-if="!roleModule.length"
-          :isEmpty="!roleModule.length" />
+        <empty v-if="!roleModule.length" :isEmpty="!roleModule.length"/>
         <a-col
           v-else
           :span="14"
@@ -314,14 +312,12 @@ export default {
           }
         })
       })
-      systemRolePatchPermission(this.UpRoleData)
-        .then((res) => {
-          this.$message.success('修改成功')
-          this.loadData(this.role.id)
-        })
-        .catch(() => {
-          this.loadData(this.role.id)
-        })
+      systemRolePatchPermission(this.UpRoleData).then((res) => {
+        this.$message.success('修改成功')
+        this.loadData(this.role.id)
+      }).catch(() => {
+        this.loadData(this.role.id)
+      })
     }
   }
 }
@@ -374,6 +370,7 @@ h4.ant-list-item-meta-title,
 .roleList {
   padding-left: 8px;
   padding-right: 8px;
+  // background: white;
   border-radius: 20px;
   color: white;
   font-weight: 500;
@@ -383,5 +380,4 @@ h4.ant-list-item-meta-title,
   position: relative;
   color: white;
 }
-
 </style>

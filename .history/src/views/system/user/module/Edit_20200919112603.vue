@@ -20,6 +20,7 @@
             v-decorator="['name', { rules: [
                                       { required: true, message: '请输入姓名' },
                                       {max:10,min:2,message:' 姓名长度为2-10个字符以内!'},
+                                      <!-- {validator:nameValidator} -->
                                     ],
                                     validateFirst: true
             }]" />

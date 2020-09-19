@@ -28,25 +28,18 @@
 <script>
 import { mixinFormModal } from '@/utils/mixin'
 import { systemRoleAdd } from '@/api/system/role'
-import { nameRepeatValidator } from '@/utils/validator'
-import { debounce } from '@/utils/util'
+import { namechineValidator } from '@/utils/validator'
 
 export default {
   mixins: [mixinFormModal],
   data () {
     return {
-        validatorName: []
     }
   },
   methods: {
-    Add (userList) {
+    Add () {
+        // this.form.setFieldsValue({ name: '' })
       this.visible = true
-              this.$nextTick(() => {
-        setTimeout(() => {
-          this.form.setFieldsValue({ name: '' })
-        })
-      })
-      this.validatorName = userList
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
@@ -70,35 +63,16 @@ export default {
         }
       })
     },
-        // 校验重名称
-    validator: debounce(function (rule, value, callback) {
-      nameRepeatValidator(
-        {
-          data: () => {
-            try {
-              const data = this.validatorName
-              return data
-            } catch (error) {
-              return []
-            }
-          },
-          field: 'name'
-        },
-        { rule, value, callback }
-      )
-    })
+    namechineValidator
   }
 }
 </script>
 
 <style lang="less" scoped>
-/deep/input#name {
-  background: content-box;
-  height: 0;
-  padding: 1.2em 0.5em;
+/deep/.ant-checkbox-wrapper {
   color: white !important;
 }
-/deep/input#name::first-line {
-  color: white;
+/deep/.ant-form-item-label > label {
+  color: white !important;
 }
 </style>

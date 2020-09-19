@@ -116,6 +116,7 @@ export default {
         {
           data: () => {
             try {
+              console.log(this.validatorName)
               const data = this.validatorName.users
               return data
             } catch (error) {

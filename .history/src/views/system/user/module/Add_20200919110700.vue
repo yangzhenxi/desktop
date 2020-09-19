@@ -1,25 +1,24 @@
 <template>
   <a-modal
-    title="修改用户"
+    title="新建用户"
     :width="640"
     :visible="visible"
     :confirmLoading="confirmLoading"
     @ok="handleSubmit"
     @change="handleCancel"
-    destroyOnClose
-  >
+    destroyOnClose>
     <a-spin :spinning="loading">
       <a-form :form="form">
         <a-form-item
           label="姓名"
           :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-        >
+          :wrapperCol="wrapperCol">
           <a-input
             placeholder="请输入姓名"
             v-decorator="['name', { rules: [
                                       { required: true, message: '请输入姓名' },
                                       {max:10,min:2,message:' 姓名长度为2-10个字符以内!'},
+                                      {validator:namechineValidator}
                                     ],
                                     validateFirst: true
             }]" />
@@ -27,25 +26,37 @@
         <a-form-item
           label="用户名"
           :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-        >
+          :wrapperCol="wrapperCol">
           <a-input
             placeholder="请输入用户名"
-            disabled
             v-decorator="['username', { rules: [{required: true, message: '请输入用户名！'},{max:20,min:5,message:' 用户名长度为5-20个字符以内!'},{validator}],validateFields: true
             }]" />
         </a-form-item>
         <a-form-item
-          label="
-            角色"
+          label="角色"
           :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-        >
-          <a-select placeholder="请选择角色" v-decorator="['role_id', { rules: [{required: true, message: '请选择角色'}] }]" >
-            <a-select-option v-for="i in roleList" :key="i.id" :value="i.id">
+          :wrapperCol="wrapperCol">
+          <a-select
+            placeholder="请选择角色"
+            v-decorator="['role_id', { rules: [{required: true, message: '请选择角色'}] }]">
+            <a-select-option
+              v-for="i in roleList"
+              :key="i.id"
+              :value="i.id">
               {{ i.name }}
             </a-select-option>
           </a-select>
+        </a-form-item>
+        <a-form-item
+          label="锁定状态"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol">
+          <a-switch
+            v-decorator="['locked']"
+            :checked="checked"
+            @change="onChange"
+            checkedChildren="启用"
+            unCheckedChildren="禁用" />
         </a-form-item>
       </a-form>
     </a-spin>
@@ -54,75 +65,69 @@
 
 <script>
 import { mixinFormModal } from '@/utils/mixin'
-import { systemUserPatch } from '@/api/system/user'
-import { nameValidator, telValidator, namechineValidator, nameRepeatspecialValidator } from '@/utils/validator'
+import { systemUserAdd } from '@/api/system/user'
+import { nameValidator, telValidator, namechineValidator, nameRepeatValidator } from '@/utils/validator'
 import { debounce } from '@/utils/util'
 
 export default {
   mixins: [mixinFormModal],
   data () {
     return {
-        roleList: Array,
-        recard: null,
+      roleList: Array,
+      checked: true,
       validatorName: []
-
     }
   },
   methods: {
-    Edit (recard, role, userList) {
-        this.recard = recard
-        this.roleList = role
+    Add (recard, userList) {
+      this.roleList = recard
       this.validatorName = userList
-
-        this.visible = true
-            this.$nextTick(() => {
-        setTimeout(() => {
-          this.form.setFieldsValue(
-            this.pick(this.recard, ['name', 'username', 'role_id'])
-          )
-        })
-      })
+      this.visible = true
+      this.checked = true
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
-          this.confirmLoading = true
+        this.confirmLoading = true
         if (!errors) {
           try {
-              values.id = this.recard.id
-              const obj = {
-                  user: values
-              }
-              systemUserPatch(obj).then(res => {
-                    this.confirmLoading = false
-                    this.$message.success('修改成功')
-                    this.$emit('ok')
-                    this.visible = false
-              })
+            values.locked = !this.checked
+            const obj = {
+              user: values
+            }
+            systemUserAdd(obj).then((res) => {
+              this.confirmLoading = false
+              this.$message.success('新建成功！')
+              this.$emit('ok')
+              this.visible = false
+            })
           } catch (error) {
             this.confirmLoading = false
           }
-        } else {
-          this.confirmLoading = false
         }
+        this.confirmLoading = false
       })
     },
-                          // 校验重名称
+    onChange () {
+      this.checked = !this.checked
+    },
+    // 校验重名称
     validator: debounce(function (rule, value, callback) {
-        nameRepeatspecialValidator({
-            data: () => {
-                try {
-                    const data = this.validatorName
-                    return data
-                } catch (error) {
-                    return []
-                }
-            },
-            field: 'name',
-            initialValue: this.deepGet(this.record, 'title')
+      nameRepeatValidator(
+        {
+          data: () => {
+            try {
+              console.log(this.validatorName)
+              const data = this.validatorName.users
+              return data
+            } catch (error) {
+              return []
+            }
+          },
+          field: 'username'
         },
         { rule, value, callback }
-        )
-      }),
+      )
+    }),
     nameValidator,
     telValidator,
     namechineValidator
@@ -131,8 +136,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-    /deep/.ant-form-item label {
-        position: relative;
-        color: white;
-    }
 </style>

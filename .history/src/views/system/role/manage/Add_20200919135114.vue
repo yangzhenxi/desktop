@@ -92,6 +92,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/.ant-checkbox-wrapper {
+  color: white !important;
+}
+/deep/.ant-form-item-label > label {
+  color: white !important;
+}
 /deep/input#name {
   background: content-box;
   height: 0;

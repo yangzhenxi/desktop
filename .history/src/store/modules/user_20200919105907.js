@@ -88,6 +88,7 @@ const user = {
                 } else if (menuArr.length > 0) {
                     role.permissionList = menuArr
                 }
+                console.log(role.permissionList)
               commit('SET_ROLES', data.role)
               commit('SET_INFO', data)
             } else {

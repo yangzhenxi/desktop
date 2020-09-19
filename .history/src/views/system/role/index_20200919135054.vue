@@ -383,5 +383,13 @@ h4.ant-list-item-meta-title,
   position: relative;
   color: white;
 }
-
+/deep/input#name {
+  background: content-box;
+  height: 0;
+  padding: 1.2em 0.5em;
+  color: white !important;
+}
+/deep/input#name::first-line {
+  color: white;
+}
 </style>

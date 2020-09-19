@@ -62,7 +62,7 @@ export function IpValidator (rule, value, callback) {
     callback()
 }
 
-// 重复名称可以输入特殊字符
+// 重复名称
 export async function nameRepeatValidator ({ data, message = '名称已存在，请重新输入！', initialValue, field = 'name' }, { rule, value, callback }) {
     try {
       if (initialValue && value === initialValue) {
@@ -74,26 +74,6 @@ export async function nameRepeatValidator ({ data, message = '名称已存在，
       }
       if (value.length > 24) {
         callback(new Error('长度不得大于24'))
-      }
-      const r = await data()
-      const target = r.find(u => u[field] === value)
-      if (target) {
-        callback(new Error(message))
-      }
-    } catch (error) {
-      callback()
-    }
-    callback()
-  }
-// 重复名称不可以输入特殊字符
-export async function nameRepeatspecialValidator ({ data, message = '名称已存在，请重新输入！', initialValue, field = 'name' }, { rule, value, callback }) {
-    try {
-      if (initialValue && value === initialValue) {
-        callback()
-      }
-      const pattern = /^[a-zA-Z][A-Za-z0-9]+$/
-      if (!pattern.test(value)) {
-          callback(new Error('用户名必须以字母开头，且仅有英文和数字'))
       }
       const r = await data()
       const target = r.find(u => u[field] === value)

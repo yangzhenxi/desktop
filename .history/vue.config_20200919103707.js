@@ -83,7 +83,7 @@ const vueConfig = {
     //     pathRewrite: {
     //       '^/api/system': '/api/system.v1'
     //     }
-    //   }
+    //   },
       '/api': {
         target: 'http://192.168.2.235:8082',
         changeOrigin: true,

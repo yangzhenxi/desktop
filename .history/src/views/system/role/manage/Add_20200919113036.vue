@@ -35,18 +35,11 @@ export default {
   mixins: [mixinFormModal],
   data () {
     return {
-        validatorName: []
     }
   },
   methods: {
-    Add (userList) {
+    Add () {
       this.visible = true
-              this.$nextTick(() => {
-        setTimeout(() => {
-          this.form.setFieldsValue({ name: '' })
-        })
-      })
-      this.validatorName = userList
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
@@ -76,13 +69,13 @@ export default {
         {
           data: () => {
             try {
-              const data = this.validatorName
+              const data = this.validatorName.users
               return data
             } catch (error) {
               return []
             }
           },
-          field: 'name'
+          field: 'username'
         },
         { rule, value, callback }
       )
@@ -92,13 +85,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/input#name {
-  background: content-box;
-  height: 0;
-  padding: 1.2em 0.5em;
+/deep/.ant-checkbox-wrapper {
   color: white !important;
 }
-/deep/input#name::first-line {
-  color: white;
+/deep/.ant-form-item-label > label {
+  color: white !important;
 }
 </style>

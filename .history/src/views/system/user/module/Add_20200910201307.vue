@@ -29,7 +29,7 @@
           :wrapperCol="wrapperCol">
           <a-input
             placeholder="请输入用户名"
-            v-decorator="['username', { rules: [{required: true, message: '请输入用户名！'},{max:20,min:5,message:' 用户名长度为5-20个字符以内!'},{validator}],firstFields:true
+            v-decorator="['username', { rules: [{required: true, message: '请输入用户名！'},{max:20,min:5,message:' 用户名长度为5-20个字符以内!'},{validator:nameValidator}],validateFields: true
             }]" />
         </a-form-item>
         <a-form-item
@@ -47,6 +47,22 @@
             </a-select-option>
           </a-select>
         </a-form-item>
+        <!-- <a-form-item
+          label="邮箱"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol">
+          <a-input
+            placeholder="请输入邮箱"
+            v-decorator="['mail',{rules:[{ type: 'email',message:'邮箱格式不正确'}]}]" />
+        </a-form-item>
+        <a-form-item
+          label="手机"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol">
+          <a-input
+            placeholder="请输入手机"
+            v-decorator="['phone', { rules: [{ validator: telValidator}] }]" />
+        </a-form-item> -->
         <a-form-item
           label="锁定状态"
           :labelCol="labelCol"
@@ -56,7 +72,7 @@
             :checked="checked"
             @change="onChange"
             checkedChildren="启用"
-            unCheckedChildren="禁用" />
+            unCheckedChildren="禁用"/>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -66,22 +82,18 @@
 <script>
 import { mixinFormModal } from '@/utils/mixin'
 import { systemUserAdd } from '@/api/system/user'
-import { nameValidator, telValidator, namechineValidator, nameRepeatspecialValidator } from '@/utils/validator'
-import { debounce } from '@/utils/util'
-
+import { nameValidator, telValidator, namechineValidator } from '@/utils/validator'
 export default {
   mixins: [mixinFormModal],
   data () {
     return {
       roleList: Array,
-      checked: true,
-      validatorName: []
+      checked: true
     }
   },
   methods: {
-    Add (recard, userList) {
+    Add (recard) {
       this.roleList = recard
-      this.validatorName = userList
       this.visible = true
       this.checked = true
     },
@@ -90,16 +102,17 @@ export default {
         this.confirmLoading = true
         if (!errors) {
           try {
-            values.locked = !this.checked
+              values.locked = !this.checked
             const obj = {
               user: values
             }
-            systemUserAdd(obj).then((res) => {
-              this.confirmLoading = false
-              this.$message.success('新建成功！')
-              this.$emit('ok')
-              this.visible = false
-            })
+            systemUserAdd(obj)
+              .then((res) => {
+                this.confirmLoading = false
+                this.$message.success('新建成功！')
+                this.$emit('ok')
+                this.visible = false
+              })
           } catch (error) {
             this.confirmLoading = false
           }
@@ -108,25 +121,8 @@ export default {
       })
     },
     onChange () {
-      this.checked = !this.checked
+        this.checked = !this.checked
     },
-    // 校验重名称
-    validator: debounce(function (rule, value, callback) {
-      nameRepeatspecialValidator(
-        {
-          data: () => {
-            try {
-              const data = this.validatorName.users
-              return data
-            } catch (error) {
-              return []
-            }
-          },
-          field: 'username'
-        },
-        { rule, value, callback }
-      )
-    }),
     nameValidator,
     telValidator,
     namechineValidator

@@ -20,6 +20,7 @@
             v-decorator="['name', { rules: [
                                       { required: true, message: '请输入姓名' },
                                       {max:10,min:2,message:' 姓名长度为2-10个字符以内!'},
+                                      {validator:nameValidator}
                                     ],
                                     validateFirst: true
             }]" />
@@ -32,7 +33,7 @@
           <a-input
             placeholder="请输入用户名"
             disabled
-            v-decorator="['username', { rules: [{required: true, message: '请输入用户名！'},{max:20,min:5,message:' 用户名长度为5-20个字符以内!'},{validator}],validateFields: true
+            v-decorator="['username', { rules: [{required: true, message: '请输入用户名！'},{max:20,min:5,message:' 用户名长度为5-20个字符以内!'},{validator:nameValidator}],validateFields: true
             }]" />
         </a-form-item>
         <a-form-item
@@ -47,6 +48,24 @@
             </a-select-option>
           </a-select>
         </a-form-item>
+        <!-- <a-form-item
+          label="邮箱"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+        >
+          <a-input
+            placeholder="请输入邮箱"
+            v-decorator="['mail',{rules:[{ type: 'email',message:'邮箱格式不正确'}]}]" />
+        </a-form-item>
+        <a-form-item
+          label="手机"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+        >
+          <a-input
+            placeholder="请输入手机"
+            v-decorator="['phone', { rules: [{ validator: telValidator}] }]" />
+        </a-form-item> -->
       </a-form>
     </a-spin>
   </a-modal>
@@ -55,30 +74,26 @@
 <script>
 import { mixinFormModal } from '@/utils/mixin'
 import { systemUserPatch } from '@/api/system/user'
-import { nameValidator, telValidator, namechineValidator, nameRepeatspecialValidator } from '@/utils/validator'
-import { debounce } from '@/utils/util'
+import { nameValidator, telValidator, namechineValidator } from '@/utils/validator'
 
 export default {
   mixins: [mixinFormModal],
   data () {
     return {
         roleList: Array,
-        recard: null,
-      validatorName: []
-
+        recard: null
     }
   },
   methods: {
-    Edit (recard, role, userList) {
+    Edit (recard, role) {
         this.recard = recard
         this.roleList = role
-      this.validatorName = userList
-
         this.visible = true
             this.$nextTick(() => {
         setTimeout(() => {
           this.form.setFieldsValue(
             this.pick(this.recard, ['name', 'username', 'role_id'])
+            // this.pick(res.user.accountControl, ['DisableCount', 'cannotChangePWD', 'pwdNeverExpires', 'pwdNotSet'])
           )
         })
       })
@@ -106,23 +121,6 @@ export default {
         }
       })
     },
-                          // 校验重名称
-    validator: debounce(function (rule, value, callback) {
-        nameRepeatspecialValidator({
-            data: () => {
-                try {
-                    const data = this.validatorName
-                    return data
-                } catch (error) {
-                    return []
-                }
-            },
-            field: 'name',
-            initialValue: this.deepGet(this.record, 'title')
-        },
-        { rule, value, callback }
-        )
-      }),
     nameValidator,
     telValidator,
     namechineValidator

@@ -374,6 +374,7 @@ h4.ant-list-item-meta-title,
 .roleList {
   padding-left: 8px;
   padding-right: 8px;
+  // background: white;
   border-radius: 20px;
   color: white;
   font-weight: 500;
@@ -383,5 +384,13 @@ h4.ant-list-item-meta-title,
   position: relative;
   color: white;
 }
-
+/deep/input#name {
+  background: content-box;
+  height: 0;
+  padding: 1.2em 0.5em;
+  color: white !important;
+}
+/deep/input#name::first-line {
+  color: white;
+}
 </style>

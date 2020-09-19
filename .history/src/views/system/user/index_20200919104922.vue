@@ -5,7 +5,7 @@
         <a-col :span="2">
           <a-button
             type="primary"
-            @click="$refs.Add.Add(roleList,UserList)"
+            @click="$refs.Add.Add(roleList)"
             icon="plus">新增</a-button>
         </a-col>
         <a-col :span="4">
@@ -45,7 +45,7 @@
           <a-button
             type="primary"
             style="margin-left:15px;"
-            @click="ResetPassword(record,UserList)">重置密码</a-button>
+            @click="ResetPassword(record)">重置密码</a-button>
         </template>
       </m-table>
       <add-modal
