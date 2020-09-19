@@ -4,6 +4,7 @@
  *  @param {*} 验证参数
  */
 export function namechineValidator (rule, value, callback) {
+    console.log(value)
     const pattern = /^[0-9a-zA-Z\u4e00-\u9fa5]+$/
     if (!pattern.test(value)) {
         callback(new Error('名称必须由中文、数字和字母组成！'))

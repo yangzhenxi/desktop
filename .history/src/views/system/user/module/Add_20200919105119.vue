@@ -72,14 +72,12 @@ export default {
   data () {
     return {
       roleList: Array,
-      checked: true,
-      userList: []
+      checked: true
     }
   },
   methods: {
-    Add (recard, userList) {
+    Add (recard) {
       this.roleList = recard
-      this.userList = userList
       this.visible = true
       this.checked = true
     },

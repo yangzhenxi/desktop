@@ -47,6 +47,22 @@
             </a-select-option>
           </a-select>
         </a-form-item>
+        <!-- <a-form-item
+          label="邮箱"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol">
+          <a-input
+            placeholder="请输入邮箱"
+            v-decorator="['mail',{rules:[{ type: 'email',message:'邮箱格式不正确'}]}]" />
+        </a-form-item>
+        <a-form-item
+          label="手机"
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol">
+          <a-input
+            placeholder="请输入手机"
+            v-decorator="['phone', { rules: [{ validator: telValidator}] }]" />
+        </a-form-item> -->
         <a-form-item
           label="锁定状态"
           :labelCol="labelCol"
@@ -72,14 +88,12 @@ export default {
   data () {
     return {
       roleList: Array,
-      checked: true,
-      userList: []
+      checked: true
     }
   },
   methods: {
-    Add (recard, userList) {
+    Add (recard) {
       this.roleList = recard
-      this.userList = userList
       this.visible = true
       this.checked = true
     },

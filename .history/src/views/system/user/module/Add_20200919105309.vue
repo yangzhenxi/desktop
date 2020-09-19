@@ -79,7 +79,6 @@ export default {
   methods: {
     Add (recard, userList) {
       this.roleList = recard
-      this.userList = userList
       this.visible = true
       this.checked = true
     },
