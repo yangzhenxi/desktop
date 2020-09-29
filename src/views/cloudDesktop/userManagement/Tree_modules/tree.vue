@@ -2,9 +2,9 @@
   <a-tree
     :tree-data="treeData"
     show-icon
-    :defaultExpandAll="defaultExpandAll"
+    :selectedKeys="selectedKeys"
     :blockNode="blockNode"
-    :defaultSelectedKeys="checkedval">
+    default-expand-all>
     <template
       slot="custom"
       slot-scope="item">
@@ -43,24 +43,18 @@ export default {
       type: Array,
       required: true
     },
-    checkedval: {
+    selectedKeys: {
       type: Array,
       required: true
     }
   },
   data () {
     return {
-      defaultExpandAll: true,
-      selectedKeys: [0],
-      blockNode: true,
-      item1: false,
-      item2: false
+      blockNode: true
     }
   },
   methods: {
     handleRadio (item) {
-        // console.log(item)
-    //   this.checkedval = item.eventKey
       this.$emit('changecheckedval', item)
     }
 
