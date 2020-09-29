@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package desktop.v1;
+
+option go_package="rpc/desktop/v1;desktop_v1";
+
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/host.proto
+// 获取托管资源
+service Host {
+    // List 获取列表
+    rpc List(HostListReq) returns (HostListResp);
+}
+
+message hostNetwork {
+    // 名称
+    string id = 1;
+    // 路径
+    string path = 2;
+}
+
+message HostingUnit {
+    string name = 1;
+    // 路径
+    string path = 2;
+    // 网络
+    repeated hostNetwork networks = 3;
+}
+
+message HostListReq {}
+
+message HostListResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+    repeated HostingUnit data = 3;
+}

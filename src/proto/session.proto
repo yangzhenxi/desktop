@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package desktop.v1;
+
+option go_package="rpc/desktop/v1;desktop_v1";
+
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/session.proto
+// broker.session相关的接口
+service Session {
+    // 这里的行尾注释 casbin:foo 用于验证接口权限格式为module-object-action(主模块-对象-操作)
+    //
+    // List 获取会话列表
+    rpc List(SessionListReq) returns (SessionListResp);
+    // Stop 停止会话列表
+    rpc Stop(SessionStopReq) returns (SessionStopResp);
+}
+
+enum SessionState {
+    // 连接中
+    Connected = 0;
+    //
+    Active = 1;
+    // 已断开
+    Disconnected = 2;
+    // 准备
+    PreparingSession = 3;
+    // 重连
+    Reconnecting = 4;
+    //
+    NonBrokerSession = 5;
+    //
+    Other = 6;
+}
+
+// broker.session
+message BrokerSession {
+    // 会话key
+    string SessionKey = 1;
+    // 机器名
+    string MachineName = 2;
+    // ip 地址
+    string IPAddress = 3;
+    // 客户名
+    string ClientName = 4;
+    // 客户地址
+    string ClientAddress = 5;
+    // 会话开始时间
+    int64 StartTime = 6;
+    // 版本
+    string CpbVersion = 7;
+    // 会话状态
+    SessionState SessionState  = 8;
+}
+
+
+// 会话列表请求
+message SessionListReq {
+    // desktop_id
+    int64 desktop_id = 1;
+}
+
+// 会话列表请求结果
+message SessionListResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+    repeated BrokerSession data = 3;
+}
+
+
+// 停止会话请求
+message SessionStopReq {
+    // 会话key
+    string SessionKey = 1;
+}
+
+// 停止会话返回结果
+message SessionStopResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+

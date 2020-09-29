@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package desktop.v1;
+
+option go_package="rpc/desktop/v1;desktop_v1";
+
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/machine.proto
+// broker machine的相关接口
+service Machine {
+    // 这里的行尾注释 casbin:foo 用于验证接口权限格式为module-object-action(主模块-对象-操作)
+    //
+    // ListBrokerDesktops 获取交付组下的桌面
+    rpc List(MachineListReq) returns (MachineListResp);
+    // PowerOffBrokerMachine 计算机关机
+    rpc Power(MachinePowerReq) returns (MachinePowerResp);  // casbin: desktop-machine-power
+    // SetMaintenanceMode 修改计算机的维护模式
+    rpc SetMaintenanceMode(SetMachineMaintenanceModeReq) returns (SetMachineMaintenanceModeResp); // casbin: desktop-machine-maintenance
+}
+
+enum PowerState {
+    Unmanaged = 0;
+    Unknown = 1;
+    Unavailable = 2;
+    Off = 3;
+    On = 4;
+    Suspended = 5;
+    TurningOn = 6;
+    TurningOff = 7;
+    Suspending = 8;
+    resuming = 9;
+}
+
+enum RegistrationState {
+    Unregistered = 0;
+    Initializing = 1;
+    Registered = 2;
+    AgentError = 3;
+}
+
+// broker.desktop
+message BrokerMachine {
+    // 机器名
+    string HostedMachineName = 1;
+    // 会话用户名
+    string SessionUserName = 2;
+    // 是否保存用户修改
+    bool PersistUserChanges = 3;
+    // 分配的ip地址
+    string AssignedIPAddress = 4;
+    // 注册状态
+    RegistrationState RegistrationState = 5;
+    // 维护状态
+    bool InMaintenanceMode = 6;
+    // 电源状态
+    PowerState PowerState = 7;
+    // 所在服务器
+    string HostingServerName = 8;
+    // 会话开始时间
+    int64 StartTime = 9;
+}
+
+
+message MachineListReq {
+    // desktop_id
+    int64 desktop_id = 1;
+}
+
+message MachineListResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+    repeated BrokerMachine data = 3;
+}
+
+
+// 对虚拟机开关机的请求
+message MachinePowerReq {
+    // 机器名
+    string HostedMachineName = 1;
+    bool power = 2; // true 表示开机
+}
+
+message MachinePowerResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message SetMachineMaintenanceModeReq {
+    //  机器名
+    repeated string HostedMachineName = 1;
+    // 维护状态
+    bool MaintenanceMode = 2;
+}
+
+message SetMachineMaintenanceModeResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
