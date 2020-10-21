@@ -3,21 +3,29 @@ syntax = "proto3";
 package desktop.v1;
 
 option go_package="rpc/desktop/v1;desktop_v1";
+import "rpc/desktop/v1/ad.proto";
 
-
-// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/desktop.proto
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/desktop/v1/desktop.proto
 // 云桌面管理相关接口
 service Desktop {
     // 这里的行尾注释 casbin:foo 用于验证接口权限格式为module-object-action(主模块-对象-操作)
-    //
-     // List 获取列表
-    rpc List(DesktopListReq) returns (DesktopListResp);
-	// Add 添加
-    rpc Add(DesktopAddReq) returns (DesktopAddResp);
-////     Delete 删除
-//    rpc Delete(DesktopDeleteReq) returns (DesktopDeleteResp);
-//    // Patch 修改
-//    rpc Patch(DesktopPatchReq) returns (DesktopPatchResp);
+
+    // 计算机目录OU列表
+    rpc ListOU (OUListReq) returns (OUListResp); // casbin:desktop-desktop_group-list
+    // 添加OU
+    rpc AddOU (OUAddReq) returns (OUAddResp); // casbin:desktop-desktop_group-add
+    // 删除OU
+    rpc DeleteOU (OUDeleteReq) returns (OUDeleteResp); // casbin:desktop-desktop_group-delete
+    // 修改OU
+    rpc PatchOU (OUPatchReq) returns (OUPatchResp); // casbin:desktop-desktop_group-patch
+    // List 获取列表
+    rpc List (DesktopListReq) returns (DesktopListResp); // casbin:desktop_desktop_list
+    // Add 添加
+    rpc Add (DesktopAddReq) returns (DesktopAddResp); // casbin:desktop_desktop_add
+    // Delete 删除
+    rpc Delete (DesktopDeleteReq) returns (DesktopDeleteResp); // casbin:desktop_desktop_delete
+    // Patch 修改
+    rpc Patch (DesktopPatchReq) returns (DesktopPatchResp); // casbin:desktop_desktop_patch
 
 }
 
@@ -34,9 +42,9 @@ message HowlinkDesktop {
     // 未注册数量
     int64 unregistered_count = 5;
     // 桌面类型
-    DesktopType desktopType = 6;
+    DesktopType desktop_type = 6;
     // 维护状态
-    bool inMaintainMode = 7;
+    bool in_maintain_mode = 7;
     // 创建时间
     int64 created = 8;
     // 电源状态
@@ -44,19 +52,20 @@ message HowlinkDesktop {
     // 云桌面状态
     DesktopState state = 10;
     // todo: 操作系统
-    task task = 11;
+    Task task = 11;
 }
 
 
 enum TaskState {
-    TaskPreparing = 0;
-    TaskRunning = 1;
-    TaskSuccess = 2;
-    TaskFail = 3;
+    TASK_STATE_UNSPECIFIED = 0;
+    TASK_STATE_PREPARING = 1; // 任务准备
+    TASK_STATE_RUNNING = 2; // 任务执行中
+    TASK_STATE_SUCCESS = 3; // 任务成功
+    TASK_STATE_FAIL = 4; // 任务失败
 }
 
 // task
-message task {
+message Task {
     int64 id = 1;
     // 标题
     string title = 2;
@@ -71,12 +80,12 @@ message task {
     // 状态
     TaskState state = 7;
     // 步骤，可能没有
-    repeated step steps = 8;
-    // Todo: type
-
+    repeated Step steps = 8;
+    // 类型
+    string kind = 9;
 }
 
-message step {
+message Step {
     // id
     int64 id = 1;
     // 任务id
@@ -98,16 +107,21 @@ message step {
 }
 
 enum DesktopState {
-    DesktopCreating = 0; // 创建中
-    DesktopSuccess = 1; // 成功
-    DesktopFail = 2; // 失败
+    DESKTOP_STATE_UNSPECIFIED = 0;
+    DESKTOP_STATE_CREATING = 1;    // 创建中
+    DESKTOP_STATE_SUCCESS = 2;     // 成功
+    DESKTOP_STATE_FAIL = 3;        // 失败
 }
 
-
 message DesktopListReq {
-    // FIXME 请求字段必须写注释
+    // 页数从0开始
+    // @gte:0
     int32 page = 1;
+    // 页大小
+    // @gt:0
 	int32 size = 2;
+    // 所在ou的dn
+    // @min_len:1
     string dn = 3;
 }
 
@@ -120,45 +134,59 @@ message DesktopListResp {
     repeated HowlinkDesktop data = 3;
 }
 
-
-
-
 enum DesktopType {
-    Random = 0; //随机桌面
-    StaticDiscard = 1; //静态还原
-    StaticStore = 2; // 静态不还原
+    DESKTOP_TYPE_UNSPECIFIED = 0;
+    //随机桌面
+    DESKTOP_TYPE_RANDOM = 1;
+    //静态还原
+    DESKTOP_TYPE_STATIC_DISCARD = 2;
+    // 静态不还原
+    DESKTOP_TYPE_STATIC_STORE = 3;
+}
+
+// 名称格式
+enum DesktopNamingSchemeType {
+    DESKTOP_NAMING_SCHEME_TYPE_UNSPECIFIED = 0;
+    // 字母填充，## 会按照 AA, AB, AC 等填充
+    DESKTOP_NAMING_SCHEME_TYPE_ALPHABETIC = 1;
+    // 数字填充，## 会按照 01,02,03 等填充
+    DESKTOP_NAMING_SCHEME_TYPE_NUMERIC = 2;
 }
 
 message DesktopAddReq {
     // 模版id
+    // @gte:1
     int64 template = 1;
     // 快照id
+    // @gte:1
     int64 version = 2;
-
     // 名称
+    // @min_len:3
+    // @min_len:10
     string name = 3;
-    // 所在ou
-    string group = 4;
-
-    // 名称格式
-    enum NamingSchemeType {
-        None = 0;
-        Alphabetic = 1;
-        Numeric = 2;
-    }
-    NamingSchemeType namingSchemeType = 5;
-    string namingScheme = 6;
-
+    // 所在ou的Dn
+    // @min_len:1
+    string dn = 4;
+    // 计算机账户名称填充
+    // @gte:1
+    // @lte:2
+    DesktopNamingSchemeType naming_scheme_type = 5;
+    // 计算机账户名称前缀
+    // @pattern:"^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]{0,12}$"
+    string naming_scheme = 6;
     // 桌面数量
+    // @gte:1
     int64 count = 7;
-
-
-    DesktopType desktopType = 8;
-
-    // 托管资源名/路径 ?? 哪个好呢
-    string hostingUnit = 9;
+    // 桌面类型
+    // @gte:1
+    // @lte:3
+    DesktopType desktop_type = 8;
+    // 托管资源路径
+    // @min_len:1
+    string hosting_unit = 9;
+    // 网络
+    // @min_len:1
     string network = 10;
-
 }
 
 message DesktopAddResp {
@@ -166,12 +194,13 @@ message DesktopAddResp {
     int32 code = 1;
     // 返回信息，人读
     string msg = 2;
-    // 获取结果
+    // 云桌面id
 	int64 data = 3;
 }
 
 message DesktopDeleteReq {
-    // id
+    // 云桌面 id
+    // @gt:0
 	int64 id = 1;
 }
 
@@ -181,11 +210,16 @@ message DesktopDeleteResp {
     // 返回信息，人读
     string msg = 2;
     // 获取结果
-	int64 data = 3;
+	int64 task_id = 3;
 }
 
 message DesktopPatchReq {
-    // FIXME
+    // 云桌面id
+    // @gt:0
+    int64 id = 1;
+    // 名称
+    // @min_len:1
+    string name = 2;
 }
 
 message DesktopPatchResp {
@@ -193,4 +227,43 @@ message DesktopPatchResp {
     int32 code = 1;
     // 返回信息，人读
     string msg = 2;
+}
+
+message OUListReq {}
+
+message OUDeleteReq {
+    // @min_len:1
+    string dn = 1;
+}
+
+message OUDeleteResp {
+    int32 code = 1; //返回状态码
+    string msg = 2; // 返回信息
+}
+
+
+message OUPatchReq {
+    // ou的dn
+    // @min_len:1
+    string dn = 1;
+    // 新名字
+    // @min_len:1
+    string name = 2;
+}
+
+message OUPatchResp {
+    int32 code = 1; //返回状态码
+    string msg = 2; // 返回信息
+}
+
+message OUAddReq {
+    // @min_len:1
+    string name = 1; // ou名称
+    // @min_len:1
+    string dn = 2; // dn
+}
+
+message OUAddResp {
+    int32 code = 1; //返回状态码
+    string msg = 2; // 返回信息
 }

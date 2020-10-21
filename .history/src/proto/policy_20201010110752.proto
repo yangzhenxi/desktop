@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package desktop.v1;
+
+option go_package="rpc/desktop/v1;desktop_v1";
+
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/policy.proto
+// 云桌面策略相关接口
+service Policy {
+    // 这里的行尾注释 casbin:foo 用于验证接口权限格式为module-object-action(模块-对象-操作)
+    //
+    // List 获取列表
+    rpc List(PolicyListReq) returns (PolicyListResp);
+    // Patch 修改
+    rpc Patch(PolicyPatchReq) returns (PolicyPatchResp);
+}
+
+message PolicyGroup {
+    // group的sid
+    string sid = 1;
+    // group的名称
+    string name = 2;
+}
+
+message PolicyUser {
+    // user的sid
+    string sid = 1;
+    // 用户名
+    string username = 2;
+    // 姓名
+    string name = 3;
+}
+
+message BrokerAccessPolicyRules {
+    repeated PolicyGroup groups = 1;
+    repeated PolicyUser users = 2;
+}
+
+message PolicyListReq {
+    // 云桌面id
+    int64 desktop_id = 1;
+}
+
+message PolicyListResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+    BrokerAccessPolicyRules data = 3;
+}
+
+message PolicyPatchReq {
+    // 云桌面id
+    int64 desktop_id = 3;
+    // 用户和用户组的sid
+    repeated string sids = 2;
+}
+
+message PolicyPatchResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}

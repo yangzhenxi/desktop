@@ -4,58 +4,52 @@ package desktop.v1;
 
 option go_package="rpc/desktop/v1;desktop_v1";
 
-// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/session.proto
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/desktop/v1/session.proto
 // broker.session相关的接口
 service Session {
     // 这里的行尾注释 casbin:foo 用于验证接口权限格式为module-object-action(主模块-对象-操作)
     //
     // List 获取会话列表
     rpc List(SessionListReq) returns (SessionListResp);
-    // Stop 停止会话列表
-    rpc Stop(SessionStopReq) returns (SessionStopResp);
+//    // Stop 停止会话列表
+//    rpc Stop(SessionStopReq) returns (SessionStopResp);
 }
 
 enum SessionState {
+    SESSION_STATE_UNSPECIFIED = 0;
     // 连接中
-    Connected = 0;
+    SESSION_STATE_CONNECTED = 1;
     //
-    Active = 1;
+    SESSION_STATE_ACTIVE = 2;
     // 已断开
-    Disconnected = 2;
-    // 准备
-    PreparingSession = 3;
-    // 重连
-    Reconnecting = 4;
-    //
-    NonBrokerSession = 5;
-    //
-    Other = 6;
+    SESSION_STATE_DISCONNECTED = 3;
 }
 
 // broker.session
 message BrokerSession {
     // 会话key
-    string SessionKey = 1;
+    string session_key = 1;
     // 机器名
-    string MachineName = 2;
+    string machine_name = 2;
     // ip 地址
-    string IPAddress = 3;
+    string ip_address = 3;
     // 客户名
-    string ClientName = 4;
+    string client_name = 4;
     // 客户地址
-    string ClientAddress = 5;
+    string client_address = 5;
     // 会话开始时间
-    int64 StartTime = 6;
+    int64 start_time = 6;
     // 版本
-    string CpbVersion = 7;
+    string cpb_version = 7;
     // 会话状态
-    SessionState SessionState  = 8;
+    SessionState session_state  = 8;
 }
 
 
 // 会话列表请求
 message SessionListReq {
     // desktop_id
+    // @gt:0
     int64 desktop_id = 1;
 }
 

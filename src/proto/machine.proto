@@ -4,7 +4,7 @@ package desktop.v1;
 
 option go_package="rpc/desktop/v1;desktop_v1";
 
-// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/machine.proto
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/desktop/v1/machine.proto
 // broker machine的相关接口
 service Machine {
     // 这里的行尾注释 casbin:foo 用于验证接口权限格式为module-object-action(主模块-对象-操作)
@@ -12,29 +12,30 @@ service Machine {
     // ListBrokerDesktops 获取交付组下的桌面
     rpc List(MachineListReq) returns (MachineListResp);
     // PowerOffBrokerMachine 计算机关机
-    rpc Power(MachinePowerReq) returns (MachinePowerResp);  // casbin: desktop-machine-power
+    rpc Power(MachinePowerReq) returns (MachinePowerResp);
     // SetMaintenanceMode 修改计算机的维护模式
-    rpc SetMaintenanceMode(SetMachineMaintenanceModeReq) returns (SetMachineMaintenanceModeResp); // casbin: desktop-machine-maintenance
+    rpc SetMaintenanceMode(SetMachineMaintenanceModeReq) returns (SetMachineMaintenanceModeResp);
 }
 
 enum PowerState {
-    Unmanaged = 0;
-    Unknown = 1;
-    Unavailable = 2;
-    Off = 3;
-    On = 4;
-    Suspended = 5;
-    TurningOn = 6;
-    TurningOff = 7;
-    Suspending = 8;
-    resuming = 9;
+    POWER_STATE_UNSPECIFIED = 0;
+    POWER_STATE_UNMANAGED = 1;
+    POWER_STATE_UNKNOWN = 2;
+    POWER_STATE_UNAVAILABLE = 3;
+    POWER_STATE_OFF = 4;
+    POWER_STATE_ON = 5;
+    POWER_STATE_SUSPENDED = 6;
+    POWER_STATE_TURNING_ON = 7;
+    POWER_STATE_TURNING_OFF = 8;
+    POWER_STATE_SUSPENDING = 9;
+    POWER_STATE_RESUMING = 10;
 }
 
 enum RegistrationState {
-    Unregistered = 0;
-    Initializing = 1;
-    Registered = 2;
-    AgentError = 3;
+    REGISTRATION_STATE_UNREGISTERED = 0;
+    REGISTRATION_STATE_INITIALIZING = 1;
+    REGISTRATION_STATE_REGISTERED = 2;
+    REGISTRATION_STATE_AGENT_ERROR = 3;
 }
 
 // broker.desktop
@@ -62,6 +63,7 @@ message BrokerMachine {
 
 message MachineListReq {
     // desktop_id
+    // @gt:0
     int64 desktop_id = 1;
 }
 
@@ -74,12 +76,25 @@ message MachineListResp {
     repeated BrokerMachine data = 3;
 }
 
+enum PowerAction {
+    POWER_ACTION_UNSPECIFIED = 0;
+    POWER_ACTION_START = 1; // 开机
+    POWER_ACTION_STOP = 2; // 关机
+    POWER_ACTION_REBOOT = 3; // 重启
+
+}
 
 // 对虚拟机开关机的请求
 message MachinePowerReq {
+    // @gt:0
+    int64 DesktopId = 1; // 云桌面id
     // 机器名
-    string HostedMachineName = 1;
-    bool power = 2; // true 表示开机
+    // @min_items:1
+    repeated string HostedMachineName = 2;
+    // 开关机操作
+    // @gte:1
+    // @lte:3
+    PowerAction power = 3;
 }
 
 message MachinePowerResp {
@@ -87,10 +102,13 @@ message MachinePowerResp {
     int32 code = 1;
     // 返回信息，人读
     string msg = 2;
+    // 电源任务id
+    repeated int64 data = 3;
 }
 
 message SetMachineMaintenanceModeReq {
     //  机器名
+    // @min_items:1
     repeated string HostedMachineName = 1;
     // 维护状态
     bool MaintenanceMode = 2;
@@ -101,4 +119,13 @@ message SetMachineMaintenanceModeResp {
     int32 code = 1;
     // 返回信息，人读
     string msg = 2;
+    // data
+    TaskResp data = 3;
+}
+
+message TaskResp {
+    // 任务id
+    int64 id = 1;
+    // 任务超时时间, 建议存放cookie时间
+    int64 timeout = 2;
 }

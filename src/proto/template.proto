@@ -1,0 +1,531 @@
+syntax = "proto3";
+
+package desktop.v1;
+
+option go_package="rpc/desktop/v1;desktop_v1";
+
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/desktop/v1/template.proto
+// FIXME 服务必须写注释
+service Template {
+    // FIXME 接口必须写注释
+    // 这里的行尾注释 casbin:foo 用于验证接口权限格式为module-sub_module-object-action(主模块-子模块-对象-操作)
+    //
+    // List 获取模板列表
+    rpc List(TemplateListReq) returns (TemplateListResp); // casbin:desktop-template-list
+	  // Get 获取模板详情
+    rpc Get(TemplateGetReq) returns (TemplateGetResp); // casbin:desktop-template-get
+	  // Add 添加模板
+    rpc Add(TemplateAddReq) returns (TemplateAddResp);  // casbin:desktop-template-add
+    // check 查看添加任务进度
+    rpc Check(TemplateCheckReq) returns (TemplateCheckResp); // casbin:desktop-template-check
+    // CancelTask 取消任务
+    rpc CancelTask(CancelTaskReq) returns (CancelTaskResp); // casbin:desktop-template-cancelTask
+    // 获取所有在运行的任务
+    rpc RunningTask(RunningTaskReq) returns (RunningTaskResp); // casbin:desktop-template-taskList
+    // Delete 删除模板
+    rpc Delete(TemplateDeleteReq) returns (TemplateDeleteResp); // casbin:desktop-template-delete
+    // Patch 在线编辑模板
+    rpc Patch(TemplatePatchReq) returns (TemplatePatchResp); // casbin:desktop-template-patch
+    // Publish 发布模板
+    rpc Publish(TemplatePublishReq) returns (TemplatePublishResp); // casbin:desktop-template-publish
+    // Configure 配置模板
+    rpc Configure(TemplateConfigureReq) returns (TemplateConfigureResp); // casbin:desktop-template-configure
+    // TemplateGroupList 获取模板组列表
+    rpc TemplateGroupList(TemplateGroupListReq) returns (TemplateGroupListResp); // casbin:desktop-templateGroup-list
+    // TemplateGroupAdd 添加模板组
+    rpc TemplateGroupAdd(TemplateGroupAddReq) returns (TemplateGroupAddResp); // casbin:desktop-templateGroup-add
+    // TemplateGroupPatch 修改模板组
+    rpc TemplateGroupPatch(TemplateGroupPatchReq) returns (TemplateGroupPatchResp); // casbin:desktop-templateGroup-patch
+    // TemplateGroupDelete 删除模板组
+    rpc TemplateGroupDelete(TemplateGroupDeleteReq) returns (TemplateGroupDeleteResp); // casbin:desktop-templateGroup-delete
+
+    // DataCenterList 获取所有的数据中心
+    rpc DataCenterList(DataCenterListReq) returns (DataCenterListResp); // casbin:desktop-Template-dataCenterList
+    // NetworkList 获取该主机下的所有网络
+    rpc NetworkList(NetworkListReq) returns (NetworkListResp); // casbin:desktop-template-networkList
+    // ImageList 获取所有的系统镜像
+    rpc ImageList(ImageListReq) returns (ImageListResp); // casbin:desktop-template-imageList
+
+    // VersionList 获取版本列表
+    rpc VersionList(VersionListReq) returns (VersionListResp); // casbin:desktop-templateVersion-list
+    // VersionPatch 修改版本
+    rpc VersionPatch(VersionPatchReq) returns (VersionPatchResp); // casbin:desktop-templateVersion-patch
+    // VersionDelete 删除版本
+    rpc VersionDelete(VersionDeleteReq) returns (VersionDeleteResp); // casbin:desktop-templateVersion-delete
+    // VersionRevert 还原版本
+    rpc VersionRevert(VersionRevertReq) returns (VersionRevertResp); // casbin:desktop-templateVersion-revert
+    // VersionMerge 合并版本
+    rpc VersionMerge(VersionMergeReq) returns (VersionMergeResp); // casbin:desktop-templateVersion-merge
+}
+
+
+message TemplateListReq {
+        int64 group = 1;// group id
+}
+
+message TemplateListResp {
+	  // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 所有的模板
+    repeated tp data = 3;
+}
+
+message TemplateGetReq {
+    // 模板id
+	  int64 id = 1;
+}
+
+message TemplateGetResp {
+	  // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+    tp data = 3;
+}
+
+message TemplateAddReq {
+    // FIXME Add req
+    // 模板名称
+    string name = 1;
+    // 所属分组
+    int64 group = 2;
+    // 系统镜像
+    string image = 3;
+    // 数据中心
+    string data_center = 4;
+    // 集群/主机
+    string cluster_or_host = 5;
+    // 是否是集群
+    bool is_cluster = 6;
+    // 目标存储
+    string datastore = 7;
+    // 资源池
+    string resource_pool = 8;
+    // cpu核心数
+    int32 cpuNum = 9;
+    // 插槽数
+    int32 socket = 10;
+    // 内存
+    int64 memoryMB = 11;
+    // 系统盘大小
+    int64 capacityKB = 12;
+    // 网络
+    string network = 13;
+    // 软件信息
+    string software = 14;
+
+}
+
+message TemplateAddResp {
+	  // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 任务的唯一值
+    string task = 3;
+}
+
+message TemplateCheckReq {
+    // 任务唯一值
+    repeated string task = 1;
+}
+
+message TemplateCheckResp {
+    repeated Progress progress = 3;
+}
+
+message Progress {
+    // 返回码
+    int32 code = 1;
+    // 消息
+    string msg = 2;
+    // 任务唯一值
+    string task = 3;
+    // 模板名称
+    string name = 4;
+    // 进度条
+    int32 progress_bar = 5;
+    // 镜像
+    string image = 6;
+    // 组
+    int64 group = 7;
+}
+
+message RunningTaskReq {
+
+}
+
+message RunningTaskResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 所有的在运行的任务
+    repeated TemplateTask data = 3;
+}
+message TemplateTask {
+    string task_ref = 1;
+    string tp_name = 2;
+}
+message CancelTaskReq {
+    string task = 1;
+}
+
+message CancelTaskResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message TemplateDeleteReq {
+	  // 模板名称
+    string name = 1;
+}
+
+message TemplateDeleteResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+// 在线编辑
+message TemplatePatchReq {
+    // 模板名称
+    string name = 1;
+}
+
+// 在线编辑
+message TemplatePatchResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 返回在线编辑的url
+    string data = 3;
+}
+
+message TemplatePublishReq {
+    // 模板名称
+    string name = 1;
+    // 版本
+    int64 version = 2;
+    // 版本名称
+    string version_name = 3;
+    // 描述
+    string description = 4;
+}
+
+message TemplatePublishResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message TemplateConfigureReq {
+    // 模板名称
+    string name = 1;
+    // cpu核心数
+    int32 cpu_num = 2;
+    // 插槽数
+    int32 socket = 3;
+    // 内存
+    int64 memoryMB = 4;
+    // 系统盘大小
+    int64 capacityKB = 5;
+    // 网络
+    string network = 6;
+}
+
+message TemplateConfigureResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message tp {
+    // id 表示唯一值
+    int64 id = 1;
+    // 模板名称
+    string name = 2;
+    // 所在服务器
+    string host = 3;
+    // 创建时间
+    int64 create_time = 4;
+    // 版本状态
+    int64 version = 5;
+    // 运行状态
+    string is_running = 6;
+    // ip 地址 (必须装过vmware tool才会有)
+    string ip = 7;
+    // 组id
+    int64 group_id = 8;
+    // 组名称
+    string group_name = 9;
+    // 系统
+    string image = 10;
+    // 软件信息
+    string software = 11;
+    // cpu核心数
+    int32 cpu_num = 12;
+    // 插槽数
+    int32 socket = 13;
+    // 内存
+    int64 memoryMB = 14;
+    // 系统盘大小
+    int64 capacityKB = 15;
+    // 网络
+    string network = 16;
+    // 数据中心
+    string datacenter = 17;
+}
+
+
+message TemplateGroupListReq {
+    // 模板组根节点id
+    int64 root = 1;
+}
+
+message TemplateGroupListResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+    dep data = 3;
+}
+
+message dep {
+    // id 唯一值
+    int64 id = 1;
+    // 模板组名
+    string name = 2;
+    // 父id
+    int64 parent = 3;
+    // 子模板
+    repeated dep children = 4;
+    // 创建时间
+    int64 create_time = 5;
+    // 模板名称
+    string tp_name = 6;
+}
+
+message TemplateGroupAddReq {
+    dep group = 1;
+}
+
+message TemplateGroupAddResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message TemplateGroupPatchReq {
+    dep group = 1;
+}
+
+message TemplateGroupPatchResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message TemplateGroupDeleteReq {
+    // 删除的模板组id
+    int64 id = 1;
+}
+
+message TemplateGroupDeleteResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message DataCenterListReq {
+}
+
+message DataCenterListResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 所有的数据中心及下面的所有资源
+    repeated dataCenter data = 3;
+}
+
+message NetworkListReq {
+    // 主机
+    string host = 1;
+}
+
+message NetworkListResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 该主机下的网络
+    repeated network data = 3;
+}
+
+message dataCenter {
+    // 数据中心名称
+    string name = 1;
+    // 数据中心唯一值(目前没用 先放着)
+    string self = 2;
+    // 数据中心里的集群
+    repeated cluster clusters = 3;
+    // 数据中心里不在集群里的主机
+    repeated host hosts = 4;
+}
+
+message cluster {
+    // 集群名称
+    string name = 1;
+    // 集群唯一值(目前没用 先放着)
+    string self = 2;
+    // 该集群下的所有资源池
+    repeated resourcePool resource_pools = 3;
+    // 该集群下的所有网络
+    repeated network networks = 4;
+    // 该集群下的所有目标存储
+    repeated datastore data_stores = 5;
+}
+
+message host {
+    // 主机名称
+    string name = 1;
+    // 主机唯一值(目前没用 先放着)
+    string self = 2;
+    // 该主机下的所有资源池
+    repeated resourcePool resource_pools = 3;
+    // 该主机下的所有网络
+    repeated network networks = 4;
+    // 该主机下的所有目标存储
+    repeated datastore data_stores = 5;
+}
+
+message resourcePool {
+    // 资源池名称
+    string name = 1;
+    // 资源池唯一值(目前没用 先放着)
+    string self = 2;
+}
+
+message network {
+    // 网络名称
+    string name = 1;
+    // 网络唯一值(目前没用 先放着)
+    string self = 2;
+}
+
+message datastore {
+    // 目标存储 名称
+    string name = 1;
+    // 目标存储 唯一值(目前没用 先放着)
+    string self = 2;
+    // 目标存储 容量
+    int64 capacity = 3;
+    // 目标存储 可用容量
+    int64 free_space = 4;
+}
+
+message ImageListReq {
+
+}
+
+message ImageListResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    repeated image data = 3;
+}
+
+message image {
+    // 镜像名称
+    string name = 1;
+}
+
+message VersionListReq {
+    // 模板id
+    int64 template_id = 1;
+}
+
+message VersionListResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    repeated templateVersion data = 3;
+}
+
+message templateVersion {
+    // id 唯一值
+    int64 id = 1;
+    // 版本名称
+    string name = 2;
+    // 版本号
+    int64 version = 3;
+    // 发布时间
+    int64 create_time = 4;
+    // 版本描述
+    string description = 5;
+
+}
+
+message VersionPatchReq {
+    // 版本信息
+    templateVersion data = 1;
+}
+
+message VersionPatchResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message VersionDeleteReq {
+    // 版本id
+    int64 id = 1;
+}
+
+message VersionDeleteResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message VersionRevertReq {
+    // 模板名称
+    string name = 1;
+}
+
+message VersionRevertResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}
+
+message VersionMergeReq {
+    // 模板名称
+    string name = 1;
+}
+
+message VersionMergeResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+}

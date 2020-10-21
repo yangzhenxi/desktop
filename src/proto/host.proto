@@ -4,11 +4,11 @@ package desktop.v1;
 
 option go_package="rpc/desktop/v1;desktop_v1";
 
-// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/host.proto
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/desktop/v1/host.proto
 // 获取托管资源
-service Host {
+service HostUnit {
     // List 获取列表
-    rpc List(HostListReq) returns (HostListResp);
+    rpc List(HostUnitListReq) returns (HostUnitListResp); // casbin:desktop-hosting_unit-list
 }
 
 message hostNetwork {
@@ -26,9 +26,9 @@ message HostingUnit {
     repeated hostNetwork networks = 3;
 }
 
-message HostListReq {}
+message HostUnitListReq {}
 
-message HostListResp {
+message HostUnitListResp {
 	// 响应码[机读]
     int32 code = 1;
     // 返回信息，人读
