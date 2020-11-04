@@ -10,9 +10,9 @@ service Session {
     // 这里的行尾注释 casbin:foo 用于验证接口权限格式为module-object-action(主模块-对象-操作)
     //
     // List 获取会话列表
-    rpc List(SessionListReq) returns (SessionListResp);
-//    // Stop 停止会话列表
-//    rpc Stop(SessionStopReq) returns (SessionStopResp);
+    rpc List(SessionListReq) returns (SessionListResp); // casbin:desktop-desktop-get
+    // Stop 停止会话列表
+    rpc Stop(SessionStopReq) returns (SessionStopResp); // casbin:desktop-desktop-stop_session
 }
 
 enum SessionState {
@@ -67,7 +67,8 @@ message SessionListResp {
 // 停止会话请求
 message SessionStopReq {
     // 会话key
-    string SessionKey = 1;
+    // @min_items:1
+    repeated BrokerSession sessions = 1;
 }
 
 // 停止会话返回结果

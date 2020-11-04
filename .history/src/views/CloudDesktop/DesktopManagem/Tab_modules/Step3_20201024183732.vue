@@ -1,0 +1,151 @@
+<template>
+  <div>
+    <a-row
+      style="margin-top:20px;"
+      :gutter="16">
+      <a-col :span="24">
+        <m-table
+          :columns="columns"
+          :data="loadData"
+          bordered
+          rowKey="name"
+          :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange ,type: 'radio'}">
+          <template slot="capacity" slot-scope="text">
+            {{ (text / 1024/1024/1024).toFixed(1) }}GB
+          </template>
+          <template slot="freeSpace" slot-scope="text">
+            {{ (text / 1024/1024/1024).toFixed(1) }}GB
+          </template>
+        </m-table>
+      </a-col>
+    </a-row>
+    <a-row>
+      <a-col :offset="9">
+        <a-button @click="prevStep">上一步</a-button>
+        <a-button
+          :loading="loading"
+          :disabled="disabled"
+          style="margin-left: 8px"
+          type="primary"
+          @click="nextStep">下一步</a-button>
+      </a-col>
+    </a-row>
+  </div>
+</template>
+
+<script>
+import MTable from '@/components/Table/MTable'
+import { mapState, mapMutations } from 'vuex'
+export default {
+  components: {
+    MTable
+  },
+  name: 'Step3',
+      computed: {
+        ...mapState({
+            'formValue': state => state.DesktopManage.formValue,
+            'Space': state => state.DesktopManage.Space
+        })
+    },
+  data () {
+    return {
+      loading: false,
+      disabled: true,
+      selectedRowKeys: [], // Check here to configure the default column
+      selectedRows: {},
+      columns: [
+        {
+          title: '名称',
+          dataIndex: 'name',
+          sorter: true
+        },
+        {
+          title: '容量',
+          dataIndex: 'capacity',
+          scopedSlots: { customRender: 'capacity' },
+          sorter: true
+        },
+        {
+          title: '可用空间',
+          dataIndex: 'free_space',
+            scopedSlots: { customRender: 'freeSpace' },
+
+          sorter: true
+        }
+      ],
+      loadData: (parameter) => {
+        return new Promise((resolve) => {
+          resolve({
+            data: this.Space
+          })
+        }).then((res) => {
+          return res
+        })
+      }
+    }
+  },
+  mounted () {
+
+  },
+  methods: {
+         ...mapMutations(['SET_FORMVALUE']),
+    nextStep () {
+        this.loading = true
+        setInterval(() => {
+            const obj = {
+                datastore: this.selectedRows[0].name
+            }
+            this.SET_FORMVALUE(obj)
+            this.loading = false
+            this.$emit('nextStep')
+        }, 500)
+    },
+    prevStep () {
+      this.$emit('prevStep')
+    },
+    onSelectChange (selectedRowKeys, selectedRows) {
+        this.disabled = false
+        console.log(this.formValue)
+        console.log(selectedRows[0].freeSpace)
+        if (this.formValue.capacityKB > selectedRows[0].freeSpace / 1024) {
+            this.$message.info('当前可用容量不足选择系统盘的容量')
+        } else {
+            this.selectedRowKeys = selectedRowKeys
+            this.selectedRows = selectedRows
+        }
+    }
+  }
+}
+</script>
+<style lang="less" scoped>
+.information {
+  line-height: 22px;
+  .ant-row:not(:last-child) {
+    margin-bottom: 24px;
+  }
+}
+.money {
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 14px;
+}
+.step3 {
+  margin-top: 40px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+}
+
+/deep/.ant-tree li .ant-tree-node-content-wrapper,
+/deep/.ant-table-thead > tr > th,
+/deep/.ant-table-tbody {
+  color: white;
+}
+/deep/.ant-table-body {
+  background: none !important;
+}
+/deep/.ant-table-header,
+/deep/.ant-table-thead > tr > th {
+  background: none !important;
+}
+</style>

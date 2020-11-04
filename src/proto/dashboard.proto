@@ -1,0 +1,133 @@
+syntax = "proto3";
+
+package dashboard.v1;
+
+option go_package="rpc/dashboard/v1;dashboard_v1";
+
+// protoc --go_out=. --twirp_out=option_prefix=casbin,validate_enable=true:. rpc/dashboard/v1/dashboard.proto
+// 首页接口
+service Dashboard {
+    // 这里的行尾注释 casbin:rule 用于验证接口权限格式为module-object-action(模块-对象-操作)
+    //
+    // Todo: CPU 获取CPU信息
+    rpc CPU (DashboardCPUReq) returns (DashboardCPUResp);
+    // Todo: Memory 获取内存信息
+    rpc Memory (DashboardMemoryReq) returns (DashboardMemoryResp);
+    // Todo: Storage 获取存储信息
+    rpc Storage (DashboardStorageReq) returns (DashboardStorageResp);
+    // UserCount AD 用户数
+    rpc UserCount (DashboardUserCountReq) returns (DashboardUserCountResp);
+    // Desktop 云桌面相关
+    rpc Desktop (DashboardDesktopReq) returns (DashboardDesktopResp);
+    // 会话
+    rpc Session (DashboardSessionReq) returns (DashboardSessionResp);
+}
+
+
+message DashboardCPUReq {}
+
+message CPU {
+    // 主机
+    string host = 1;
+    // cpu容量
+    int64 cpu_capacity = 2;
+    // cpu使用量
+    int64  cpu_usage = 3;
+}
+
+message DashboardCPUResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+    repeated CPU cpus = 3;
+}
+
+message DashboardMemoryReq {}
+
+message Memory {
+    //主机
+    string host = 1;
+    // 内存使用量
+    int64 memory_usage = 2;
+    // 内存容量
+    int64 memory_capacity = 3;
+}
+
+message DashboardMemoryResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+    repeated Memory memory = 3;
+}
+
+message DashboardUserCountReq {}
+
+message DashboardUserCountResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果 AD用户总数
+	  int64 data = 3;
+}
+
+message DashboardDesktopReq {
+    // id
+	int64 id = 1;
+}
+
+message Desktop {
+    // Todo
+    string name = 1;
+    int32 machine_count = 2;
+    int32 running_machine_count = 3;
+    int32 closed_machine_count = 4;
+}
+
+message DashboardDesktopResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+	repeated Desktop desktops = 3;
+}
+
+message DashboardStorageReq {
+
+}
+
+
+message Storage {
+    // 主机
+    string data_store = 1;
+    // 存储总量
+    int64 disk_capacity = 2;
+    // 存储使用量
+    int64 disk_free_space = 3;
+}
+
+message DashboardStorageResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 存储
+    repeated Storage storages = 3;
+}
+
+
+message DashboardSessionReq {}
+
+message DashboardSessionResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 在线会话数
+    int64 data = 3;
+}

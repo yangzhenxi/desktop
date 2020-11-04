@@ -1,0 +1,73 @@
+<template>
+  <div>
+    <a-row :gutter="16">
+      <a-col :span="8">
+        <m-card class="card" hover>
+          <div class="title">
+            <m-icon :type="dataSource.icon" :class="['icon',dataSource.icon]"/>
+            <span>{{ dataSource.title }}</span>
+          </div>
+          <div>
+            <StorageCharts :data="dataSource.ChartsData"></StorageCharts>
+          </div>
+        </m-card>
+      </a-col>
+    </a-row>
+  </div>
+</template>
+
+<script>
+import { MIcon, MCard } from '@/components'
+import StorageCharts from './StorageCharts'
+export default {
+    components: {
+        MIcon,
+        MCard,
+        StorageCharts
+    },
+    data () {
+        return {
+            dataSource: {
+                    title: 'Storage',
+                    icon: 'cunchu',
+                    SelectData: [],
+                    ChartsData: [
+                        {
+                            item: '未运行虚拟和谐:58.36%',
+                            count: 111
+                        },
+                        {
+                            item: '运行中的虚拟核心:41.64%',
+                            count: 222
+                        }
+                    ]
+            }
+
+        }
+    },
+    methods: {
+        handleChange (value) {
+        }
+   }
+}
+</script>
+
+<style lang="less" scoped>
+.title{
+    color: white;
+    margin-bottom: 20px;
+    display: flex;
+    .icon{
+        font-size: 55px;
+        margin-left: 30px;
+        margin-right: 15px;
+        &.cunchu{
+            color: turquoise;
+        }
+    }
+    span{
+        font-size: 30px;
+        line-height: 1.8;
+    }
+}
+</style>

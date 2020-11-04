@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package system.v1;
+
+option go_package="rpc/system/v1;system_v1";
+
+// protoc --go_out=. --twirp_out=option_prefix=casbin:. rpc/system/v1/task.proto
+// 任务管理
+service Task {
+    // 这里的行尾注释 casbin:foo 用于验证接口权限格式为module-object-action(主模块-对象-操作)
+    //
+    // List 获取列表
+    rpc List(TaskListReq) returns (TaskListResp); // casbin:system-task-list
+    // Get 获取
+    rpc Get(TaskGetReq) returns (TaskGetResp); // casbin:system-task-list
+}
+
+enum SystemTaskState {
+    SYSTEM_TASK_STATE_UNSPECIFIED = 0;
+    SYSTEM_TASK_STATE_PREPARING = 1;
+    SYSTEM_TASK_STATE_RUNNING = 2;
+    SYSTEM_TASK_STATE_SUCCESS = 3;
+    SYSTEM_TASK_STATE_FAIL = 4;
+}
+
+// task
+message SystemTask {
+    int64 id = 1;
+    // 标题
+    string title = 2;
+    // 具体细节
+    string detail = 3;
+    // 开始时间
+    int64 start_at = 4;
+    // 结束时间
+    int64 end_at = 5;
+    // 进度
+    int32 progress = 6;
+    // 状态
+    SystemTaskState state = 7;
+    // 步骤，可能没有
+    repeated SystemTaskStep steps = 8;
+}
+
+message SystemTaskStep {
+    // id
+    int64 id = 1;
+    // 任务id
+    int64 task_id = 2;
+    // 名称
+    string name = 3;
+    // 细节
+    string detail = 4;
+    // 开始时间
+    int64 start_at = 5;
+    // 结束时间
+    int64 end_at = 6;
+    // 进度
+    int32 progress = 7;
+    // 状态
+    SystemTaskState state = 8;
+    //  进度权重
+    int32 weight = 9;
+}
+
+message TaskListReq {
+    // 页数
+    // @gte:0
+    int32 page = 1;
+    // 页大小
+    // @gt:0
+	int32 size = 2;
+}
+
+message TaskListResp {
+	// 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果
+    repeated SystemTask data = 3;
+    // 总数
+    int64 count = 4;
+}
+
+message TaskGetReq {
+    // @gt:0
+    int64 id = 1;
+}
+
+message TaskGetResp {
+    // 响应码[机读]
+    int32 code = 1;
+    // 返回信息，人读
+    string msg = 2;
+    // 获取结果 task
+    SystemTask data = 3;
+}
+
+
+
