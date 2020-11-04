@@ -17,7 +17,10 @@
 </template>
 
 <script>
+import { deepGet } from '@/utils/util'
 import { MCard, MIcon } from '@/components'
+// GetSession
+import { GetUserCount, GetSession } from '@/api/dashboard'
 export default {
     components: {
         MCard,
@@ -60,6 +63,18 @@ export default {
                 }
             ]
         }
+    },
+    created () {
+        this.GetData()
+    },
+    methods: {
+        async GetData () {
+            const [Usercount, Session] = (await Promise.all([GetUserCount(), GetSession()]))
+            this.dataSource[0].count = this.deepGet(Session, 'data', '0')
+            this.dataSource[1].count = this.deepGet(Usercount, 'data', '0')
+            // this.dataSource[2].count = this.deepGet(Usercount, 'data', '0')
+        },
+        deepGet
     }
 
 }

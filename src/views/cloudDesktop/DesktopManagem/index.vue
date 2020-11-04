@@ -5,34 +5,15 @@
       class="row">
       <a-col :span="6">
         <a-card>
-          <empty
+          <!-- <empty
             v-if="!TPgroupList.length>0"
-            :isEmpty="!TPgroupList.length>0" />
-          <a-row
-            v-else
-            class="tree_head">
-            <a-col :span="10">
-              <a-row style="height:32px;">
-                <a-col
-                  :span="8"
-                  style="height:100%;">
-                  <m-icon
-                    type="moban"
-                    @click="close"
-                    class="icon  title_icon"
-                    style="font-size:18px;" />
-                </a-col>
-                <a-col :span="14">
-                  <div
-                    class="All"
-                    @click="close"
-                    style="font-size:15px;margin-top:5px; cursor: pointer;">所有模版</div>
-                </a-col>
-              </a-row>
-            </a-col>
-            <a-col
-              :span="14"
-              class="flex_end">
+            :isEmpty="!TPgroupList.length>0" /> -->
+          <div class="tree_head">
+            <div class="tree_head_left" @click="close">
+              <m-icon type="moban"/>
+              <span>所有模版</span>
+            </div>
+            <div class="tree_head_right">
               <a-button
                 :disabled="disabledAdd"
                 type="primary"
@@ -62,8 +43,8 @@
                   type="shanchu"
                   class="icon" />
               </a-button>
-            </a-col>
-          </a-row>
+            </div>
+          </div>
           <tree
             :treeData="TPgroupList"
             :selectedKeys="selectedKeys"
@@ -616,15 +597,24 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.tree_head {
-    margin-bottom: 15px;
+.tree_head{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .tree_head_left{
+        cursor: pointer;
+        font-size: 20px;
+        i{
+            font-size: 23px;
+            margin-right: 10px;
+        }
+    }
 }
-
-.icon {
-    cursor: pointer;
-    //   font-size: 18px;
-    margin: 0px 9px;
-}
+// .icon {
+//     cursor: pointer;
+//     //   font-size: 18px;
+//     margin: 0px 9px;
+// }
 .title_icon {
     display: flex;
     justify-content: center;

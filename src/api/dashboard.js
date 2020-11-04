@@ -22,3 +22,24 @@ export function GetMemory () {
 export function GetStorage () {
     return request.post('/dashboard.v1.Dashboard/Storage')
 }
+/**
+ *  获取AD用户数
+ * @param {data} data
+ */
+export function GetUserCount () {
+    return request.post('/dashboard.v1.Dashboard/UserCount')
+}
+/**
+ *  获取云桌面数量
+ * @param {data} data
+ */
+export function GetDesktop () {
+    return request.post('/dashboard.v1.Dashboard/Desktop')
+}
+/**
+ *  获取在线人数
+ * @param {data} data
+ */
+export function GetSession () {
+    return request.post('/dashboard.v1.Dashboard/Session')
+}

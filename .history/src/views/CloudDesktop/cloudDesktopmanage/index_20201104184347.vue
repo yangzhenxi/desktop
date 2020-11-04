@@ -359,7 +359,7 @@
 <script>
 import MIcon from '@/components/Icon'
 import Tree from './Tree_modules/Tree'
-// import Empty from '@/components/Empty'
+import Empty from '@/components/Empty'
 import TreeAdd from './Tree_modules/TreeAdd'
 import TreeEdit from './Tree_modules/TreeEdit'
 import ModuleAdd from './modulesAdd'
@@ -382,7 +382,7 @@ export default {
         MIcon,
         Tree,
         Loading,
-        // Empty,
+        Empty,
         Water,
         TreeEdit,
         TreeAdd,

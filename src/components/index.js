@@ -2,6 +2,8 @@ import MCard from './Card'
 import MIcon from './Icon'
 
 // pro components
+import Empty from './Empty'
+
 import AvatarList from '@/components/AvatarList'
 import Ellipsis from '@/components/Ellipsis'
 import FooterToolbar from '@/components/FooterToolbar'
@@ -20,6 +22,7 @@ import ArticleListContent from '@/components/ArticleListContent'
 import Dialog from '@/components/Dialog'
 
 export {
+  Empty,
   MCard,
   AvatarList,
   Trend,

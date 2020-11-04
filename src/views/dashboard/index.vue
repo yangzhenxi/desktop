@@ -1,24 +1,12 @@
 <template>
   <div>
-    <!-- <a-row :gutter="16">
-      <a-col :span="16">
-        <a-row> -->
     <Instance/>
     <br>
     <br>
-    <!-- </a-row>
-        <br>
-        <a-row> -->
-    <CPU/>
+    <CPU :data="CPU" :memory="Memory"/>
     <br>
     <br>
-    <!-- </a-row>
-      </a-col>
-      <a-col :span="8"> -->
     <Storage/>
-    <!-- </a-col>
-    </a-row> -->
-    <br>
     <br>
     <br>
     <Footer/>
@@ -32,6 +20,8 @@ import Instance from './manage/Instance'
 import CPU from './manage/CPU'
 import Storage from './manage/Storage'
 import Footer from './manage/Footer'
+import { GetCpu, GetMemory } from '@/api/dashboard'
+import { deepGet } from '@/utils/util'
 export default {
   components: {
     CPU,
@@ -43,8 +33,24 @@ export default {
   },
   data () {
     return {
-        loading: false
+        loading: false,
+        CPU: [],
+        Memory: []
     }
+  },
+  created () {
+      this.loadData()
+  },
+  methods: {
+      async loadData () {
+            try {
+                const [CPU, Memory] = (await Promise.all([GetCpu(), GetMemory()].map(api => api.catch(e => null))))
+                this.CPU = deepGet(CPU, 'cpus', [])
+                this.Memory = deepGet(Memory, 'memory', [])
+            } catch (error) {
+              console.log(error)
+            }
+      }
   }
 }
 </script>

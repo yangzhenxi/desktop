@@ -3,50 +3,42 @@
     <a-row :gutter="16" class="row">
       <a-col :span="6">
         <a-card >
-          <div class="tree-header">
-            <a-row
-              :gutter="16"
-              type="flex"
-              justify="center"
-              align="middle">
-              <a-col :span="10">
-                <m-icon
-                  type="guanyuwomen"
-                  style="margin-right:10px;"
-                  class="icon guanyuwomen" />
-                <span>全部组</span>
-              </a-col>
-              <a-col
-                :span="14"
-                class="flex_end">
-                <a-button
-                  type="primary"
-                  shape="circle"
-                  @click="$refs.TreeAdd.Add(treedata)">
-                  <a-icon
-                    class="icon"
-                    type="diff"></a-icon>
-                </a-button>
-                <a-button
-                  type="primary"
-                  shape="circle"
-                  style="margin-left:10px;"
-                  @click="handleTreeEdit()">
-                  <a-icon
-                    class="icon"
-                    type="form"></a-icon>
-                </a-button>
-                <a-button
-                  type="danger"
-                  shape="circle"
-                  style="margin-left:10px;"
-                  @click="DeleteTree">
-                  <a-icon
-                    class="icon"
-                    type="delete"></a-icon>
-                </a-button>
-              </a-col>
-            </a-row>
+          <div class="tree_head">
+            <div class="tree_head_left">
+              <m-icon
+                type="guanyuwomen"
+                style="margin-right:10px;"
+                class="icon guanyuwomen" />
+              <span>全部组</span>
+            </div>
+            <div class="tree_head_right">
+              <a-button
+                type="primary"
+                shape="circle"
+                @click="$refs.TreeAdd.Add(treedata)">
+                <a-icon
+                  class="icon"
+                  type="diff"></a-icon>
+              </a-button>
+              <a-button
+                type="primary"
+                shape="circle"
+                style="margin-left:10px;"
+                @click="handleTreeEdit()">
+                <a-icon
+                  class="icon"
+                  type="form"></a-icon>
+              </a-button>
+              <a-button
+                type="danger"
+                shape="circle"
+                style="margin-left:10px;"
+                @click="DeleteTree">
+                <a-icon
+                  class="icon"
+                  type="delete"></a-icon>
+              </a-button>
+            </div>
           </div>
           <tree
             :treeData="treedata"
@@ -359,23 +351,24 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.tree_head{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .tree_head_left{
+        cursor: pointer;
+        font-size: 20px;
+        i{
+            font-size: 23px;
+            margin-right: 10px;
+        }
+    }
+}
 .ant-card {
     background: #272e48;
     color: rgb(255, 255, 255);
-    // cursor: pointer;
-
     min-height: 770px;
     height: 100%;
-}
-.tree-header {
-    margin-bottom: 10px;
-    font-size: 16px;
-    .icon {
-        font-size: 16px;
-    }
-    /deep/i.icon.anticon.anticon-user {
-        font-size: 20px;
-    }
 }
 /deep/thead.ant-table-thead {
     background: #19233f;

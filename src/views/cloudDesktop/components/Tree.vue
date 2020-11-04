@@ -176,13 +176,14 @@
 <script>
 import storage from 'store'
 import { MTable, MIcon } from '@/components'
+import Empty from '@/components/Empty'
 import TabAdd from './Tab_modules/Add'
 import TabbatchAdd from './Tab_modules/batchAdd'
 import TabEdit from './Tab_modules/Edit'
 import TabExportUser from './Tab_modules/ ExportUser'
 import { deepGet } from '@/utils/util'
 import TreeAdd from './Tree_modules/TreeAdd'
-import Tree from '../components/Tree'
+import Tree from './Tree_modules/tree'
 import TreeEdit from './Tree_modules/TreeEdit'
 import EditPass from './Tab_modules/EditPass'
 import Cloumns from './Tab_modules/Cloumns'
@@ -209,6 +210,7 @@ export default {
         EditPass,
         MIcon,
         TabEdit,
+        Empty,
         Cloumns
     },
     data () {

@@ -17,7 +17,6 @@
               </a-menu>
             </a-dropdown>
           </div>
-
           <div>
             <Charts :dataSource="i"></Charts>
           </div>
@@ -31,12 +30,21 @@
 import Charts from './charts'
 import { deepGet } from '@/utils/util'
 import { MIcon, MCard } from '@/components'
-import { GetCpu, GetMemory } from '@/api/dashboard'
 export default {
     components: {
         MIcon,
         MCard,
         Charts
+    },
+    props: {
+        data: {
+            type: Array,
+            required: true
+        },
+        memory: {
+            type: Array,
+            required: true
+        }
     },
     data () {
         return {
@@ -49,21 +57,17 @@ export default {
                         background: '#272E48;',
                         border: '1px solid rgba(25, 186, 139, 0.17)'
                     },
-                    Cluster: [
-                        { key: '172.100.251.201', val: '172.100.251.201' },
-                        { key: '172.100.251.202', val: '172.100.251.202' },
-                        { key: '172.100.251.203', val: '172.100.251.203' },
-                        { key: '172.100.251.204', val: '172.100.251.204' },
-                        { key: '172.100.251.205', val: '172.100.251.205' }
-                    ],
+                    Cluster: [],
                     ChartsData: [
                         {
                             item: '使用容量',
-                            count: 1
+                            count: 1,
+                            percent: 0.333333333
                         },
                         {
                             item: '剩余容量',
-                            count: 2
+                            count: 2,
+                            percent: 0.66666666
                         }
                     ]
                 },
@@ -75,46 +79,52 @@ export default {
                         background: '#272E48;',
                         border: '1px solid rgba(25, 186, 139, 0.17)'
                     },
-                    Cluster: [
-                        { key: '172.100.251.201', val: '172.100.251.201' },
-                        { key: '172.100.251.202', val: '172.100.251.202' },
-                        { key: '172.100.251.203', val: '172.100.251.203' },
-                        { key: '172.100.251.204', val: '172.100.251.204' },
-                        { key: '172.100.251.205', val: '172.100.251.205' }
-                    ],
+                    Cluster: [],
                     ChartsData: [
                         {
                             item: '剩余内存',
-                            count: 1
+                            count: 1,
+                            percent: 0.333333333
                         },
                         {
                             item: '已用内存',
-                            count: 2
+                            count: 2,
+                            percent: 0.66666666
                         }
                     ]
                 }
             ]
         }
     },
-    created () {
-        this.GetData()
+    watch: {
+        data: {
+            handler () {
+                this.loadData()
+            },
+            deep: true,
+            immediate: true
+        }
     },
     methods: {
-        async GetData () {
-            this.dataSource[0].Cluster = []
-            this.dataSource[1].Cluster = []
-            const [CPU, Memory] = (await Promise.all([GetCpu(), GetMemory()]))
-            const CPUS = this.deepGet(CPU, 'cpus', [])
-            CPUS.forEach(u => {
+        async loadData () {
+            let cpuUsage = 0
+            let cpuCapacity = 0
+            // let
+            this.data.forEach(u => {
                 this.dataSource[0].Cluster.push(u.host)
-                this.dataSource[0].ChartsData[0].count += u.cpu_usage
-                this.dataSource[0].ChartsData[1].count += u.cpu_capacity
+                cpuUsage = cpuUsage + (+u.cpu_usage)
+                cpuCapacity = cpuCapacity + (+u.cpu_capacity)
+                this.dataSource[0].ChartsData[0].percent = 0.6666666666666666
+                this.dataSource[0].ChartsData[1].percent = 0.3333333333333333
             })
-            const MEMORY = this.deepGet(Memory, 'memory', [])
-            MEMORY.forEach(u => {
+            this.dataSource[0].ChartsData[1].count = cpuUsage / 1000
+            this.dataSource[0].ChartsData[0].count = cpuCapacity
+            this.memory.forEach(u => {
                 this.dataSource[1].Cluster.push(u.host)
-                this.dataSource[1].ChartsData[0].count += u.cpu_usage
-                this.dataSource[1].ChartsData[1].count += u.cpu_capacity
+                this.dataSource[1].ChartsData[0].count += u.memory_usage
+                this.dataSource[1].ChartsData[1].count += u.memory_capacity
+                this.dataSource[1].ChartsData[0].percent = 0.6666666666666666
+                this.dataSource[1].ChartsData[1].percent = 0.3333333333333333
             })
         },
         handleClick (value) {

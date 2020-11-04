@@ -13,10 +13,10 @@
         class="tree-view-item"
         @click="handleRadio(item)">
         <span class="tree-view-left">
-          <a-icon
+          <m-icon
             v-if="item.dataRef.scopedSlots.icon"
             class="icon"
-            type="user" />
+            :type="item.dataRef.scopedSlots.icon" />
           {{ item.title }}
         </span>
         <div class="tree-view-right">
@@ -84,9 +84,9 @@ export default {
     }
   }
 }
-.moban {
+.icon {
   font-size: 16px;
-  margin-right: 10px;
+  margin-right: 5px;
 }
 /deep/.ant-tree-title{
     color: white;
