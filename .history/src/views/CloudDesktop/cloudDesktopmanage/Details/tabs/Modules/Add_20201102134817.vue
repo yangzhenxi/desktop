@@ -79,8 +79,7 @@ export default {
             this.loading = true
             this.ou = []
             const res = this.deepGet((await CloudDesktopOUList()), 'ou', [])
-			this.Recursion(res[0].children[0].children)
-			console.log(this.DN)
+            this.Recursion(res[0].children[0].children)
             this.$nextTick(() => {
                 this.form.setFieldsValue({
                     type: this.Data.desktop_type,
@@ -115,7 +114,11 @@ export default {
                     title: u.name,
                     children: []
                 }
-                data ? data.children.push(obj) : this.ou.push(obj)
+                if (data) {
+                    data.children.push(obj)
+                } else {
+                    this.ou.push(obj)
+                }
                 if (u.children.length > 0) {
                     this.Recursion(u.children, obj)
                 }

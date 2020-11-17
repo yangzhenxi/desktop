@@ -86,6 +86,7 @@ export default {
     },
     methods: {
         ...mapMutations(['SET_MODULEDATA', 'SET_TEMPLATEID', 'SET_DISABLED']),
+
         // 删除版本
         VersionDelete (record) {
 			if (this.ModuleData.is_running === '开启') {

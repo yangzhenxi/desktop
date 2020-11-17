@@ -115,7 +115,11 @@ export default {
                     title: u.name,
                     children: []
                 }
-                data ? data.children.push(obj) : this.ou.push(obj)
+                data?data.children.push(obj) :this.ou.push(obj)
+                    data.children.push(obj)
+                } else {
+                    this.ou.push(obj)
+                }
                 if (u.children.length > 0) {
                     this.Recursion(u.children, obj)
                 }

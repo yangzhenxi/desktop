@@ -86,12 +86,10 @@ export default {
     },
     methods: {
         ...mapMutations(['SET_MODULEDATA', 'SET_TEMPLATEID', 'SET_DISABLED']),
+
         // 删除版本
         VersionDelete (record) {
-			if (this.ModuleData.is_running === '开启') {
-				this.$message.info('请先将模版挂起或者关机在进行操作')
-				return false
-			}
+			if(this.ModuleData.is_running === '开启') ? this.$message.info('请先将模版挂起或者关机在进行操作')
             this.$confirm({
                 title: '是否要删除该版本',
                 okType: 'danger',

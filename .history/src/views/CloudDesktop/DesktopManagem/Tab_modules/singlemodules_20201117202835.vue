@@ -341,9 +341,7 @@ export default {
             this.$emit('handleBack')
 		},
 		// 发布快照
-		release () {
-			this.moduleData.is_running === '开启' ? this.$message.info('请先将模版挂起或者关机在进行操作') : this.$refs.ManageRelease.Add(this.moduleData)
-		}
+		rele
     }
 }
 </script>

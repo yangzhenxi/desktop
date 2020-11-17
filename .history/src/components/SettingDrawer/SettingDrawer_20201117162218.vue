@@ -1,31 +1,31 @@
 <template>
   <div class="setting-drawer">
     <a-drawer width="300" placement="right" @close="onClose" :closable="false" :visible="visible">
-      <!-- <a-spin :spinning="spinning"> -->
-      <template slot="title">
-        {{ $store.getters.userInfo.name }}的任务列表
-      </template>
-      <div class="setting-drawer-index-content">
-        <div class="setting-drawer-index-title">
-          <p class="state"> <a-icon type="caret-right" />近期任务状态</p>
-          <a-row :gutter="8" style="padding-bottom:20px;">
-            <a-col :span="8" v-for="(item,index) in taskState" :key="index">
-              <a-card style="text-align:center;">
-                <p class="title">{{ item.title }}</p>
-                <span class="size" style="">{{ item.size }}</span>
-              </a-card>
-            </a-col>
-          </a-row>
-          <p class="state"> <a-icon type="caret-right" />近期任务列表</p>
-          <ul>
-            <li class="task_li" v-for="(item,index) in taskList" :key="index">
-              <span>{{ item.title }}</span>
-              <a-icon :type=" item.state === 'SYSTEM_TASK_STATE_SUCCESS' ? 'check-circle' : 'close-circle'" />
-            </li>
-          </ul>
+      <a-spin :spinning="spinning">
+        <template slot="title">
+          {{ $store.getters.userInfo.name }}的任务列表
+        </template>
+        <div class="setting-drawer-index-content">
+          <div class="setting-drawer-index-title">
+            <p class="state"> <a-icon type="caret-right" />近期任务状态</p>
+            <a-row :gutter="8" style="padding-bottom:20px;">
+              <a-col :span="8" v-for="(item,index) in taskState" :key="index">
+                <a-card style="text-align:center;">
+                  <p class="title">{{ item.title }}</p>
+                  <span class="size" style="">{{ item.size }}</span>
+                </a-card>
+              </a-col>
+            </a-row>
+            <p class="state"> <a-icon type="caret-right" />近期任务列表</p>
+            <ul>
+              <li class="task_li" v-for="(item,index) in taskList" :key="index">
+                <span>{{ item.title }}</span>
+                <a-icon :type=" item.state === 'SYSTEM_TASK_STATE_SUCCESS' ? 'check-circle' : 'close-circle'" />
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-      <!-- </a-spin> -->
+      </a-spin>
       <div class="setting-drawer-index-handle" @click="toggle" slot="handle">
         <a-icon type="setting" v-if="!visible" />
         <a-icon type="close" v-else />

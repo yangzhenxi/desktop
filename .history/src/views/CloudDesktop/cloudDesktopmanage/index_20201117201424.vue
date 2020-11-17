@@ -364,7 +364,7 @@ import TreeAdd from './Tree_modules/TreeAdd'
 import TreeEdit from './Tree_modules/TreeEdit'
 import ModuleAdd from './modulesAdd'
 import Singlemodules from './Details'
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import Loading from '@/components/loading/loading1'
 import {
     CloudDesktopTPList,
@@ -413,6 +413,11 @@ export default {
             Arr: []
         }
     },
+    computed: {
+        ...mapState({
+            'DN': state => state.cloudDesktop.dn
+        })
+    },
     created () {
         this.getOu()
     },
@@ -434,7 +439,7 @@ export default {
             } else if (OuList[0].children.length > 0) {
                 this.selectedKeys = ['0']
                 this.record = OuList[0].children[0]
-                this.SET_DN(OuList[0].children[0])
+                this.SET_DN(OuList[0])
             } if (OuList[0].children.length === 0) {
                 this.record = OuList[0]
 			}

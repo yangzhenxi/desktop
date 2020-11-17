@@ -88,7 +88,7 @@
                       type="windowsfuwuqi" />
                   </div>
                   <div class="icon_title">开机数量/桌面总数</div>
-                  <div class="icon_title">{{ Data.registered_count }}/{{ Data.total_count }}</div>
+                  <div class="icon_title">{{ Data.registered_count }}/{{ Data.unregistered_count }}</div>
                 </a-row>
               </a-col>
               <a-col :span="14" class="heightAuto">
@@ -154,7 +154,8 @@ export default {
     },
     computed: {
         ...mapState({
-            'Data': state => state.cloudDesktop.DetailsData
+            'Data': state => state.cloudDesktop.DetailsData,
+            'Search': state => state.cloudDesktop.Search
         })
     },
     methods: {

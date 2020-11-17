@@ -364,7 +364,7 @@ import TreeAdd from './Tree_modules/TreeAdd'
 import TreeEdit from './Tree_modules/TreeEdit'
 import ModuleAdd from './modulesAdd'
 import Singlemodules from './Details'
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import Loading from '@/components/loading/loading1'
 import {
     CloudDesktopTPList,

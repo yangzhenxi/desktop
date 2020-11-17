@@ -13,6 +13,7 @@
               <a-col :span="8">
                 <div
                   class="box"
+                  :disabled="true"
                   @click="OnCloudDesktop">
                   <m-icon
                     type="kaiqi"

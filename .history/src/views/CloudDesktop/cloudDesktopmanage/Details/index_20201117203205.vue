@@ -154,7 +154,8 @@ export default {
     },
     computed: {
         ...mapState({
-            'Data': state => state.cloudDesktop.DetailsData
+            'Data': state => state.cloudDesktop.DetailsData,
+            'Search': state => state.cloudDesktop.Search
         })
     },
     methods: {

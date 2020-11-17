@@ -1,3 +1,0 @@
-<template>
-	di
-</template>
