@@ -28,7 +28,6 @@ export default {
         dataSource: {
             handler (newdata, olddata) {
                 this.data = newdata.ChartsData
-                console.log(this.data)
             },
             deep: true,
             immediate: false
@@ -43,7 +42,7 @@ export default {
                 formatter: '.0%'
 
             }],
-            height: 300,
+            height: 400,
             color: [],
             textStyle: {
                 fill: 'rgb(174, 190, 230)' // 文本的颜色
@@ -69,9 +68,9 @@ export default {
     },
     created () {
         if (this.dataSource.type === 'CPU') {
-            this.color = ['item', ['rgb(249, 201, 74)', 'rgb(0, 150, 84)']]
+            this.color = ['item', ['rgb(245, 208, 81)', 'rgb(65, 196, 195)']]
         } else {
-            this.color = ['item', ['rgb(50, 107, 216)', 'rgb(253, 54, 62)']]
+            this.color = ['item', ['rgb(94, 72, 197)', 'rgb(72, 74, 125)']]
         }
     },
     methods: {

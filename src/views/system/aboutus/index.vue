@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { convert } from '@/utils/util'
 import { systemAboutUs } from '@/api/system/About'
 export default {
     data () {
@@ -57,7 +58,7 @@ export default {
                     value: ''
                 },
                 {
-                    key: '',
+                    key: 'hostname',
                     title: '服务器名称',
                     value: ''
                 },
@@ -69,11 +70,6 @@ export default {
                 {
                     key: 'port',
                     title: '服务器端口',
-                    value: ''
-                },
-                {
-                    key: '',
-                    title: 'ISS环境',
                     value: ''
                 },
                 {
@@ -89,6 +85,16 @@ export default {
                 {
                     key: 'backVersion',
                     title: '后台版本',
+                    value: ''
+                },
+                {
+                    key: 'go_version',
+                    title: 'go版本',
+                    value: ''
+                },
+                {
+                    key: 'db_version',
+                    title: '数据库版本',
                     value: ''
                 }
             ],
@@ -118,7 +124,10 @@ export default {
                 {
                     key: 'registerTime',
                     title: '注册日期',
-                    value: ''
+                    value: (value) => {
+                        console.log(value)
+                        return convert(value, 'unix')
+                    }
                 },
                 {
                     key: 'registerCompany',
@@ -151,7 +160,9 @@ export default {
             })
             this.LicenseInfo.forEach(u => {
                 for (const i in res) {
-                    if (u.key === i) {
+                    if (u.key === 'registerTime') {
+                        u.value = convert(u.value, 'unix')
+                    } else if (u.key === i) {
                         u.value = res[i]
                     }
                 }

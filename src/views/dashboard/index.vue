@@ -3,10 +3,7 @@
     <Instance/>
     <br>
     <br>
-    <CPU :cpu="CPU" :memory="Memory"/>
-    <br>
-    <br>
-    <Storage :data="Storage"/>
+    <CPU :cpu="CPU" :memory="Memory" :storage="Storage"/>
     <br>
     <br>
     <Footer/>

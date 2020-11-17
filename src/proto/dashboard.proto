@@ -104,7 +104,13 @@ message DashboardStorageReq {
 
 message Storage {
     // 主机
-    string data_store = 1;
+    string host = 1;
+    // 主机下的硬盘
+    repeated Disk disks = 2;
+}
+
+message Disk {
+    string name = 1;
     // 存储总量
     int64 disk_capacity = 2;
     // 存储使用量

@@ -1,62 +1,59 @@
 <template>
   <div>
-    <a-card>
-      <template slot="title" class="title" >
-        桌面  总共660个  其中
-        <m-icon type="shape" class="icon shape blue"/>
-        2354
-        <m-icon type="shape" class="icon shape"/>
-        3392
-      </template>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        场景名
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;" :hoverable="false">
-        桌面数量
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        运行数量
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        关闭数量
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        ATA考试
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        310
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        0
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        310
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        测试桌面
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        350
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        0
-      </a-card-grid>
-      <a-card-grid style="width:25%;text-align:center;padding: 12px;">
-        350
-      </a-card-grid>
-    </a-card>
+    <m-table
+      style="margin-top:10px;"
+      ref="table"
+      :columns="columns"
+      :data="loadData">
+    </m-table>
   </div>
 </template>
 
 <script>
-import { MIcon } from '@/components'
+import { MIcon, MTable } from '@/components'
 export default {
     components: {
-        MIcon
+        MIcon,
+        MTable
     },
     data () {
         return {
-
+          columns: [
+            {
+              title: '云桌面',
+              dataIndex: 'session_key',
+              sorter: true,
+              ellipsis: true
+            },
+            {
+              title: '桌面数量',
+              dataIndex: '',
+              sorter: true
+            },
+            {
+              title: '运行数量',
+              dataIndex: 'UserFullName',
+              sorter: true
+            },
+            {
+              title: '关闭数量',
+              dataIndex: 'client_address',
+              sorter: true
+            }
+          ],
+        loadData: async (parameter) => {
+            try {
+                // const result = await CloudDesktopSessionList({ desktop_id: '117' })
+                // const data = this.deepGet(result, 'data', [])
+                const data = []
+              return {
+                data,
+                queryParam: this.queryParam
+              }
+            } catch (error) {
+              return false
+            }
+      }
         }
     }
 }
@@ -66,4 +63,8 @@ export default {
 /deep/.ant-card-head-title{
     color: white;
 }
+/deep/.ant-table-placeholder{
+  background: #272e48 !important;
+}
+
 </style>

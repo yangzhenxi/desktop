@@ -10,13 +10,13 @@
       </a-col>
       <a-col :span="10">
         <a-select style="width: 200px" placeholder="请选择要查询的严重性" @change="handleChange">
-          <a-select-option value="Prompts">
+          <a-select-option value="提示">
             提示
           </a-select-option>
-          <a-select-option value="Warn">
+          <a-select-option value="警告">
             警告
           </a-select-option>
-          <a-select-option value="Critical">
+          <a-select-option value="严重">
             严重
           </a-select-option>
           <a-select-option value="">

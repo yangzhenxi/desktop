@@ -112,12 +112,6 @@ export const asyncRouterMap = [
             component: () => import('@/views/system/Log'),
             meta: { title: '用户日志', keepAlive: true, icon: icon.Log, permission: ['log'] }
           },
-        //   {
-        //     path: '/system/aboutus',
-        //     name: 'aboutus',
-        //     component: () => import('@/views/system/aboutus'),
-        //     meta: { title: '关于我们', keepAlive: true, icon: icon.aboutus, permission: ['dashboard'] }
-        //   },
           {
             path: '/system/task',
             name: 'task',
@@ -129,6 +123,12 @@ export const asyncRouterMap = [
             name: 'alarm',
             component: () => import('@/views/system/alarm'),
             meta: { title: '警报管理', keepAlive: true, icon: icon.alarm, permission: ['alert'] }
+          },
+          {
+            path: '/system/aboutus',
+            name: 'aboutus',
+            component: () => import('@/views/system/aboutus'),
+            meta: { title: '关于我们', keepAlive: true, icon: icon.aboutus, permission: ['aboutus'] }
           }
         //   {
         //     path: '/system/Authorization',

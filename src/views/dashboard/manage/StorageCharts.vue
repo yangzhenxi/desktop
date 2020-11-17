@@ -1,11 +1,23 @@
 <template>
   <div>
     <empty :isEmpty="isEmpty(data)">
-      <v-chart :forceFit="true" :height="height" :data="data">
-        <v-tooltip />
-        <v-axis dataKey="val" :label="label" />
+      <v-chart
+        :scale="scale"
+        :forceFit="true"
+        :height="height"
+        :data="data">
+        <v-tooltip/>
+        <v-axis
+          dataKey="valName"
+          :label="label" />
+        <v-axis
+          dataKey="val"
+          :label="label"
+        />
         <v-legend />
-        <v-stack-bar position="Host*val" :color="color" />
+        <v-stack-bar
+          position="valName*val"
+          :color="color" />
       </v-chart>
     </empty>
   </div>
@@ -14,13 +26,11 @@
 <script>
 import Empty from '@/components/Empty'
 import { isEmpty } from '@/utils/util'
-
-//   const DataSet = require('@antv/data-set')
-  export default {
+export default {
     name: 'StorageCharts',
     props: {
         dataSource: {
-            type: Object,
+            type: Array,
             required: true
         }
     },
@@ -28,39 +38,36 @@ import { isEmpty } from '@/utils/util'
         Empty
     },
     data () {
-      return {
-        data: [],
-        height: 500,
-        label: {
-            textStyle: {
-                fill: '#fff'
-            }
-        },
-        color: ['name', ['rgb(253, 45, 54)', 'rgb(52, 170, 248)']]
-      }
+        return {
+            data: [],
+            height: 400,
+            label: {
+                textStyle: {
+                    fill: '#fff'
+                }
+            },
+            scale: [{
+              dataKey: 'val',
+              tickCount: 5,
+              min: 0,
+              formatter: (item) => {
+                return item + 'GB'
+              }
+            }],
+            color: ['name', ['rgb(57, 198, 111)', 'rgb(119, 147, 227)']]
+        }
     },
     watch: {
         dataSource: {
             handler (newdata, olddata) {
-                this.data = newdata.ChartsData
+                this.data = newdata
             },
             deep: true,
-            immediate: false
+            immediate: true
         }
     },
     methods: {
         isEmpty
     }
-    // mounted () {
-    //     const dv = new DataSet.View().source(this.dataSource.ChartsData)
-    //     dv.transform({
-    //         type: 'fold',
-    //         fields: ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.'],
-    //         key: '月份',
-    //         value: '月均降雨量'
-    //     })
-    //     this.data = dv.rows
-    //     console.log(this.data)
-    // }
 }
 </script>

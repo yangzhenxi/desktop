@@ -10,7 +10,6 @@
           <a-icon type="user" />
           个人中心
         </a-menu-item>
-
         <a-menu-item key="logout" @click="handleLogout">
           <a-icon type="logout" />
           退出登录
@@ -64,5 +63,14 @@ export default {
   /deep/ .ant-dropdown-menu-item {
     min-width: 160px;
   }
+}
+.ant-dropdown-menu{
+  background-color: rgb(47, 51, 73);
+}
+.ant-dropdown-menu-item:hover, .ant-dropdown-menu-submenu-title:hover {
+    background-color: rgb(34, 34, 34)
+}
+.ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title{
+      color: rgba(255, 255, 255, 0.65);
 }
 </style>

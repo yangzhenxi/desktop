@@ -33,8 +33,8 @@ export function GetUserCount () {
  *  获取云桌面数量
  * @param {data} data
  */
-export function GetDesktop () {
-    return request.post('/dashboard.v1.Dashboard/Desktop')
+export function GetDesktop (data) {
+    return request.post('/dashboard.v1.Dashboard/Desktop', data)
 }
 /**
  *  获取在线人数
