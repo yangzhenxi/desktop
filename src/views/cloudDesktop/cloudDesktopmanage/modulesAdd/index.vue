@@ -90,10 +90,10 @@ export default {
         finish () {
             this.currentTab = 0
         },
-        close (res) {
+        close (res, task) {
             if (res) {
-                this.currentTab = 0
-                this.$emit('ok', res)
+				this.currentTab = 0
+                this.$emit('ok', task.data)
             }
             this.visible = false
         }

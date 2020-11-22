@@ -3,7 +3,7 @@
     <a-spin :spinning="loadings">
       <a-row :gutter="16" class="row">
         <a-col :span="6">
-          <a-card style="height:875px;">
+          <a-card style="min-height:875px;height:100%">
             <div class="tree_head">
               <div class="tree_head_left" @click="NewDesktopOu">
                 <m-icon type="zhuomian" class="icon  zhuomian"/>
@@ -73,7 +73,7 @@
                     </a-col>
                     <div v-for="(i,index) in TPList" :key="index">
                       <!-- 新建任务进度 -->
-                      <a-col :span="8" v-if="i.state==='DESKTOP_STATE_CREATING'">
+                      <a-col :span="8" v-if="i.state==='SYSTEM_TASK_STATE_RUNNING'">
                         <a-row
                           class="modules progress"
                           type="flex"
@@ -109,7 +109,7 @@
                               <div
                                 class="text blurry_text"
                                 style="overflow: inherit;">
-                                <span>电源状态: </span>
+                                <span>桌面总数: </span>
                                 <span>开启</span>
                               </div>
                               <div class="text blurry_text">
@@ -159,11 +159,8 @@
                             <div
                               class="text"
                               style="overflow: inherit;">
-                              <span>电源状态: </span>
-                              <a-tag :color="toDict(i.Power,'C_D_POWER_STATE').color">
-                                {{ i.Power | convert('C_D_POWER_STATE') }}
-
-                              </a-tag>
+                              <span>桌面总数: </span>
+                              <a-tag color="#2db7f5">{{ i.total_count }}  台</a-tag>
                             </div>
                             <div class="text">
                               <span>创建时间: </span>
@@ -171,11 +168,6 @@
                             </div>
                           </a-col>
                           <div class="hover">
-                            <!-- <span @click="details(i)">
-                            <m-icon
-                              type="chakan"
-                              class="chakan" />
-                          </span> -->
                             <span @click="DesktopDelete(i)">
                               <m-icon
                                 type="shanchu"
@@ -332,8 +324,8 @@
                   </a-row>
                   <a-pagination
                     style="float:right;margin: 20px 20px 0 0"
-                    :total="AllTPpageList.length"
-                    :show-total="total => `共 ${AllTPpageList.length} 条数据`"
+                    :total="count"
+                    :show-total="total => `共 ${count} 条数据`"
                     :page-size="8"
                     @change="changePage"
                     :default-current="1"/>
@@ -352,19 +344,19 @@
         @ok="getOu"></tree-edit>
       <module-add
         ref="ModulesAdd"
-        @ok="getOu"></module-add>
+        @ok="TPAdd"></module-add>
     </a-spin></page-header-wrapper>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+import ModuleAdd from './modulesAdd'
+import Singlemodules from './Details'
 import MIcon from '@/components/Icon'
 import Tree from '../components/Tree'
 import Empty from '@/components/Empty'
 import TreeAdd from './Tree_modules/TreeAdd'
 import TreeEdit from './Tree_modules/TreeEdit'
-import ModuleAdd from './modulesAdd'
-import Singlemodules from './Details'
-import { mapMutations } from 'vuex'
 import Loading from '@/components/loading/loading1'
 import {
     CloudDesktopTPList,
@@ -375,7 +367,7 @@ import {
 } from '@/api/CloudDesktop/CloudDesktop'
 import { mixin } from '@/utils/mixin'
 import Water from '@/components/waterMap/index'
-import { isEmpty } from '@/utils/util'
+import { isEmpty, SetTaskId, deepGet } from '@/utils/util'
 export default {
     mixins: [mixin],
     components: {
@@ -396,7 +388,6 @@ export default {
             visible: false, // 抽屉的开关
             selectedKeys: [], // 初始化选中的模版组
             TPList: [], // 模版列表
-            AllTPpageList: [], // 模版列表
             IsAllmodule: true, // 桌面列表是否显示
             OuList: [],
             record: {}, // 当前选中的OU
@@ -408,9 +399,9 @@ export default {
             DesktopDeletingId: [], // 创建中的id
             DesktopCreatingDrawer: {}, // 抽屉数据
             DesktopCreatingId: [], // 创建的ID
-            DesktopFailId: [], // 创建失败的ID
             IsDesktopCreating: true, // 判读是否要执行定时器任务
-            Arr: []
+			Arr: [],
+			count: 0 // 全部数据总数
         }
     },
     created () {
@@ -439,7 +430,7 @@ export default {
                 this.record = OuList[0]
 			}
 			if (this.record !== undefined && OuList.length >= 1) {
-				this.GetTPList(1)
+				this.GetTPList()
 			} else {
 				this.spinning = false
 			}
@@ -447,45 +438,42 @@ export default {
         },
 
         // 获取模版列表
-        async GetTPList (item) {
-            clearInterval(this.timer)
-            item ? this.spinning = true : this.spinning = false
+        async GetTPList (page) {
+            this.spinning = true
             const obj = {
                 page: 0,
-                size: 20,
+                size: 8,
                 dn: this.record.dn
-            }
+			}
+			page ? obj.page = page : page = 0
             try {
-                const res = this.deepGet(await CloudDesktopTPList(obj), 'data', [])
+				const result = await CloudDesktopTPList(obj)
+				const data = this.deepGet(result, 'data', [])
+				this.count = parseInt(this.deepGet(result, 'count'))
                 this.DesktopCreatingId = []
                 this.IsDesktopCreating = true
                 this.DesktopSuccess = []
-                this.DesktopFailId = []
                 this.DesktopFail = []
-                this.AllTPpageList = []
                 this.DesktopDeletingId = []
-                this.OuCount(this.OuList, this.record, res.length)
-                res.forEach(u => {
+                data.forEach(u => {
                     if (u.state === 'DESKTOP_STATE_CREATING') {
-                        this.DesktopCreatingId.push(u)
+                        this.DesktopCreatingId.push(u.task_id)
                     } else if (u.state === 'DESKTOP_STATE_SUCCESS') {
                         this.DesktopSuccess.push(u)
                     } else if (u.state === 'DESKTOP_STATE_FAIL') {
                         this.DesktopFail.push(u)
                     } else if (u.state === 'DESKTOP_STATE_DELETING') {
-                        this.DesktopDeletingId.push(u)
+                        this.DesktopDeletingId.push(u.task_id)
                     }
 				})
-                this.spinning = false
-                this.DesktopCreatingId.length > 0 || this.DesktopDeletingId.length > 0 ? this.GetTask() : this.IsDesktopCreating = false
-                if (this.DesktopCreatingId.length === 0 && this.DesktopFailId.length === 0 && this.DesktopDeleting.length === 0) {
-                    this.AllTPpageList = [...this.DesktopSuccess, ...this.DesktopFail]
-                    this.TPList = this.AllTPpageList.slice(0, 8)
-                }
+				this.spinning = false
+                this.TPList = [...this.DesktopSuccess, ...this.DesktopFail]
+				if (this.DesktopCreatingId.length > 0) {
+					this.GetTask()
+				}
                 if (this.DesktopDeletingId.length > 0) {
                     this.GetDeleteTask()
                 }
-                this.settime()
             } catch {
                 this.spinning = false
             }
@@ -493,50 +481,55 @@ export default {
 
         // 查找正在新建的任务
         async GetTask () {
-            this.DesktopCreating = []
-            for (let i = 0; i < this.DesktopCreatingId.length; i++) {
-                await CloudDesktopTaskGet({ id: this.DesktopCreatingId[i].task_id }).then(result => {
-                    const res = this.deepGet(result, 'data', {})
-                    this.DesktopCreatingId.forEach(u => {
-                        if (u.task_id === res.id) {
-                            u.progress = {
-                                input: 10,
-                                output: 20,
-                                cpuIdle: res.progress
-                            }
-                            this.DesktopCreating.push(u)
-                        }
-                    })
-                })
-            }
-             this.AllTPpageList = [...this.DesktopCreating, ...this.DesktopSuccess, ...this.DesktopFail]
-            this.TPList = this.AllTPpageList.slice(0, 8)
+            clearInterval(this.timer)
+			const Id = this.DesktopCreatingId
+			this.DesktopCreatingId = []
+			const DesktopCreating = []
+			for (let i = 0; i < Id.length; i++) {
+				const result = this.deepGet(await CloudDesktopTaskGet({ id: Id[i] }), 'data', {})
+				result.name = result.title.split(':')[1]
+				result.task_id = result.id
+				result.progress = {
+					input: 10,
+					output: 20,
+					cpuIdle: result.progress
+				}
+				if (result.progress.cpuIdle === 100) {
+					this.GetTPList()
+				} else {
+					this.DesktopCreatingId.push(result.id)
+					DesktopCreating.push(result)
+				}
+			}
+			this.TPList = this.TPList.filter(o => this.DesktopCreatingId.indexOf(o.task_id) === -1)
+			this.TPList = [...DesktopCreating, ...this.TPList]
+			this.DesktopCreatingId.length > 0 ? this.settime() : this.IsDesktopCreating = false
         },
         // 查找删除任务
-        async GetDeleteTask () {
-            const DesktopDeleting = []
-            for (let i = 0; i < this.DesktopDeletingId.length; i++) {
-                await CloudDesktopTaskGet({ id: this.DesktopDeletingId[i].task_id }).then(result => {
-                    const res = this.deepGet(result, 'data', {})
-                    this.DesktopDeletingId.forEach((u, index) => {
-                        if (res.id === u.task_id) {
-                            u.progress = res.progress
-                            DesktopDeleting.push(u)
-                        }
-                    })
-                })
-            this.AllTPpageList = [...this.DesktopCreating, ...this.DesktopSuccess, ...this.DesktopFail, ...DesktopDeleting]
-            this.TPList = this.AllTPpageList.slice(0, 8)
-            }
-        },
-        // 分页
-        changePage (page, pagesize) {
-            this.TPList = []
-            this.AllTPpageList.forEach((u, index) => {
-                if (index >= (page - 1) * 8 && index <= page * 8 - 1) {
-                    this.TPList.push(u)
-                }
-            })
+        async GetDeleteTask (item, id) {
+			if (item) {
+				this.DesktopDeletingId.push(item)
+				this.TPList = this.TPList.filter(o => [id].indexOf(o.id) === -1)
+			}
+			clearInterval(this.timer)
+			const Id = this.DesktopDeletingId
+			this.DesktopDeletingId = []
+			const DesktopDeleting = []
+			for (let i = 0; i < Id.length; i++) {
+				const result = this.deepGet(await CloudDesktopTaskGet({ id: Id[i] }), 'data', {})
+				result.name = result.title.split(':')[1]
+				result.task_id = result.id
+				result.state = 'DESKTOP_STATE_DELETING'
+				if (result.progress !== 100) {
+					DesktopDeleting.push(result)
+					this.DesktopDeletingId.push(result.id)
+				} else {
+					this.GetTPList()
+				}
+			}
+			this.TPList = this.TPList.filter(o => this.DesktopDeletingId.indexOf(o.task_id) === -1)
+			this.TPList = [...DesktopDeleting, ...this.TPList]
+			this.DesktopDeletingId.length > 0 ? this.settime() : this.IsDesktopCreating = false
         },
         // 桌面详情
         details (item) {
@@ -553,14 +546,16 @@ export default {
                 content: '点击确定即可删除',
                 onOk: () => {
                     return new Promise(async (resolve, reject) => {
-                        await CloudDesktopTPDelete({ id: i.id }).then(res => {
-                            this.$message.success('删除成功')
-                            this.getOu(this.record)
-                            resolve()
-                        }).catch(() => {
-                            this.$message.error('删除失败')
-                            resolve()
-                        })
+						try {
+							const result = await CloudDesktopTPDelete({ id: i.id })
+							SetTaskId([deepGet(result, 'task_id')])
+                            this.$message.success('提交删除任务')
+							resolve()
+							this.loading = false
+							this.GetDeleteTask(deepGet(result, 'task_id'), i.id)
+						} catch (error) {
+							this.$message.error('删除失败')
+						}
                     })
                 }
             })
@@ -569,9 +564,14 @@ export default {
         settime () {
             if (this.IsDesktopCreating) {
                 this.timer = setInterval(() => {
-                    this.GetTPList(false)
-                }, 30000)
-                this.$once('hook:beforeDestory', () => {
+					if (this.DesktopCreatingId.length > 0) {
+						this.GetTask()
+					}
+					if (this.DesktopDeletingId.length > 0) {
+						this.GetDeleteTask()
+					}
+                }, 10000)
+                this.$once('hook:beforeDestroy', () => {
                     clearTimeout(this.timer)
                 })
             }
@@ -581,7 +581,7 @@ export default {
             this.IsAllmodule = true
             this.$refs.Single.OffSingle()
             if (item) {
-                this.GetTPList(item)
+                this.GetTPList()
             }
         },
 
@@ -604,14 +604,14 @@ export default {
         },
         // 桌面切换事件
         changecheckedLeftval (item) {
-            this.selectedKeys = []
+			this.selectedKeys = []
             this.selectedKeys.push(item.eventKey)
             this.record = item
             this.SET_DN(item)
-            this.GetTPList(item)
+            this.GetTPList()
             this.IsAllmodule = true
             this.$refs.Single.OffSingle()
-        },
+		},
         // 删除Tree
         TreeDelete () {
             this.$confirm({
@@ -673,18 +673,15 @@ export default {
                     this.Recursion(u.children, obj)
                 }
             })
-        },
-        //
-        OuCount (array, item, count) {
-            array.forEach(u => {
-                if (u.dn === item.dn) {
-                    u.userCount = count
-                }
-                if (u.children.length > 0) {
-                    this.OuCount(u.children, item, count)
-                }
-            })
-        },
+		},
+		// 分页
+        changePage (page, pagesize) {
+			this.GetTPList(+page - 1)
+		},
+		TPAdd (taskId) {
+			this.DesktopCreatingId.push(taskId)
+			this.GetTask()
+		},
         isEmpty
 
     },
@@ -709,11 +706,6 @@ export default {
         }
     }
 }
-// /deep/.ant-card-head-title,
-// /deep/span.ant-modal-close-x,
-// /deep/.ant-modal-title {
-//     color: white;
-// }
 .title {
     font-size: 17px;
     font-weight: 500;

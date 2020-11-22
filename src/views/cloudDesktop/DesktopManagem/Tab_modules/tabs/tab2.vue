@@ -10,6 +10,7 @@
         class="stepFormText">
         <a-select
           placeholder="请选择CPU核心数"
+          @change="handleCPU"
           v-decorator="['cpu_num', { rules: [{required: true, message: '请选择CPU核心数'}] }]">
           <a-select-option value="1">1</a-select-option>
           <a-select-option value="2">2</a-select-option>
@@ -21,8 +22,7 @@
         <a-select
           placeholder="请选择插槽核心"
           v-decorator="['socket', { rules: [{required: true, message: '请选择插槽核心'}] }]">
-          <a-select-option value="1">1</a-select-option>
-          <a-select-option value="2">2</a-select-option>
+          <a-select-option v-for="i in socketVal" :value="i" :key="i">{{ i }}</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item
@@ -112,7 +112,8 @@ export default {
             loadingConfig: false,
             netword: [], // 网络,
             inputValue1: 2,
-            inputValue2: 80
+			inputValue2: 80,
+			socketVal: [1]
         }
     },
     created () {
@@ -122,10 +123,9 @@ export default {
         async GetNetword () {
             this.loading = true
             const obj = { host: this.ModuleData.host }
-            await DesktopTemplateNetworkList(obj).then(res => {
-                this.netword = this.deepGet(res, 'data', [])
-            })
-            this.inputValue1 = this.ModuleData.memoryMB / 1024
+            await DesktopTemplateNetworkList(obj).then(res => { this.netword = this.deepGet(res, 'data', []) })
+			this.ModuleData.cpu_num === 1 ? this.socketVal = [1] : this.socketVal = [1, 2]
+			this.inputValue1 = this.ModuleData.memoryMB / 1024
             this.inputValue2 = this.ModuleData.capacityKB / 1024 / 1024
             this.$nextTick(() => {
                 setTimeout(() => {
@@ -155,7 +155,15 @@ export default {
                     this.loadingConfig = false
                 }
             })
-        }
+		},
+		handleCPU (value) {
+			if (value === '1') {
+				this.form.setFieldsValue({ socket: 1 })
+				this.socketVal = [1]
+			} else {
+				this.socketVal = [1, 2]
+			}
+		}
     }
 }
 </script>

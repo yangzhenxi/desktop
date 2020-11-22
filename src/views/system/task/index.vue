@@ -134,19 +134,26 @@ export default {
         columns,
         visible: false,
         TAbleData: [],
-        dataSource: [],
+		dataSource: [],
+		result: [],
+		IsDesktopCreating: true,
         Drawerdata: {
             steps: []
         },
         loadData: async (parameter) => {
         try {
-            const result = await CloudDesktopTaskList(Object.assign(parameter, this.queryBuild(this.queryParam)))
-            return result
+            this.result = await CloudDesktopTaskList(Object.assign(parameter, this.queryBuild(this.queryParam)))
+			return this.result
         } catch (error) {
             return false
         }
       }
     }
+  },
+  watch: {
+	result (old) {
+		this.GetTask()
+	}
   },
   methods: {
     async Detali (record) {
@@ -156,7 +163,23 @@ export default {
     },
     onClose () {
         this.visible = false
-    }
+	},
+	GetTask () {
+		clearInterval(this.timer)
+		const arr = this.deepGet(this.result, 'data').filter(u => u.state === 'SYSTEM_TASK_STATE_RUNNING')
+		arr.length > 0 ? this.SetTimer() : this.IsDesktopCreating = false
+	},
+	SetTimer () {
+        if (this.IsDesktopCreating) {
+            this.timer = setInterval(() => {
+				this.$refs.table.refresh(false)
+				this.GetTask()
+            }, 10000)
+            this.$once('hook:beforeDestroy', () => {
+                clearTimeout(this.timer)
+            })
+        }
+	}
   }
 }
 </script>

@@ -150,8 +150,9 @@ export default {
   },
   methods: {
     async Edit (record, ouList) {
-      this.record = []
-      this.record = record
+	this.record = []
+	this.ouList = []
+    this.record = record
       this.pwdNotSetdisabled = false
       this.cannotChangePWDdisabled = false
       // 保留之前老的数据

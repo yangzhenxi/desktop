@@ -10,7 +10,7 @@
         <a-row :gutter="16">
           <div class="header">
             <a-col :span="14">
-              <a-row :gutter="[16,16]">
+              <a-row :gutter="[16,24]">
                 <a-col :span="8">
                   <div
                     class="box"
@@ -93,20 +93,8 @@
                   <div
                     class="modules_title"
                     style="margin:5px 0px">{{ moduleData.name }}</div>
-                  <div class="modules_text">
-                    <span>所属分组: </span>
-                    <span> {{ moduleData.group_name }}</span>
-                  </div>
-                  <div class="modules_text">
-                    <span>所在服务器: </span>
-                    <span>{{ moduleData.host }}</span>
-                  </div>
-                  <div class="modules_text">
-                    <span>创建时间: </span>
-                    <span>{{ moduleData.create_time| convert('unix','YYYY-MM-DD') }}</span>
-                  </div>
-                  <div class="modules_text">
-                    <span>版本状态: </span>
+                  <!-- <div class="modules_text">
+                    <span>最新版本: </span>
                     <a-tag color="#108ee9">
                       {{ moduleData.version | Isversion }}
                     </a-tag>
@@ -118,12 +106,13 @@
                     <a-tag :color="toDict(moduleData.is_running,'C_STATE').color">
                       {{ moduleData.is_running | convert('C_STATE') }}
                     </a-tag>
-                    <!-- <a-badge :number-style="{backgroundColor: toDict(moduleData.isRunning,'C_STATE').color}" :count="moduleData.is_running"/>
-                    {{ moduleData.is_running }} -->
-                  </div>
-                  <div class="modules_text">
-                    <span>IP: </span>
-                    <span>{{ moduleData.ip }}</span>
+                  </div> -->
+                  <div class="modules_text" v-for="(i,index) in TPDetails" :key="index">
+                    <span>{{ i.title }}:  </span>
+                    <a-tag v-if="i.tag" color="#108ee9">
+                      {{ i.value | Isversion }}
+                    </a-tag>
+                    <span v-else>{{ i.value }}</span>
                   </div>
                 </a-col>
               </a-row>
@@ -131,7 +120,7 @@
           </div>
         </a-row>
       </a-card>
-      <a-card>
+      <a-card style="min-height:460px;height:100%;margin-bottom:0px;">
         <tabs ref="tabs"></tabs>
       </a-card>
       <x-managerelease
@@ -147,6 +136,7 @@
 
 <script>
 import { MIcon } from '@/components/index'
+import { isNumber } from '@/utils/util'
 import { mixinFormModal, mixinTable } from '@/utils/mixin'
 import XManagerelease from './release'
 import XManageattributes from './modulesAttribute'
@@ -169,6 +159,9 @@ export default {
     },
     filters: {
         Isversion (item) {
+			if (!isNumber(item)) {
+				return item
+			}
             if (item === '0') {
                 return '未发布'
             } else {
@@ -182,14 +175,67 @@ export default {
             Version: state => state.DesktopManage.Version,
             ModuleData: state => state.DesktopManage.ModuleData
         })
-    },
+	},
+	watch: {
+		ModuleData (old) {
+			this.TPDetails = this.TPDetails.map(u => {
+				return Object.assign(u, {
+					value: this.convert(this.deepGet(old, u.key), u.filters)
+				})
+			})
+		}
+	},
     data () {
         return {
             moduleData: {},
             span: '24',
             selectedRowKeys: [], // Check here to configure the deffault column
             visible: false,
-            spinning: true
+			spinning: true,
+			TPDetails: [
+				{
+					title: '所属分组',
+					key: 'group_name',
+					value: '默认分组',
+					tag: false,
+					filters: false
+				},
+				{
+					title: '主机',
+					key: 'host',
+					value: '192.168.5.100',
+					tag: false,
+					filters: false
+				},
+				{
+					title: '最新版本',
+					key: 'version',
+					value: '1',
+					tag: true,
+					filters: false
+				},
+				{
+					title: '运行状态',
+					key: 'is_running',
+					value: '开机',
+					tag: true,
+					filters: 'C_STATE'
+				},
+				{
+					title: 'IP',
+					key: 'ip',
+					value: '192.168.2.53',
+					tag: false,
+					filters: false
+				},
+				{
+					title: '创建时间',
+					key: 'create_time',
+					value: '2020-09-30',
+					tag: false,
+					filters: false
+				}
+			]
         }
     },
     methods: {
@@ -204,7 +250,8 @@ export default {
                 []
             )
             this.SET_MODULEDATA(this.moduleData)
-            this.Isdisabled()
+			this.Isdisabled()
+			this.moduleData.create_time = this.convert(this.moduleData.create_time, 'unix', 'YYYY-MM-DD')
             this.spinning = false
         },
         // 关闭详情页面
@@ -343,7 +390,8 @@ export default {
 		// 发布快照
 		release () {
 			this.moduleData.is_running === '开启' ? this.$message.info('请先将模版挂起或者关机在进行操作') : this.$refs.ManageRelease.Add(this.moduleData)
-		}
+		},
+		isNumber
     }
 }
 </script>
@@ -360,7 +408,7 @@ export default {
 .box {
     background: #272e48;
     border-radius: 10px;
-    padding: 10px 0px;
+    padding: 13px 0px;
     border: 1px solid;
 }
 .icon {
@@ -436,7 +484,6 @@ export default {
 
 .header {
     display: flex;
-    align-items: center;
 }
 /deep/.ant-card-head-wrapper {
     padding-left: 20px;
@@ -464,10 +511,12 @@ export default {
 .modules {
     border-radius: 10px;
     padding: 8px;
-    height: 212px;
-    min-height: 212px;
+    display: flex;
     .icon {
-        font-size: 80px;
+		font-size: 80px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
     }
     .icon_title {
         font-size: 20px;
@@ -479,7 +528,8 @@ export default {
         font-size: 16px;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;
+		text-overflow: ellipsis;
+		padding: 3px 0px;
     }
 }
 .disabled {

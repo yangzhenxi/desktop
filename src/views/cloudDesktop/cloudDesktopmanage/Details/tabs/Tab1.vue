@@ -47,9 +47,17 @@ const columns = [
   },
   {
     title: 'IP地址',
-    dataIndex: 'AssignedIPAddress',
+    dataIndex: 'IPAddress',
     sorter: true,
     width: 150
+  },
+  {
+    title: '注册状态',
+    dataIndex: 'RegistrationState',
+    scopedSlots: { customRender: 'RegistrationState' },
+    sorter: true,
+    disabled: true,
+    width: 130
   },
   {
     title: '维护模式',
@@ -64,67 +72,61 @@ const columns = [
     scopedSlots: { customRender: 'PowerState' },
     sorter: true,
     width: 150
-  },
-  {
-    title: '所在服务器',
-    dataIndex: 'HostingServerName',
-    sorter: true,
-    width: 150
   }
 ]
 export default {
-  mixins: [mixinTable],
-  components: {
-    MTable
-  },
-  props: {
-     datasource: {
-      type: Object,
-      required: true
-    }
-  },
-  data () {
-    return {
-      columns,
-      ISstate: 0,
-      rawdata: [],
-      Ids: [],
-      type: '',
-      carryOut: Boolean,
-      Power: true,
-      MaintenanceMode: true,
-      selectedRowKeys: [],
-      // 加载数据方法 必须为 Promise 对象
-      loadData: async (parameter) => {
-            if (this.datasource.Search !== undefined) {
-                this.queryParam.HostedMachineName = this.datasource.Search
-            }
-            let data = []
-            this.ISstate ? data = this.rawdata : data = this.deepGet(await CloudDesktopMachineList({ desktop_id: this.datasource.id }), 'data', [])
-            this.rawdata = data
-           if (data.every(u => u.PowerState === 'POWER_STATE_ON') && data.length > 0) {
-               this.Data.Power = true
-               this.SET_DETAILSDATA(this.Data)
-           } else {
-               this.Data.Power = false
-               this.SET_DETAILSDATA(this.Data)
-           }
-            let count = 0
-            data.forEach(u => {
-                if (u.PowerState === 'POWER_STATE_ON') {
-                    count++
-                }
-            })
-            this.Data.registered_count = count
-            this.SET_DETAILSDATA(this.Data)
-            this.SET_SEARCH(data)
-        return {
-          data,
-          queryParam: this.queryParam
-        }
-      }
-    }
-  },
+	mixins: [mixinTable],
+	components: {
+		MTable
+	},
+	props: {
+		datasource: {
+		type: Object,
+		required: true
+		}
+	},
+	data () {
+		return {
+		columns,
+		ISstate: 0,
+		rawdata: [],
+		Ids: [],
+		type: '',
+		carryOut: Boolean,
+		Power: true,
+		MaintenanceMode: true,
+		selectedRowKeys: [],
+		// 加载数据方法 必须为 Promise 对象
+		loadData: async (parameter) => {
+				if (this.datasource.Search !== undefined) {
+					this.queryParam.HostedMachineName = this.datasource.Search
+				}
+				let data = []
+				this.ISstate ? data = this.rawdata : data = this.deepGet(await CloudDesktopMachineList({ desktop_id: this.datasource.id }), 'data', [])
+				this.rawdata = data
+			if (data.every(u => u.PowerState === 'POWER_STATE_ON') && data.length > 0) {
+				this.Data.Power = true
+				this.SET_DETAILSDATA(this.Data)
+			} else {
+				this.Data.Power = false
+				this.SET_DETAILSDATA(this.Data)
+			}
+				let count = 0
+				data.forEach(u => {
+					if (u.PowerState === 'POWER_STATE_ON') {
+						count++
+					}
+				})
+				this.Data.registered_count = count
+				this.SET_DETAILSDATA(this.Data)
+				this.SET_SEARCH(data)
+			return {
+			data,
+			queryParam: this.queryParam
+			}
+		}
+		}
+	},
     mounted () {
         const columns = storage.get(CUSTOMIZE_COLUMNS)
         if (columns && columns.DesktopList) {

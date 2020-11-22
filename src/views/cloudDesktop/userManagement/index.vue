@@ -62,7 +62,6 @@
                 </a-button>
                 <a-button
                   type="primary"
-                  :disabled="disabled"
                   style="margin-left:10px"
                   @click="EditPass(selectedRows)">
                   修改密码
@@ -77,13 +76,11 @@
                 <a-button
                   @click="BatchDelUser()"
                   type="danger"
-                  :disabled="disabled"
                   style="margin-left:10px">
                   批量删除
                 </a-button>
                 <a-button
                   type="primary"
-                  :disabled="disabled"
                   @click="$refs.ExportUser.ExportUser(ouList)"
                   style="margin-left:10px">
                   全部导出
@@ -497,8 +494,11 @@ export default {
 
         onSelect (value) {
             value ? this.queryParam.username = value : this.queryParam.username = ''
-            this.dataSource = []
-            this.$refs.table.refresh()
+			this.dataSource = []
+			this.$refs.table.refresh()
+			// if (this.record.dn === 'ou=Users,ou=Citrix,dc=cloud,dc=com') {
+			// 	console.log(this.queryParam)
+			// }
         },
         // 开关加载
         load (val) {

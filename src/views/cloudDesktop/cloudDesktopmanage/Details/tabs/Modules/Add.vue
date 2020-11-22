@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { deepGet } from '@/utils/util'
+import { deepGet, SetTaskId } from '@/utils/util'
 import { mixinFormModal } from '@/utils/mixin'
 import { mapState, mapMutations } from 'vuex'
 import { CloudDesktopAddMachine, CloudDesktopOUList } from '@/api/CloudDesktop/CloudDesktop'
@@ -80,7 +80,6 @@ export default {
             this.ou = []
             const res = this.deepGet((await CloudDesktopOUList()), 'ou', [])
 			this.Recursion(res[0].children[0].children)
-			console.log(this.DN)
             this.$nextTick(() => {
                 this.form.setFieldsValue({
                     type: this.Data.desktop_type,
@@ -96,15 +95,17 @@ export default {
                     const obj = {
                         id: this.Data.id,
                         count: values.count
-                    }
-                   await CloudDesktopAddMachine(obj).then(res => {
-                        this.$message.success('开始添加中')
-                        this.confirmLoading = false
+					}
+					try {
+						const result = await CloudDesktopAddMachine(obj)
+						SetTaskId([result.task_id])
+						this.$router.push('/system/task')
+						this.$message.success('开始添加中')
                         this.visible = false
-                    }).catch(() => {
-                        this.$message.error('添加失败')
-                        this.confirmLoading = false
-                    })
+					} catch (error) {
+						this.$message.error('添加失败')
+					}
+                    this.confirmLoading = false
                 }
             })
         },

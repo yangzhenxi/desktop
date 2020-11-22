@@ -17,7 +17,7 @@
             height: '300px',
           }"
           :operations="['移入', '移出']"
-          :titles="['全部用户', '设置'+usergroup.name+'的用户']"
+          :titles="['全部用户', usergroup.name+'组用户列表']"
           :target-keys="targetKeys"
           :render="item => item.title"
           @change="handleChange">

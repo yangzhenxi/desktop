@@ -17,7 +17,9 @@ const state = {
     // 加工好的Ou
     AllOU: {},
     // 搜索的数据
-    Search: {},
+	Search: {},
+	// 重新生成计算机的task_id
+	ResetComputerTaskId: null,
     // tab
     Tab_one_data: [],
     Tab_to_data: [],
@@ -32,12 +34,14 @@ const mutations = {
         } else {
             state.formValue = {}
         }
-    },
-
+	},
     SET_VERSION: (state, AllVersion) => {
         if (AllVersion) {
             state.AllVersion = AllVersion
         }
+    },
+    SET_RESET_COMPUTER_TASK_ID: (state, ResetComputerTaskId) => {
+        state.ResetComputerTaskId = ResetComputerTaskId
     },
     SET_OULIST: (state, OUList) => {
         if (OUList) {

@@ -54,7 +54,7 @@
             <a-select-option
               v-for="(i,index) in version"
               :key="index"
-              :value="i.id">{{ i.name }}</a-select-option>
+              :value="i.id">V{{ i.version }}</a-select-option>
           </a-select>
         </a-form-item>
         <a-row>

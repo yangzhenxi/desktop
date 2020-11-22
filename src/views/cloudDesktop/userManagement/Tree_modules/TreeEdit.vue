@@ -52,7 +52,6 @@ export default {
       this.validatorName = TPgroupNameList
       this.baseDN = record.dn
       this.record = record
-      console.log(this.record)
       this.$nextTick(() => {
         this.form.setFieldsValue({ newName: record.name })
       })

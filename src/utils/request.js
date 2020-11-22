@@ -9,7 +9,7 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 const request = axios.create({
   // API 请求的默认前缀
   baseURL: process.env.VUE_APP_API_BASE_URL,
-  timeout: 12000 // 请求超时时间
+  timeout: 10000 // 请求超时时间
 })
 
 const codeMsg = {
@@ -26,7 +26,7 @@ const codeMsg = {
     422: '验证错误',
     500: '服务器错误',
     502: '网关错误',
-    503: '服务器维护中',
+    503: '连接服务器超时，请稍后重试',
     504: '网关超时'
   }
 // 异常拦截处理器

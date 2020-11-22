@@ -1,7 +1,6 @@
 <template>
   <div class="setting-drawer">
     <a-drawer width="300" placement="right" @close="onClose" :closable="false" :visible="visible">
-      <!-- <a-spin :spinning="spinning"> -->
       <template slot="title">
         {{ $store.getters.userInfo.name }}的任务列表
       </template>
@@ -18,14 +17,23 @@
           </a-row>
           <p class="state"> <a-icon type="caret-right" />近期任务列表</p>
           <ul>
-            <li class="task_li" v-for="(item,index) in taskList" :key="index">
-              <span>{{ item.title }}</span>
-              <a-icon :type=" item.state === 'SYSTEM_TASK_STATE_SUCCESS' ? 'check-circle' : 'close-circle'" />
+            <li v-for="(item,index) in taskList" :key="index">
+              <div class="task_li" v-if="item.state !== 'SYSTEM_TASK_STATE_RUNNING'" >
+                <ellipsis :length="24" tooltip> {{ item.title }}</ellipsis>
+                <a-icon v-if="item.state === 'SYSTEM_TASK_STATE_SUCCESS'" type="check-circle" />
+                <a-icon v-else-if="item.state === 'SYSTEM_TASK_STATE_FAIL'" type="close-circle" />
+              </div>
+              <div v-else class="task_li">
+                <div>
+                  <ellipsis :length="24" tooltip> {{ item.title }}</ellipsis>
+                  <a-progress :percent="30" size="small" />
+                </div>
+                <a-spin :tip="item.progress + '%'"/>
+              </div>
             </li>
           </ul>
         </div>
       </div>
-      <!-- </a-spin> -->
       <div class="setting-drawer-index-handle" @click="toggle" slot="handle">
         <a-icon type="setting" v-if="!visible" />
         <a-icon type="close" v-else />
@@ -37,9 +45,13 @@
 <script>
 import storage from 'store'
 import { deepGet } from '@/utils/util'
+import { Ellipsis } from '@/components'
 import { DRAWER_TASK_ID } from '@/store/mutation-types'
 import { CloudDesktopTaskGet } from '@/api/CloudDesktop/CloudDesktop'
 export default {
+	components: {
+		Ellipsis
+	},
     data () {
         return {
 			visible: false,
@@ -152,9 +164,9 @@ export default {
 		border-radius: 5px;
 		border: 1px solid white;
 		box-shadow:2px 2px 3px #434343;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+		// display: flex;
+		// align-items: center;
+		// justify-content: space-between;
 	}
     p {
         margin-bottom: 0em;
@@ -169,6 +181,12 @@ export default {
 	}
 	.anticon-caret-right{
 		color:#fbaa5e;
+	}
+	.task_li {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
 	}
     // .setting-drawer-index-blockChecbox {
     //     display: flex;

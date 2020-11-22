@@ -1,6 +1,16 @@
 // eslint-disable-next-line
-import { UserLayout, BasicLayout, BlankLayout } from '@/layouts'
+import storage from 'store'
+import { deepGet } from '@/utils/util'
+import { CLOUD_ARCHIECTURE } from '@/store/mutation-types'
+import { UserLayout, BasicLayout } from '@/layouts'
+import { VcUrl } from '@/api/CloundArchitecture'
 import * as icon from '@/core/icons'
+(async () => {
+	if (!storage.get(CLOUD_ARCHIECTURE)) {
+		const result = deepGet(await VcUrl(), 'url')
+		storage.set(CLOUD_ARCHIECTURE, result)
+	}
+})()
 const RouteView = {
   name: 'RouteView',
   render: (h) => h('router-view')
@@ -45,7 +55,6 @@ export const asyncRouterMap = [
             path: '/CloudDesktop/DesktopManagem',
             name: 'DesktopManagem',
             component: () => import('@/views/CloudDesktop/DesktopManagem'),
-            // redirect: '/CloudDesktop/DesktopManagem/Allmodules',
             hideChildrenInMenu: true,
             meta: { title: '桌面模版管理', keepAlive: true, icon: icon.DesktopManagem, permission: ['template'] }
           },
@@ -60,7 +69,7 @@ export const asyncRouterMap = [
 
       // 云桌面架构
       {
-        path: 'https://192.168.2.221/',
+        path: 'https:/' + `${storage.get(CLOUD_ARCHIECTURE)}`,
         name: '云桌面架构',
         meta: { title: '云桌面架构', icon: icon.cloud, target: '_blank', permission: ['dashboard'] }
       },

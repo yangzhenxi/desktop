@@ -59,12 +59,14 @@
 </template>
 
 <script>
+import storage from 'store'
 import { mixinFormModal } from '@/utils/mixin'
+import { DRAWER_TASK_ID } from '@/store/mutation-types'
+import { CloudDesktopTaskGet } from '@/api/CloudDesktop/CloudDesktop'
 import {
     usermanageAllUser,
     usermanageBatchAddUser
 } from '@/api/CloudDesktop/userManage'
-import { CloudDesktopTaskList } from '@/api/CloudDesktop/CloudDesktop'
 
 import Papa from 'papaparse'
 
@@ -218,9 +220,12 @@ export default {
                     ou: this.record.dn
                 }
                 await usermanageBatchAddUser(obj).then(async (res) => {
+					let newData = []
+					storage.get(DRAWER_TASK_ID) ? newData = [...res.id, ...storage.get(DRAWER_TASK_ID)] : newData = [res.id]
+					storage.set(DRAWER_TASK_ID, newData)
                     this.timer = setInterval(() => {
-                        this.task(res)
-                    }, 3000)
+                        this.task(res.id)
+                    }, 10000)
                     this.$once('hook:beforeDestory', () => {
                         clearTimeout(this.timer)
                     })
@@ -231,15 +236,15 @@ export default {
             }
         },
         async task (item) {
-            const result = this.deepGet(await CloudDesktopTaskList(), 'data', [])
-            if (result[0].state === 'SYSTEM_TASK_STATE_SUCCESS') {
+            const result = this.deepGet(await CloudDesktopTaskGet({ id: item }), 'data', [])
+            if (result.state === 'SYSTEM_TASK_STATE_SUCCESS') {
                 this.$message.success('上传成功')
                 this.$emit('ok')
                 this.visible = false
                 this.loading = false
                 this.confirmLoading = false
                 clearTimeout(this.timer)
-            } else if (result[0].state === 'SYSTEM_TASK_STATE_FAIL') {
+            } else if (result.state === 'SYSTEM_TASK_STATE_FAIL') {
                 this.loading = false
                 this.confirmLoading = false
                 this.$message.error('上传失败')

@@ -15,6 +15,7 @@ export const APP_LANGUAGE = 'app_language'
 export const CUSTOMIZE_COLUMNS = 'cloumns'
 export const PAGESIZE = 'pagesize'
 export const DRAWER_TASK_ID = 'DeawerTaskId'
+export const CLOUD_ARCHIECTURE = 'CloudArchitecture'
 export const CONTENT_WIDTH_TYPE = {
   Fluid: 'Fluid',
   Fixed: 'Fixed'

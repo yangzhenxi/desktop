@@ -55,11 +55,11 @@ export default {
      * 如果参数为 true, 则强制刷新到第一页
      * @param Boolean bool
      */
-    refresh (bool = false) {
+    refresh (bool = true) {
       bool && (this.localPagination = Object.assign({}, {
         current: 0, pageSize: this.pageSize
       }))
-      this.loadData()
+      this.loadData(bool)
     },
     /**
      * 加载数据方法
@@ -67,8 +67,8 @@ export default {
      * @param {Object} filters 过滤条件
      * @param {Object} sorter 排序条件
      */
-    loadData (pagination, filters, sorter) {
-      this.localLoading = true
+    loadData (bool = true, pagination, filters, sorter) {
+      this.localLoading = bool
       const parameter = Object.assign({
         page: (pagination && pagination.current) ||
           this.showPagination && this.showPagination.current || this.pageNum,

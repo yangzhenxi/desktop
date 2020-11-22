@@ -12,7 +12,7 @@
     v-bind="settings"
   >
 
-    <setting-drawer/>
+    <!-- <setting-drawer/> -->
     <!-- <task-drawer/>s -->
     <template v-slot:rightContentRender>
       <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme" />

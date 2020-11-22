@@ -55,7 +55,9 @@
 </template>
 
 <script>
+import storage from 'store'
 import { mapState } from 'vuex'
+import { DRAWER_TASK_ID } from '@/store/mutation-types'
 import { CloudDesktopTPAdd } from '@/api/CloudDesktop/CloudDesktop'
 let that = Object
 export default {
@@ -120,9 +122,12 @@ export default {
         async close () {
             this.loading = true
             await CloudDesktopTPAdd(this.data).then(res => {
-                    this.$message.success('新建成功')
+					this.$message.success('新建成功')
+					let newData = []
+					storage.get(DRAWER_TASK_ID) ? newData = [...res.data, ...storage.get(DRAWER_TASK_ID)] : newData = res.data
+					storage.set(DRAWER_TASK_ID, newData)
                     this.loading = false
-                    this.$emit('close', this.record)
+                    this.$emit('close', this.record, res)
                 })
                 .catch(() => {
                     this.$message.error('新建失败')

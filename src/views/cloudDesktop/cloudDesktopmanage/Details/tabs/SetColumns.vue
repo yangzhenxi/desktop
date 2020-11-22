@@ -95,7 +95,6 @@ const columns = [
   {
     title: '所在服务器',
 	dataIndex: 'HostingServerName',
-    disabled: true,
     sorter: true,
     width: 150
   },

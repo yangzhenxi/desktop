@@ -1,5 +1,5 @@
 <template>
-  <a-card>
+  <a-card style="min-height: 526px;">
     <a-tabs
       default-active-key="1"
       @change="changeActive"
@@ -85,89 +85,91 @@ import Tab1 from './Tab1'
 import Tab2 from './Tab2'
 import Tab3 from './Tab3'
 import Tab4 from './Tab4'
-import storage from 'store'
+import SetColumns from './SetColumns'
+import AddDesktop from './Modules/Add'
+import { deepGet, SetTaskId } from '@/utils/util'
+import Remove from './UserConfig/Remove'
 import AddUser from './UserConfig/AddUsers'
 import AddGroup from './UserConfig/AddGroup'
-import Remove from './UserConfig/Remove'
-import AddDesktop from './Modules/Add'
-import { deepGet } from '@/utils/util'
-import SetColumns from './SetColumns'
 import { mapState, mapMutations } from 'vuex'
-import { DRAWER_TASK_ID } from '@/store/mutation-types'
 import {
-  CloudDesktopMachinePower,
-  CloudDesktopReset,
-  CloudDesktopMachineSetMaintenanceMode,
-  CloudDesktopSessionStop
+	CloudDesktopMachinePower,
+	CloudDesktopReset,
+	CloudDesktopMachineSetMaintenanceMode,
+	CloudDesktopSessionStop,
+	CloudDesktopTaskGet
 } from '@/api/CloudDesktop/CloudDesktop'
 export default {
-  components: {
-    Tab1,
-    Tab2,
-    Tab3,
-    Tab4,
-    AddUser,
-    AddGroup,
-    Remove,
-    AddDesktop,
-    SetColumns
-  },
-  props: {
-    datasource: {
-      type: Object,
-      required: true
-    }
-  },
-  data () {
-    return {
-      tabBarGutter: 20,
-      result: [],
-      data: '', // 默认搜索值
-      ActiveList: [
-        { name: '开机', value: 'DesktopOn' },
-        { name: '关机', value: 'DesktopOff' },
-        { name: '重启', value: 'DesktopReSet' },
-        { name: '开启维护模式', value: 'DesktopOnMaintain' },
-        { name: '关闭维护模式', value: 'DesktopOffMaintain' },
-        { name: '添加桌面', value: 'DesktopADD' },
-        { name: '重新生成计算机', value: 'Reset' }
-      ],
-      DesktopList: [
-        { name: '开机', value: 'DesktopOn' },
-        { name: '关机', value: 'DesktopOff' },
-        { name: '重启', value: 'DesktopReSet' },
-        { name: '开启维护模式', value: 'DesktopOnMaintain' },
-        { name: '关闭维护模式', value: 'DesktopOffMaintain' },
-        { name: '添加桌面', value: 'DesktopADD' },
-        { name: '重新生成计算机', value: 'Reset' }
-      ],
-      UserConfig: [
-        { name: '设置用户', value: 'AddUsers' },
-        { name: '设置用户组', value: 'AddGroup' }
-      ],
-      SessionList: [
-        { name: '注销会话', value: 'SessionDelete' }
-      ],
-      isActiveVisible: true,
-      isSearchVisible: true,
-      isSetColumns: true,
-      checked: [], // 表格选中的tr
-      defaultValue: '操作',
-      dataSearch: [],
-      TAbleData: []
-    }
-  },
-  created () {
-        this.getDesktopList()
-  },
+	components: {
+		Tab1,
+		Tab2,
+		Tab3,
+		Tab4,
+		AddUser,
+		AddGroup,
+		Remove,
+		AddDesktop,
+		SetColumns
+	},
+	props: {
+		datasource: {
+		type: Object,
+		required: true
+		}
+	},
+	data () {
+		return {
+		tabBarGutter: 20,
+		result: [],
+		IsTimer: true,
+		data: '', // 默认搜索值
+		ActiveList: [
+			{ name: '开机', value: 'DesktopOn' },
+			{ name: '关机', value: 'DesktopOff' },
+			{ name: '重启', value: 'DesktopReSet' },
+			{ name: '开启维护模式', value: 'DesktopOnMaintain' },
+			{ name: '关闭维护模式', value: 'DesktopOffMaintain' },
+			{ name: '添加桌面', value: 'DesktopADD' },
+			{ name: '重新生成计算机', value: 'Reset' }
+		],
+		DesktopList: [
+			{ name: '开机', value: 'DesktopOn' },
+			{ name: '关机', value: 'DesktopOff' },
+			{ name: '重启', value: 'DesktopReSet' },
+			{ name: '开启维护模式', value: 'DesktopOnMaintain' },
+			{ name: '关闭维护模式', value: 'DesktopOffMaintain' },
+			{ name: '添加桌面', value: 'DesktopADD' },
+			{ name: '重新生成计算机', value: 'Reset' }
+		],
+		UserConfig: [
+			{ name: '设置用户', value: 'AddUsers' },
+			{ name: '设置用户组', value: 'AddGroup' }
+		],
+		SessionList: [
+			{ name: '注销会话', value: 'SessionDelete' }
+		],
+		isActiveVisible: true,
+		isSearchVisible: true,
+		isSetColumns: true,
+		checked: [], // 表格选中的tr
+		defaultValue: '操作',
+		dataSearch: [],
+		TAbleData: []
+		}
+	},
+	watch: {},
+	created () {
+			this.getDesktopList()
+	},
     computed: {
         ...mapState({
             SearchData: state => state.cloudDesktop.Search,
-            Tab_three_data: state => state.cloudDesktop.Tab_three_data
-        })
+			Tab_three_data: state => state.cloudDesktop.Tab_three_data,
+			reset_computer_task_id: state => state.cloudDesktop.ResetComputerTaskId
+		})
     },
     methods: {
-        ...mapMutations(['SET_MODULEDATA', 'SET_TEMPLATEID', 'SET_DISABLED']),
+        ...mapMutations(['SET_MODULEDATA', 'SET_TEMPLATEID', 'SET_DISABLED', 'SET_RESET_COMPUTER_TASK_ID']),
         // tabs操作按钮
         async changeActive (val) {
             this.checked = []
@@ -235,12 +237,7 @@ export default {
             title: '确定要将选中桌面开机吗?',
             onOk: () => {
                 return new Promise(async (resolve, reject) => {
-                    const power = []
-                    this.checked.find(u => {
-                        if (u.PowerState === 'POWER_STATE_OFF') {
-                            power.push(u.HostedMachineName)
-                        }
-                    })
+					const power = this.checked.filter(u => u.PowerState === 'POWER_STATE_OFF').map(o => o.HostedMachineName)
                     if (power.length === 0) {
                         this.$message.info('当前选中的桌面都已开机')
                         resolve()
@@ -250,20 +247,19 @@ export default {
                         DesktopId: this.datasource.id,
                         HostedMachineName: power,
                         power: 'POWER_ACTION_START'
-                    }
-                    await CloudDesktopMachinePower(obj).then(res => {
-                        this.$message.success('操作成功')
-						this.checked = []
-						let newData = []
-						storage.get(DRAWER_TASK_ID) ? newData = [...res.data, ...storage.get(DRAWER_TASK_ID)] : newData = res.data
-						storage.set(DRAWER_TASK_ID, newData)
-                        this.$refs.tab1.selectedRowKeys = []
-                        this.$refs.tab1.getState(deepGet(res, 'data', []), 'Power')
-                        resolve()
-                    }).catch(() => {
-                        this.$message.error('操作失败')
-                        resolve()
-                    })
+					}
+					try {
+						const result = await CloudDesktopMachinePower(obj)
+						SetTaskId(deepGet(result, 'data', []), 'Power')
+						this.$refs.tab1.getState(deepGet(result, 'data', []), 'Power')
+						this.$message.success('操作成功')
+					} catch (error) {
+						console.log(error)
+						this.$message.error('操作失败')
+					}
+					this.checked = []
+					this.$refs.tab1.selectedRowKeys = []
+					resolve()
                 })
             }
             })
@@ -278,35 +274,29 @@ export default {
             title: '确定要将选中桌面关机吗?',
             onOk: () => {
                 return new Promise(async (resolve, reject) => {
-                    const power = []
-                    this.checked.forEach(u => {
-                        if (u.PowerState === 'POWER_STATE_ON') {
-                            power.push(u.HostedMachineName)
-                        }
-                    })
+					const power = this.checked.filter(u => u.PowerState === 'POWER_STATE_ON').map(o => o.HostedMachineName)
                     if (power.length === 0) {
                         this.$message.info('当前选中的桌面都已关机')
                         resolve()
                         return false
                     }
-                const obj = {
-                    DesktopId: this.datasource.id,
-                    HostedMachineName: power,
-                    power: 'POWER_ACTION_STOP'
-                }
-                    await CloudDesktopMachinePower(obj).then((res) => {
+					const obj = {
+						DesktopId: this.datasource.id,
+						HostedMachineName: power,
+						power: 'POWER_ACTION_STOP'
+					}
+					try {
+						const result = await CloudDesktopMachinePower(obj)
+						SetTaskId(deepGet(result, 'data', []), 'Power')
+						this.$refs.tab1.getState(deepGet(result, 'data', []), 'Power')
 						this.$message.success('操作成功')
-						let newData = []
-						storage.get(DRAWER_TASK_ID) ? newData = [...res.data, ...storage.get(DRAWER_TASK_ID)] : newData = res.data
-						storage.set(DRAWER_TASK_ID, newData)
-                        this.checked = []
-                        this.$refs.tab1.selectedRowKeys = []
-                        this.$refs.tab1.getState(deepGet(res, 'data', []), 'Power')
-                        resolve()
-                    }).catch(() => {
-                    this.$message.error('操作失败')
-                        resolve()
-                    })
+					} catch (error) {
+						console.log(error)
+						this.$message.error('操作失败')
+					}
+					this.checked = []
+					this.$refs.tab1.selectedRowKeys = []
+					resolve()
                 })
             }
             })
@@ -321,37 +311,29 @@ export default {
             title: '确定要将选中桌面重启吗?',
             onOk: () => {
                 return new Promise(async (resolve, reject) => {
-                const power = []
-                this.checked.forEach(u => {
-                        if (u.PowerState === 'POWER_STATE_ON') {
-                            power.push(u.HostedMachineName)
-                        }
-                    })
-                    if (power.length === 0) {
-                        this.$message.info('只有在开机的情况下才能重启')
-                        resolve()
-                        return false
-                    }
-                const obj = {
-                    DesktopId: this.datasource.id,
-                    HostedMachineName: power,
-                    power: 'POWER_ACTION_REBOOT'
-                }
-                    await CloudDesktopMachinePower(obj).then((res) => {
+					const power = this.checked.filter(u => u.PowerState === 'POWER_STATE_ON').map(o => o.HostedMachineName)
+					if (power.length === 0) {
+						this.$message.info('只有在开机的情况下才能重启')
+						resolve()
+						return false
+					}
+					const obj = {
+						DesktopId: this.datasource.id,
+						HostedMachineName: power,
+						power: 'POWER_ACTION_REBOOT'
+					}
+					try {
+						const result = await CloudDesktopMachinePower(obj)
+						SetTaskId(deepGet(result, 'data', []), 'Power')
+						this.$refs.tab1.getState(deepGet(result, 'data', []), 'Power')
 						this.$message.success('操作成功')
-						let newData = []
-						storage.get(DRAWER_TASK_ID) ? newData = [...res.data, ...storage.get(DRAWER_TASK_ID)] : newData = res.data
-						console.log(newData)
-						storage.set(DRAWER_TASK_ID, newData)
-                        this.$refs.tab1.getState(deepGet(res, 'data', []), 'Power')
-                        resolve()
-                    }).catch(() => {
-                        this.$message.error('操作失败')
-                        this.checked = []
-                        this.$refs.tab1.selectedRowKeys = []
-                        this.$refs.tab1.$refs.table.refresh()
-                        resolve()
-                    })
+					} catch (error) {
+						this.$message.error('操作失败')
+						this.$refs.tab1.$refs.table.refresh()
+					}
+					this.checked = []
+					this.$refs.tab1.selectedRowKeys = []
+					resolve()
                 })
             }
             })
@@ -366,32 +348,29 @@ export default {
             title: '确定要将选中开启维护模式?',
             onOk: () => {
                 return new Promise(async (resolve, reject) => {
-                    const power = []
-                this.checked.forEach(u => {
-                        if (u.InMaintenanceMode === false) {
-                            power.push(u.HostedMachineName)
-                        }
-                    })
+                    const power = this.checked.filter(u => !u.InMaintenanceMode).map(o => o.HostedMachineName)
                     if (power.length === 0) {
                         this.$message.info('当前选中的计算机已经开启维护模式')
                         resolve()
                         return false
                     }
-                const obj = {
-                    HostedMachineName: power,
-                    MaintenanceMode: true
-                }
-                    await CloudDesktopMachineSetMaintenanceMode(obj).then(res => {
-                        this.$message.success('操作成功')
-                        const arr = deepGet(deepGet(res, 'data', []), 'id', [])
-                        this.checked = []
-                        this.$refs.tab1.selectedRowKeys = []
-                        this.$refs.tab1.getState(arr, 'MaintenanceMode')
-                        resolve()
-                    }).catch(() => {
-                        this.$message.error('操作失败')
-                        resolve()
-                    })
+					const obj = {
+						HostedMachineName: power,
+						MaintenanceMode: true
+					}
+					try {
+						const result = await CloudDesktopMachineSetMaintenanceMode(obj)
+                        const arr = deepGet(deepGet(result, 'data', []), 'id', [])
+						SetTaskId([result.data.id])
+						this.$refs.tab1.getState(arr, 'MaintenanceMode')
+						this.$message.success('操作成功')
+					} catch (error) {
+						console.log(error)
+						this.$message.error('操作失败')
+					}
+					this.checked = []
+					this.$refs.tab1.selectedRowKeys = []
+					resolve()
                 })
             }
             })
@@ -406,32 +385,29 @@ export default {
             title: '确定要将选中关闭维护模式?',
             onOk: () => {
                 return new Promise(async (resolve, reject) => {
-                    const power = []
-                    this.checked.forEach(u => {
-                        if (u.InMaintenanceMode === true) {
-                            power.push(u.HostedMachineName)
-                        }
-                    })
+					const power = this.checked.filter(u => u.InMaintenanceMode).map(o => o.HostedMachineName)
                     if (power.length === 0) {
                         this.$message.info('当前选中的计算机已经关闭维护模式')
                         resolve()
                         return true
                     }
-                const obj = {
-                    HostedMachineName: power,
-                    MaintenanceMode: false
-                }
-                    await CloudDesktopMachineSetMaintenanceMode(obj).then(res => {
-                        this.$message.success('操作成功')
-                        const arr = deepGet(deepGet(res, 'data', []), 'id', [])
-                        this.checked = []
-                        this.$refs.tab1.selectedRowKeys = []
-                        this.$refs.tab1.getState(arr, 'MaintenanceMode')
-                        resolve()
-                    }).catch(() => {
-                        this.$message.error('操作失败')
-                        resolve()
-                    })
+					const obj = {
+						HostedMachineName: power,
+						MaintenanceMode: false
+					}
+					try {
+						const result = await CloudDesktopMachineSetMaintenanceMode(obj)
+						const arr = deepGet(deepGet(result, 'data', []), 'id', [])
+						this.$message.success('操作成功')
+						SetTaskId([result.data.id])
+						this.$refs.tab1.getState(arr, 'MaintenanceMode')
+					} catch (error) {
+						console.log(error)
+						this.$message.error('操作失败')
+					}
+					this.checked = []
+					this.$refs.tab1.selectedRowKeys = []
+					resolve()
                 })
             }
             })
@@ -449,7 +425,7 @@ export default {
                 const obj = {
                     desktop_id: this.datasource.id,
                     HostedMachineName: []
-                }
+				}
                 this.$confirm({
                     title: '确定要重新生成计算机?',
                     onOk: () => {
@@ -457,14 +433,16 @@ export default {
                             this.checked.forEach(u => obj.HostedMachineName.push(u.HostedMachineName))
                             try {
                                 const result = await CloudDesktopReset(obj)
+								SetTaskId([result.data])
+								this.SET_RESET_COMPUTER_TASK_ID(result.data)
+								// this.GetTask()
+								this.$router.push('/system/task')
                                 this.$message.success('正在重新生成新的计算机')
-                                console.log(result)
-                                this.$refs.tab1.$refs.table.refresh()
-                                resolve()
+                                // this.$refs.tab1.$refs.table.refresh()
                             } catch {
                                 this.$message.error('重新生成计算机失败')
-                                resolve()
-                            }
+							}
+                            resolve()
                         })
                     }
                 })
@@ -491,7 +469,8 @@ export default {
                 try {
                     await CloudDesktopSessionStop(arr)
                     this.$store.dispatch('GetTab3')
-                    this.$message.success('操作成功')
+					this.$message.success('操作成功')
+					this.$store.dispatch('GetTab3')
                     this.$refs.tab3.$refs.table.refresh()
                     resolve()
                 } catch (err) {
@@ -533,7 +512,7 @@ export default {
                 })
                 res = [...new Set(res)]
                 this.TAbleData.includes(value) ? this.dataSearch = [value] : this.dataSearch = [...res]
-            },
+        },
 
         async getDesktopList () {
             this.GetSearchData('1')
@@ -569,7 +548,28 @@ export default {
         customizeColumns (value) {
             this.$refs.tab1.columns = value
             this.$refs.tab1.$refs.table.refresh()
-        }
+		},
+		async GetTask () {
+			clearInterval(this.timer)
+			if (this.reset_computer_task_id !== null) {
+				const result = deepGet(await CloudDesktopTaskGet({ id: this.reset_computer_task_id }), 'data', {})
+				result.state === 'SYSTEM_TASK_STATE_RUNNING' ? this.setTimer() : this.IsTimer = false
+			} else {
+				this.IsTimer = false
+			}
+		},
+		setTimer () {
+			if (this.IsTimer) {
+                this.timer = setInterval(() => {
+					this.GetTask()
+                }, 3000)
+                this.$once('hook:beforeDestroy', () => {
+                    clearTimeout(this.timer)
+                })
+            } else {
+				this.SET_RESET_COMPUTER_TASK_ID(null)
+			}
+		}
     }
 }
 </script>

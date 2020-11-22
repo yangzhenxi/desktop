@@ -14,6 +14,8 @@
 
 <script>
 import { mapState } from 'vuex'
+import { convert } from '@/utils/util'
+
 import { MIcon, MTable } from '@/components'
 import { mixinTable } from '@/utils/mixin'
 const columns = [
@@ -25,7 +27,8 @@ const columns = [
   },
   {
     title: 'IP地址',
-    dataIndex: 'ip_address',
+	dataIndex: 'ip_address',
+    ellipsis: true,
     sorter: true
   },
   {
@@ -53,9 +56,12 @@ const columns = [
   },
   {
     title: '会话开始时间',
-    dataIndex: 'start_time',
-    ellipsis: true,
-    sorter: true
+	dataIndex: 'start_time',
+	sorter: true,
+	width: '200px',
+	customRender: (val, index) => {
+		return convert(val / 1000, 'unix')
+	}
   }
 ]
 export default {

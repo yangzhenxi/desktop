@@ -3,7 +3,7 @@
     <a-spin :spinning="loading">
       <a-row :gutter="16" class="row">
         <a-col :span="6">
-          <a-card>
+          <a-card style="min-height:795px;height:100%">
             <div class="tree_head">
               <div class="tree_head_left" @click="close">
                 <m-icon type="moban"/>
@@ -64,7 +64,7 @@
                         @click="$refs.ManageAdd.Add()">
                         <a-row
                           class="icon-modules"
-                          style="height:170px;"
+                          style="height:202px;"
                           align="middle"
                           type="flex"
                           justify="center">
@@ -120,7 +120,7 @@
                                   <span>是</span>
                                 </div>
                                 <div class="text blurry_text">
-                                  <span>IP: </span>
+                                  <span>主机: </span>
                                   <span>开启</span>
                                 </div>
                               </div>
@@ -146,9 +146,10 @@
                             class="modules"
                             :gutter="16">
                             <a-col
+                              class="iconCenter"
                               :span="8"
                               @click="details(i)">
-                              <a-row style="margin-top: 25px;">
+                              <a-row >
                                 <m-icon
                                   class="icon"
                                   type="windows" />
@@ -180,8 +181,8 @@
                                 </a-tag>
                               </div>
                               <div class="text">
-                                <span>IP: </span>
-                                <span>{{ i.ip }}</span>
+                                <span>主机: </span>
+                                <span>{{ i.host }}</span>
                               </div>
                             </a-col>
                             <div class="hover">
@@ -236,18 +237,18 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+import Tree from '../components/Tree'
 import MIcon from '@/components/Icon'
 import Empty from '@/components/Empty'
-import Tree from '../components/Tree'
 import XTreeadd from './Tree_modules/Add'
+import { mixinTable } from '@/utils/mixin'
 import XTreeedit from './Tree_modules/Edit'
+import Water from '@/components/waterMap/index'
+import { deepGet, isEmpty } from '@/utils/util'
 import XManageadd from './Tab_modules/manageAdd'
 import XManagerelease from './Tab_modules/release'
 import Singlemodules from './Tab_modules/singlemodules'
-import { mixinTable } from '@/utils/mixin'
-import Water from '@/components/waterMap/index'
-import { deepGet, isEmpty } from '@/utils/util'
-import { mapMutations } from 'vuex'
 import {
     DesktopTemplateGroupList,
     DesktopTemplateGroupDelete,
@@ -613,11 +614,6 @@ export default {
         }
     }
 }
-// .icon {
-//     cursor: pointer;
-//     //   font-size: 18px;
-//     margin: 0px 9px;
-// }
 .title_icon {
     display: flex;
     justify-content: center;
@@ -630,7 +626,6 @@ export default {
     color: rgb(255, 255, 255);
     box-shadow: none;
     border: none;
-    height: 795px;
 }
 /deep/.ant-card-head {
     color: white;
@@ -679,7 +674,13 @@ export default {
     cursor: pointer;
     border: 1px solid #ccc;
     border-radius: 10px;
-    padding: 8px;
+	padding: 8px;
+	display: flex;
+	.iconCenter{
+		display:flex;
+		align-items: center;
+		justify-content: center;
+	}
     .icon {
         font-size: 80px;
         text-align: center;
@@ -694,7 +695,8 @@ export default {
         font-size: 16px;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;
+		text-overflow: ellipsis;
+		padding: 3px 0px;
     }
     .hover {
         position: absolute;
@@ -723,7 +725,7 @@ export default {
     position: relative;
 }
 .progress {
-    height: 174px;
+    height: 202px;
 }
 .progress-position {
     position: absolute;

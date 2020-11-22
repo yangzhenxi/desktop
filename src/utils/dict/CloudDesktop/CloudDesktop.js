@@ -36,17 +36,17 @@ export default {
 
     // 桌面列表电源状态
     C_D_DESKTOP_LIST_POWER: [
-        { key: 'POWER_STATE_UNSPECIFIED', val: 'Unmanaged', color: '#f50' },
-        { key: 'POWER_STATE_UNMANAGED', val: 'Unknown', color: '#f50' },
-        { key: 'POWER_STATE_UNKNOWN', val: 'Unavailable', color: '#f50' },
+        { key: 'POWER_STATE_UNSPECIFIED', val: '挂起', color: '#f50' },
+        { key: 'POWER_STATE_UNMANAGED', val: '托管', color: '#f50' },
+        { key: 'POWER_STATE_UNKNOWN', val: '挂起', color: '#f50' },
         { key: 'POWER_STATE_ON', val: '开机', color: '#2db7f5' },
         { key: 'POWER_STATE_OFF', val: '关机', color: '#f50' },
-        { key: 'POWER_STATE_UNAVAILABLE', val: 'Suspended', color: '#f50' },
-        { key: 'POWER_STATE_SUSPENDED', val: 'TurningOn', color: '#f50' },
-        { key: 'POWER_STATE_TURNING_ON', val: 'TurningOff', color: '#f50' },
-        { key: 'POWER_STATE_TURNING_OFF', val: 'Suspending', color: '#f50' },
-        { key: 'POWER_STATE_SUSPENDING', val: 'Suspending', color: '#f50' },
-        { key: 'POWER_STATE_RESUMING', val: 'resuming', color: '#f50' }
+        { key: 'POWER_STATE_UNAVAILABLE', val: '禁用', color: '#f50' },
+        { key: 'POWER_STATE_SUSPENDED', val: '暂停', color: '#f50' },
+        { key: 'POWER_STATE_TURNING_ON', val: '正在开机', color: '#f50' },
+        { key: 'POWER_STATE_TURNING_OFF', val: '正在关机', color: '#f50' },
+        { key: 'POWER_STATE_SUSPENDING', val: '挂起', color: '#f50' },
+        { key: 'POWER_STATE_RESUMING', val: '恢复中', color: '#f50' }
     ],
     // 是否保存用户修改
     C_D_DESKTOP_LIST_PERSISTUSERCHANGES: [
@@ -60,10 +60,10 @@ export default {
     ],
     // 桌面列表注册状态
     C_D_DESKTOP_LIST_REGISTRATIONSTATE: [
-        { key: 'REGISTRATION_STATE_UNREGISTERED', val: 'Unregistered', color: '#2db7f5' },
-        { key: 'REGISTRATION_STATE_INITIALIZING', val: 'Initializing', color: '#f50' },
-        { key: 'REGISTRATION_STATE_REGISTERED', val: 'Registered', color: '#f50' },
-        { key: 'REGISTRATION_STATE_AGENT_ERROR', val: 'AgentError', color: '#f50' }
+        { key: 'REGISTRATION_STATE_UNREGISTERED', val: '未注册', color: '#2db7f5' },
+        { key: 'REGISTRATION_STATE_INITIALIZING', val: '初始状态', color: '#f50' },
+        { key: 'REGISTRATION_STATE_REGISTERED', val: '已注册', color: '#f50' },
+        { key: 'REGISTRATION_STATE_AGENT_ERROR', val: '注册失败', color: '#f50' }
     ],
     // 会话列表注册状态
     C_D_SESSION_LIST_STATE: [

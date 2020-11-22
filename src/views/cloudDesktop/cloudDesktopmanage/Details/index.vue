@@ -97,6 +97,10 @@
                   <span> {{ Data.creator }}</span>
                 </div>
                 <div class="modules_text">
+                  <span>注册/未注册数量: </span>
+                  <span>{{ Data.registered_count }}/{{ Data.unregistered_count }}</span>
+                </div>
+                <div class="modules_text">
                   <span>桌面类型: </span>
                   <span>{{ Data.desktop_type | convert('C_D_DESKTOP_TYPE') }}</span>
                 </div>
@@ -104,12 +108,6 @@
                   <span>维护状态: </span>
                   <a-tag :color="toDict(Data.in_maintain_mode,'C_D_INMAINTAINMODE_STATE').color">
                     {{ Data.in_maintain_mode | convert('C_D_INMAINTAINMODE_STATE') }}
-                  </a-tag>
-                </div>
-                <div class="modules_text">
-                  <span>电源状态: </span>
-                  <a-tag :color="toDict(Data.Power,'C_D_POWER_STATE').color">
-                    {{ Data.Power | convert('C_D_POWER_STATE') }}
                   </a-tag>
                 </div>
                 <div class="modules_text">
@@ -131,11 +129,11 @@
 </template>
 
 <script>
-import { MIcon } from '@/components/index'
-import EditCloudDesktop from './EditCloudDesktop'
 import Tabs from './tabs/tabs'
-import { deepGet, toDict } from '@/utils/util'
+import { MIcon } from '@/components/index'
 import { mapState, mapMutations } from 'vuex'
+import { deepGet, toDict, SetTaskId } from '@/utils/util'
+import EditCloudDesktop from './EditCloudDesktop'
 import {
     CloudDesktopMachinePower,
     CloudDesktopTPDelete,
@@ -175,34 +173,33 @@ export default {
                 title: '确定开启当前全部的桌面吗?',
                 onOk: () => {
                     return new Promise(async (resolve, reject) => {
-                        const power = []
-                        await this.$refs.tabs.$refs.tab1.loadData().then(res => {
-                            res.data.forEach(u => {
-                                if (u.PowerState === 'POWER_STATE_OFF') {
-                                    power.push(u.HostedMachineName)
-                                }
-                            })
-                        })
+						let power = []
+						try {
+							const TableData = deepGet(await this.$refs.tabs.$refs.tab1.loadData(), 'data', [])
+							power = TableData.filter(u => u.PowerState === 'POWER_STATE_OFF').map(o => o.HostedMachineName)
+						} catch (error) {
+							console.log(error)
+                            this.$message.error('操作失败')
+						}
                         if (power.length === 0) {
-                            this.$message.info('当前选中的桌面都已开机')
-                            resolve()
+							this.$message.info('当前选中的桌面都已开机')
+							resolve()
                             return false
                         }
                         const obj = {
                             DesktopId: this.Data.id,
                             HostedMachineName: power,
                             power: 'POWER_ACTION_START'
-                        }
-                        await CloudDesktopMachinePower(obj)
-                            .then(res => {
-                                this.$message.success('操作成功')
-                                this.$refs.tabs.$refs.tab1.getState(deepGet(res, 'data', []), 'Power')
-                                resolve()
-                            })
-                            .catch(() => {
-                                this.$message.error('操作失败')
-                                resolve()
-                            })
+						}
+						try {
+							const result = await CloudDesktopMachinePower(obj)
+                            this.$refs.tabs.$refs.tab1.getState(deepGet(result, 'data', []), 'Power')
+							SetTaskId(deepGet(result, 'data', []), 'Power')
+							this.$message.success('操作成功')
+						} catch (error) {
+                            this.$message.error('操作失败')
+						}
+                        resolve()
                     })
                 }
             })
@@ -213,14 +210,13 @@ export default {
                 title: '确定关闭当前全部的桌面吗?',
                 onOk: () => {
                     return new Promise(async (resolve, reject) => {
-                        const power = []
-                        await this.$refs.tabs.$refs.tab1.loadData().then(res => {
-                            res.data.forEach(u => {
-                                if (u.PowerState === 'POWER_STATE_ON') {
-                                    power.push(u.HostedMachineName)
-                                }
-                            })
-                        })
+						let power = []
+						try {
+							const TableData = deepGet(await this.$refs.tabs.$refs.tab1.loadData(), 'data', [])
+							power = TableData.filter(u => u.PowerState === 'POWER_STATE_ON').map(o => o.HostedMachineName)
+						} catch (error) {
+                            this.$message.error('操作失败')
+						}
                         if (power.length === 0) {
                             this.$message.info('当前选中的桌面都已关机')
                             resolve()
@@ -230,17 +226,16 @@ export default {
                             DesktopId: this.Data.id,
                             HostedMachineName: power,
                             power: 'POWER_ACTION_STOP'
-                        }
-                        await CloudDesktopMachinePower(obj)
-                            .then((res) => {
-                                this.$message.success('操作成功')
-                                this.$refs.tabs.$refs.tab1.getState(deepGet(res, 'data', []), 'Power')
-                                resolve()
-                            })
-                            .catch(() => {
-                                this.$message.error('操作失败')
-                                resolve()
-                            })
+						}
+						try {
+							const result = await CloudDesktopMachinePower(obj)
+                            this.$refs.tabs.$refs.tab1.getState(deepGet(result, 'data', []), 'Power')
+							SetTaskId(deepGet(result, 'data', []), 'Power')
+							this.$message.success('操作成功')
+						} catch (error) {
+                            this.$message.error('操作失败')
+						}
+                        resolve()
                     })
                 }
             })
@@ -251,35 +246,34 @@ export default {
                 title: '确定重启当前全部的桌面吗?',
                 onOk: () => {
                     return new Promise(async (resolve, reject) => {
-                            const power = []
-                            await this.$refs.tabs.$refs.tab1.loadData().then(res => {
-                                res.data.forEach(u => {
-                                    if (u.PowerState === 'POWER_STATE_ON') {
-                                        power.push(u.HostedMachineName)
-                                    }
-                                })
-                            })
-                            if (power.length === 0) {
-                                this.$message.info('只有在开机的情况下才能重启')
-                                resolve()
-                                return false
-                            }
-                            const obj = {
-                                DesktopId: this.Data.id,
-                                HostedMachineName: power,
-                                power: 'POWER_ACTION_REBOOT'
-                            }
-                            await CloudDesktopMachinePower(obj)
-                                .then((res) => {
-                                    this.$message.success('操作成功')
-                                    this.$refs.tabs.$refs.tab1.getState(deepGet(res, 'data', []), 'Power')
-                                    resolve()
-                                })
-                                .catch(() => {
-                                    this.$message.error('操作失败')
-                                    this.$refs.tabs.$refs.tab1.$refs.table.refresh()
-                                    resolve()
-                                })
+						let power = []
+						try {
+							const TableData = deepGet(await this.$refs.tabs.$refs.tab1.loadData(), 'data', [])
+							power = TableData.filter(u => u.PowerState === 'POWER_STATE_ON').map(o => o.HostedMachineName)
+						} catch (error) {
+                            this.$message.error('操作失败')
+						}
+                        if (power.length === 0) {
+                            this.$message.info('只有在开机的情况下才能重启')
+                            resolve()
+                            return false
+                        }
+                        const obj = {
+                            DesktopId: this.Data.id,
+                            HostedMachineName: power,
+                            power: 'POWER_ACTION_REBOOT'
+						}
+						try {
+							const result = await CloudDesktopMachinePower(obj)
+							this.$refs.tabs.$refs.tab1.getState(deepGet(result, 'data', []), 'Power')
+							SetTaskId(deepGet(result, 'data', []), 'Power')
+							this.$message.success('操作成功')
+						} catch (error) {
+							this.$message.error('操作失败')
+                            this.$refs.tabs.$refs.tab1.$refs.table.refresh()
+						}
+
+                        resolve()
                     })
                 }
             })
@@ -293,17 +287,17 @@ export default {
                             const obj = {
                                 'desktop_id': this.Data.id,
                                 'maintenance': this.toDict(this.Data.in_maintain_mode, 'C_D_INMAINTAINMODE_STATE').optionVal
-                            }
-                            await CloudDesktopSetMain(obj).then(res => {
+							}
+							try {
+								const result = await CloudDesktopSetMain(obj)
+								SetTaskId([result.data.id])
                                 this.$message.success('操作成功')
-                                this.$refs.tabs.$refs.tab1.$refs.table.refresh()
-                                resolve()
-                            }).catch(() => {
-                                this.$message.error('操作失败')
-                                this.$refs.tabs.$refs.tab1.$refs.table.refresh()
-                                resolve()
-                            })
-                            this.Data.in_maintain_mode = this.toDict(this.Data.in_maintain_mode, 'C_D_INMAINTAINMODE_STATE').optionVal
+							} catch (error) {
+								this.$message.error('操作失败')
+							}
+							this.Data.in_maintain_mode = this.toDict(this.Data.in_maintain_mode, 'C_D_INMAINTAINMODE_STATE').optionVal
+                            this.$refs.tabs.$refs.tab1.$refs.table.refresh()
+                            resolve()
                     })
                 }
             })
@@ -315,15 +309,16 @@ export default {
                 content: '点击确定即可删除',
                 onOk: () => {
                     return new Promise(async (resolve, reject) => {
-                        await CloudDesktopTPDelete({ id: i.id }).then(res => {
-                            this.$message.success('删除成功')
+						try {
+							const result = await CloudDesktopTPDelete({ id: i.id })
+							SetTaskId(deepGet(result, 'task_id'))
                             this.SET_SEARCH()
                             this.$emit('handleBack', true)
-                            resolve()
-                        }).catch(() => {
+							this.$message.success('删除成功')
+						} catch (error) {
                             this.$message.error('删除失败')
-                            resolve()
-                        })
+						}
+                        resolve()
                     })
                 }
             })

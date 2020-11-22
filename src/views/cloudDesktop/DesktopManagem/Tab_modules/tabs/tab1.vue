@@ -53,7 +53,10 @@ export default {
                 {
                     title: '版本号',
                     dataIndex: 'version',
-                    sorter: true
+					sorter: true,
+					customRender: (val, index) => {
+						return 'V' + val
+					}
                 },
                 {
                     title: '版本名称',

@@ -59,6 +59,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { SetTaskId } from '@/utils/util'
 import { DesktopTemplateAdd } from '@/api/CloudDesktop/DesktopManagem'
 export default {
     data () {
@@ -81,17 +82,16 @@ export default {
             this.$emit('prevStep')
         },
         async close () {
-            this.loading = true
-            await DesktopTemplateAdd(this.data)
-                .then(res => {
-                    this.$message.success('创建中，请稍后')
-                    this.loading = false
-                    this.$emit('close', this.group)
-                })
-                .catch(() => {
-                    this.$message.error('新建失败')
-                    this.loading = false
-                })
+			this.loading = true
+			try {
+				const result = await DesktopTemplateAdd(this.data)
+				SetTaskId([result.id])
+				this.$message.success('创建中，请稍后')
+                this.loading = false
+                this.$emit('close', this.group)
+			} catch (error) {
+                this.$message.error('新建失败')
+			}
             this.loading = false
         },
         Recursion (Array) {

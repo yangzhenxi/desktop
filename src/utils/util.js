@@ -1,7 +1,9 @@
+import storage from 'store'
 import moment from 'moment'
 import os from 'os'
 import dict from './dict'
 import 'moment/locale/zh-cn'
+import { DRAWER_TASK_ID } from '@/store/mutation-types'
 moment.locale('zh-cn')
 
 /**
@@ -130,7 +132,7 @@ export function convert (val, filter, args) {
       case 'unix':
         if (val === '0') {
           return '暂无数据'
-        }
+		}
         return unixToDate(val, args)
       // 时间戳
       case 'dateToUnix':
@@ -396,16 +398,17 @@ export function isEmpty (o) {
  * @param { Function } callback
  * @param { Number } delay
  */
-export const debounce = (func, wait = 500) => {
-  let timer = null
-  return function () {
-    const args = arguments
-    const context = this
-    timer && clearTimeout(timer)
-    timer = setTimeout(() => {
-      func.apply(context, args)
-    }, wait)
-  }
+export function debounce (callback, delay = 300) {
+	let timer = null
+	return function () {
+	const that = this
+	const args = arguments
+	clearInterval(timer)
+	timer = setTimeout(() => {
+		timer = null
+		callback.apply(that, args)
+	}, delay)
+	}
 }
 
 /**
@@ -520,8 +523,6 @@ export function arrayRemoveItem (arr, delVal) {
       export function sotsArr (e1, e2) {
         const s1 = deepGet(e1, 'name')
         const s2 = deepGet(e2, 'name')
-        console.log(s1)
-        console.log(s2)
         if (e1.children.length > 1) {
             e1.children.sort(sotsArr)
         }
@@ -548,16 +549,31 @@ export function isContained (a, b) {
   return true
 }
 
-const temp = {} // 当前重复的值,支持多列
-export function mergeCellKey (text, array, columns) {
-  let i = 0
-  if (text !== temp[columns]) {
-    temp[columns] = text
-    array.forEach((item) => {
-      if (item[columns] === temp[columns]) {
-        i += 1
-      }
-    })
-  }
-  return i
+// const temp = {} // 当前重复的值,支持多列
+// export function mergeCellKey (text, array, columns) {
+//   let i = 0
+//   if (text !== temp[columns]) {
+//     temp[columns] = text
+//     array.forEach((item) => {
+//       if (item[columns] === temp[columns]) {
+//         i += 1
+//       }
+//     })
+//   }
+//   return i
+// }
+export function SetTaskId (item) {
+	let newData = []
+	storage.get(DRAWER_TASK_ID) ? newData = [...item, ...storage.get(DRAWER_TASK_ID)] : newData = item
+	storage.set(DRAWER_TASK_ID, newData)
+}
+
+export function isNumber (val) {
+    var regPos = /^\d+(\.\d+)?$/ // 非负浮点数
+    var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/ // 负浮点数
+    if (regPos.test(val) || regNeg.test(val)) {
+        return true
+        } else {
+        return false
+        }
 }
