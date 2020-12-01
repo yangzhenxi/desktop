@@ -1,12 +1,12 @@
 // eslint-disable-next-line
 import storage from 'store'
 import { deepGet } from '@/utils/util'
-import { CLOUD_ARCHIECTURE } from '@/store/mutation-types'
+import { CLOUD_ARCHIECTURE, ACCESS_TOKEN } from '@/store/mutation-types'
 import { UserLayout, BasicLayout } from '@/layouts'
 import { VcUrl } from '@/api/CloundArchitecture'
 import * as icon from '@/core/icons'
 (async () => {
-	if (!storage.get(CLOUD_ARCHIECTURE)) {
+	if (!storage.get(CLOUD_ARCHIECTURE) && storage.get(ACCESS_TOKEN)) {
 		const result = deepGet(await VcUrl(), 'url')
 		storage.set(CLOUD_ARCHIECTURE, result)
 	}

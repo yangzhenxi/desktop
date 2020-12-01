@@ -32,17 +32,31 @@
 </template>
 
 <script>
-import { deepGet, isEmpty } from '@/utils/util'
+// import { deepGet, isEmpty } from '@/utils/util'
 import { MCard, MIcon } from '@/components'
 import Empty from '@/components/Empty'
-import { GetSession, GetUserCount, GetDesktop } from '@/api/dashboard'
+// import { GetSession, GetUserCount, GetDesktop } from '@/api/dashboard'
 //
 export default {
     components: {
         MCard,
         MIcon,
         Empty
-    },
+	},
+	props: {
+		usercount: {
+			type: Number,
+			default: 0
+		},
+		session: {
+			type: Number,
+			default: 0
+		},
+		desktop: {
+			type: Array,
+            required: true
+		}
+	},
     data () {
         return {
             loading: false,
@@ -83,33 +97,27 @@ export default {
         }
     },
     watch: {
-        dataSource: {
-            handler (newdata, oldData) {
-                this.GetData()
-                // this.data = newdata
-                // console.log(this.data)
-            }
-        }
-    },
-    created () {
-        this.GetData()
-    },
-    methods: {
-        async GetData () {
-            // Desktop
-            const [Usercount, Session, Desktop] = await Promise.all([
-                GetUserCount(),
-                GetSession(),
-                GetDesktop({ id: 1 })
-            ])
-            this.$nextTick(() => {
-                this.dataSource[0].count = this.deepGet(Session, 'data', '0')
-                this.dataSource[1].count = this.deepGet(Usercount, 'data', '0')
-                this.dataSource[2].count = this.deepGet(Desktop, 'data', '0')
-            })
-        },
-        deepGet,
-        isEmpty
+		session: {
+			immediate: true, // 很重要！！！
+			handler (newval, oldval) {
+				this.dataSource[0].count = newval
+			},
+			deep: true
+		},
+		usercount: {
+			immediate: true, // 很重要！！！
+			handler (newval, oldval) {
+				this.dataSource[1].count = newval
+			},
+			deep: true
+		},
+		desktop: {
+			immediate: true, // 很重要！！！
+			handler (newval, oldval) {
+				this.dataSource[2].count = newval.length
+			},
+			deep: true
+		}
     }
 }
 </script>

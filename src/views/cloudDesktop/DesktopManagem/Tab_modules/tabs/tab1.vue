@@ -104,9 +104,11 @@ export default {
                             DesktopTemplateVersionDelete({ id: record.id }).then(() => {
                                 this.$message.success('删除成功')
                                 this.$store.dispatch('GetVersionList').then(res => {
+									this.ModuleData.version = this.Version[this.Version.length - 1].version
+									this.SET_MODULEDATA(this.ModuleData)
                                     res.data.length > 0 ? this.SET_DISABLED(false) : this.SET_DISABLED(true)
                                 })
-                                this.$refs.table.refresh()
+								this.$refs.table.refresh()
                                 resolve()
                             }).catch(() => resolve())
                         } catch {

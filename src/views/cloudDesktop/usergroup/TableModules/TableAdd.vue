@@ -1,7 +1,7 @@
 <template>
   <a-modal
     title="添加用户"
-    :width="700"
+    :width="830"
     :visible="visible"
     :confirmLoading="confirmLoading"
     @ok="handleSubmit"
@@ -9,22 +9,25 @@
     destroyOnClose>
     <a-spin :spinning="loading">
       <a-form :form="form">
-        <a-transfer
-          :data-source="mockData"
-          show-search
-          :list-style="{
-            width: '250px',
-            height: '300px',
-          }"
-          :operations="['移入', '移出']"
-          :titles="['全部用户', usergroup.name+'组用户列表']"
-          :target-keys="targetKeys"
-          :render="item => item.title"
-          @change="handleChange">
-          <span slot="notFoundContent">
-            没数据
-          </span>
-        </a-transfer>
+        <div @mousedown="move">
+          <a-transfer
+            :data-source="mockData"
+            show-search
+            :list-style="{
+              width: widths+'px',
+              height: heights+ 'px',
+              cursor:'all-scroll',
+            }"
+            :operations="['移入', '移出']"
+            :titles="['全部用户', usergroup.name+'组用户列表']"
+            :target-keys="targetKeys"
+            :render="item => item.title"
+            @change="handleChange">
+            <span slot="notFoundContent">
+              没数据
+            </span>
+          </a-transfer>
+        </div>
       </a-form>
     </a-spin>
   </a-modal>
@@ -39,29 +42,28 @@ export default {
   name: 'UserManageTabAdd',
   data () {
     return {
-      mockData: [],
-      targetKeys: [],
-      movein: [], // 原先选中数据
-      moveout: [], // 原先未选中的数据
-      flag: Boolean,
-      usergroup: {},
-      disabled: [],
-      data: {
-        // 接口传参的数据
-        req: []
-      }
+		widths: 300,
+		heights: 500,
+		mockData: [],
+		targetKeys: [],
+		movein: [], // 原先选中数据
+		moveout: [], // 原先未选中的数据
+		flag: Boolean,
+		usergroup: {},
+		disabled: [],
+		data: { req: [] }
     }
   },
   methods: {
     Add (record, user, Allusers) {
-      this.visible = true
-      this.moveout = []
-      this.movein = []
-      this.disabled = []
-      this.usergroup = {}
-      this.movein = record
-      this.usergroup = user
-      Allusers.forEach((u) => {
+		this.visible = true
+		this.moveout = []
+		this.movein = []
+		this.disabled = []
+		this.usergroup = {}
+		this.movein = record
+		this.usergroup = user
+		Allusers.forEach((u) => {
         this.flag = false
         record.forEach((o) => {
           if (u.baseDN === o.baseDN) {
@@ -72,7 +74,7 @@ export default {
           this.disabled.push(u)
         }
       })
-      this.getMock()
+		this.getMock()
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
@@ -169,7 +171,23 @@ export default {
     },
     handleChange (targetKeys, direction, moveKeys) {
       this.targetKeys = targetKeys
-    }
+	},
+	move (e) {
+		const oDiv = e.target
+		const disX = e.clientX - oDiv.offsetLeft
+		const disY = e.clientY - oDiv.offsetTop
+		document.onmousemove = (e) => { // 鼠标按下并移动的事件
+        // 用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
+		// this.widths = 250 + e.clientX - disX
+		const width = 250 + e.clientX - disX
+		width > 350 ? this.widths = 350 : width <= 250 ? this.wdiths = 250 : this.widths = width
+		this.heights = 300 + e.clientY - disY
+		}
+		document.onmouseup = (e) => {
+			document.onmousemove = null
+			document.onmouseup = null
+		}
+	}
   }
 }
 </script>

@@ -10,22 +10,13 @@
       destroyOnClose>
       <a-spin :spinning="loading">
         <a-form :form="form">
-          <a-form-item
-            label="版本号"
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol">
+          <a-form-item label="版本号" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input v-decorator="['version']" disabled />
           </a-form-item>
-          <a-form-item
-            label="版本名称"
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol">
+          <a-form-item label="版本名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input placeholder="请输入版本名称" v-decorator="['versionName', { rules: [{required: true, message: '请输入版本名称'}] }]" />
           </a-form-item>
-          <a-form-item
-            label="版本描述"
-            :labelCol="labelCol"
-            :wrapperCol="wrapperCol">
+          <a-form-item label="版本描述" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-textarea placeholder="请输入版本描述" :rows="4" v-decorator="['description', { rules: [{required: true, message: '请输入版本描述'}] }]" />
           </a-form-item>
         </a-form>
@@ -37,71 +28,85 @@
 
 <script>
 import { mixinFormModal } from '@/utils/mixin'
+import { mapState, mapMutations } from 'vuex'
 import { DesktopTemplatePublish } from '@/api/CloudDesktop/DesktopManagem'
 
 export default {
-  mixins: [mixinFormModal],
-  name: 'UserManageTabAdd',
-  data () {
-    return {
-        record: Object
-    }
-  },
-  methods: {
-    Add (record) {
-      this.visible = true
-      this.record = record
-        this.$nextTick(() => {
-        this.form.setFieldsValue({ version: (parseInt(record.version) + 1) })
-      })
+    mixins: [mixinFormModal],
+    name: 'UserManageTabAdd',
+    data () {
+        return {
+            record: Object
+        }
     },
-    handleSubmit () {
-      this.form.validateFields(async (errors, values) => {
-          this.confirmLoading = true
-        if (!errors) {
-            values.name = this.record.name
-            await DesktopTemplatePublish(values).then(res => {
-                this.$message.success('新增成功')
-                this.$emit('ok', '新增成功')
-                this.confirmLoading = false
-                this.visible = false
-            }).catch(() => {
+    computed: {
+        ...mapState({
+            ModuleData: state => state.DesktopManage.ModuleData
+        })
+    },
+    methods: {
+        ...mapMutations(['SET_MODULEDATA']),
+
+        Add (record) {
+            this.visible = true
+            this.record = record
+            this.$nextTick(() => {
+                this.form.setFieldsValue({
+                    version: parseInt(record.version) + 1
+                })
+            })
+        },
+        handleSubmit () {
+            this.form.validateFields(async (errors, values) => {
+                this.confirmLoading = true
+                if (!errors) {
+                    values.name = this.record.name
+                    await DesktopTemplatePublish(values)
+                        .then(res => {
+                            this.$message.success('新增成功')
+                            this.$emit('ok', '新增成功')
+                            this.confirmLoading = false
+                            this.visible = false
+							this.ModuleData.version = values.version
+                            this.SET_MODULEDATA(this.ModuleData)
+                        })
+                        .catch(() => {
+                            this.confirmLoading = false
+                        })
+                    this.visible = false
+                }
                 this.confirmLoading = false
             })
-          this.visible = false
         }
-        this.confirmLoading = false
-      })
     }
-  }
 }
 </script>
 
 <style lang="less" scoped>
 /deep/.ant-modal-content {
-  background:#272E48;
-  color: white;
+    background: #272e48;
+    color: white;
 }
 /deep/.ant-modal-title,
 /deep/.ant-modal-close-x,
 /deep/.ant-form-item-required {
-  color: white;
+    color: white;
 }
 /deep/.ant-modal-header {
-  background: none;
+    background: none;
 }
 .container {
-  margin-top: 40px;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
+    margin-top: 40px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
 }
 /deep/input#versionName {
-        background: content-box;
-        height: 0;
-        padding: 1.2em .5em;
-        color: white !important;
+    background: content-box;
+    height: 0;
+    padding: 1.2em 0.5em;
+    color: white !important;
 }
-/deep/input#versionName::first-line{
-      color: white;
+/deep/input#versionName::first-line {
+    color: white;
 }
 </style>

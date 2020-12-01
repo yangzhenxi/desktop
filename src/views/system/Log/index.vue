@@ -16,6 +16,8 @@
             style="width: 100%"
             placeholder="输入要查询的模块"
             v-model="queryParam.module"
+            :defaultActiveFirstOption="false"
+            @keyup.enter.native="onSelect(queryParam.module)"
             @select="onSelect"
             @search="handleSearch">
             <a-input>

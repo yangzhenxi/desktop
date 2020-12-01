@@ -54,7 +54,7 @@ export default {
                 return item + 'GB'
               }
             }],
-            color: ['name', ['rgb(57, 198, 111)', 'rgb(119, 147, 227)']]
+            color: ['name', ['rgb(128,128,128)', 'rgb(57, 198, 111)']]
         }
     },
     watch: {

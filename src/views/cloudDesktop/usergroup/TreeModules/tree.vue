@@ -2,7 +2,7 @@
   <div>
     <!-- <empty v-if="!treeData.length" :isEmpty="!treeData.length"/> -->
     <ul>
-      <li v-for="i in treeData" :key="i.baseDN" :class="i.name === checkedval?'activeLI':''" @click="handlecheck(i)">
+      <li style="cursor: pointer;" v-for="i in treeData" :key="i.baseDN" :class="i.name === checkedval?'activeLI':''" @click="handlecheck(i)">
         <m-icon
           type="guanyuwomen"
           class="icon guanyuwomen" />{{ i.name }}

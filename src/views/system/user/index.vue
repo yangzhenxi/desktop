@@ -9,11 +9,6 @@
             icon="plus">新增</a-button>
         </a-col>
         <a-col :span="4">
-          <!-- <a-input-search
-            placeholder="请输入你想要查询的用户名"
-            enter-button
-            :v-model="data"
-            @search="onSearch" /> -->
           <div class="global-search-wrapper" style="width: 300px">
             <a-auto-complete
               class="global-search"
@@ -21,6 +16,8 @@
               style="width: 100%"
               placeholder="输入要查询的用户名"
               v-model="queryParam.username"
+              :defaultActiveFirstOption="false"
+              @keyup.enter.native="onSelect(queryParam.username)"
               @select="onSelect"
               @search="handleSearch">
               <a-input>

@@ -3,8 +3,13 @@
     <m-table
       style="margin-top:10px;"
       ref="table"
+      rowKey="name"
       :columns="columns"
       :data="loadData">
+      <template slot="name" slot-scope="text"><a-tag color="#108ee9">{{ text }}</a-tag></template>
+      <template slot="machine_count" slot-scope="text"><a-tag color="#108ee9">{{ text }}</a-tag></template>
+      <template slot="running_machine_count" slot-scope="text"><a-tag color="#108ee9">{{ text }}</a-tag></template>
+      <template slot="closed_machine_count" slot-scope="text"><a-tag color="#108ee9">{{ text }}</a-tag></template>
     </m-table>
   </div>
 </template>
@@ -15,47 +20,53 @@ export default {
     components: {
         MIcon,
         MTable
-    },
+	},
+	props: {
+		desktop: {
+			type: Array,
+            required: true
+		}
+	},
     data () {
         return {
-          columns: [
-            {
-              title: '云桌面',
-              dataIndex: 'session_key',
-              sorter: true,
-              ellipsis: true
-            },
-            {
-              title: '桌面数量',
-              dataIndex: '',
-              sorter: true
-            },
-            {
-              title: '运行数量',
-              dataIndex: 'UserFullName',
-              sorter: true
-            },
-            {
-              title: '关闭数量',
-              dataIndex: 'client_address',
-              sorter: true
-            }
-          ],
-        loadData: async (parameter) => {
-            try {
-                // const result = await CloudDesktopSessionList({ desktop_id: '117' })
-                // const data = this.deepGet(result, 'data', [])
-                const data = []
-              return {
-                data,
-                queryParam: this.queryParam
-              }
-            } catch (error) {
-              return false
-            }
-      }
+			columns: [
+				{
+				title: '云桌面',
+				dataIndex: 'name',
+                scopedSlots: { customRender: 'name' },
+				sorter: true
+				},
+				{
+				title: '桌面数量',
+				dataIndex: 'machine_count',
+                scopedSlots: { customRender: 'machine_count' },
+				sorter: true
+				},
+				{
+				title: '运行数量',
+				dataIndex: 'running_machine_count',
+                scopedSlots: { customRender: 'running_machine_count' },
+				sorter: true
+				},
+				{
+				title: '关闭数量',
+				dataIndex: 'closed_machine_count',
+                scopedSlots: { customRender: 'closed_machine_count' },
+				sorter: true
+				}
+			],
+			loadData: async (parameter) => { return { data: this.desktop } }
         }
-    }
+	},
+	watch: {
+		desktop: {
+			// immediate: true,
+			handler (newval, oldval) {
+				this.$refs.table.refresh()
+			},
+			deep: true
+		}
+	}
 }
 </script>
 

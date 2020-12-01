@@ -3,7 +3,8 @@
     <a-card>
       <template slot="title">
         <div class="head-title">
-          <span><a-button type="primary" size="small" @click="handerback">返回</a-button> <span style="margin-left:15px;">{{ Data.name }}</span> </span>
+          <span style="margin-left:15px;">桌面名称：{{ Data.name }}</span>
+          <a-button type="primary" @click="handerback">返回</a-button>
         </div>
       </template>
       <a-row :gutter="16">
@@ -352,7 +353,12 @@ export default {
     background: #272e48;
     border-radius: 10px;
     padding: 10px 0px;
-    border: 1px solid;
+	border: 1px solid;
+	cursor: pointer;
+	height: 100px;
+}
+.box:hover{
+	background: #0c1433;
 }
 .icon {
     font-size: 35px;

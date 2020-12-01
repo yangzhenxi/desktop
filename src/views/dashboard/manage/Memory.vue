@@ -1,22 +1,22 @@
 <template>
   <div>
-    <m-card class="card" hover :style="dataSource.style">
+    <m-card class="card" hover>
       <div class="header">
         <div class="iconandtext">
-          <m-icon :type="dataSource.icon" :class="['icon',dataSource.icon]" />
-          <span>{{ dataSource.title }}</span>
+          <m-icon :type="dataSoure.icon" :class="['icon',dataSoure.icon]" />
+          <span>{{ dataSoure.title }}</span>
         </div>
         <a-dropdown :trigger="['click']" placement="bottomCenter">
           <a-icon type="ellipsis" />
           <a-menu slot="overlay">
-            <a-menu-item v-for="(item,index) in dataSource.Cluster" :key="index" @click="handleClick(item,dataSource.title)">
+            <a-menu-item v-for="(item,index) in dataSoure.Cluster" :key="index" @click="handleClick(item)">
               {{ item }}
             </a-menu-item>
           </a-menu>
         </a-dropdown>
       </div>
       <div>
-        <Charts :dataSource="dataSource"></Charts>
+        <Charts :dataSource="dataSoure"></Charts>
       </div>
     </m-card>
   </div>
@@ -24,28 +24,26 @@
 
 <script>
 import Charts from './charts'
-import ChartsStorage from './StorageCharts'
-import { deepGet, isEmpty } from '@/utils/util'
 import { MIcon, MCard } from '@/components'
 export default {
+    name: 'Memory',
     components: {
         MIcon,
         MCard,
-        Charts,
-        ChartsStorage
+        Charts
     },
     props: {
-        cpu: {
+        memory: {
             type: Array,
             required: true
         }
     },
     data () {
         return {
-            dataSource: {
-                title: 'CPU',
-                type: 'CPU',
-                icon: 'shizhong',
+            dataSoure: {
+                title: 'Memory',
+                type: 'memory',
+                icon: 'storage',
                 style: {
                     background: '#272E48;',
                     border: '1px solid rgba(25, 186, 139, 0.17)'
@@ -53,12 +51,12 @@ export default {
                 Cluster: ['全部'],
                 ChartsData: [
                     {
-                        item: 'CPU剩余容量',
+                        item: '剩余内存',
                         count: 1,
                         percent: 0.333333333
                     },
                     {
-                        item: '已用容量',
+                        item: '已用内存',
                         count: 2,
                         percent: 0.66666666
                     }
@@ -67,8 +65,8 @@ export default {
         }
     },
     watch: {
-        cpu: {
-            handler () {
+        memory: {
+            handler (newval, oldval) {
                 this.loadData()
             },
             deep: true,
@@ -76,55 +74,54 @@ export default {
         }
     },
     methods: {
-        async loadData () {
-            let cpuUsage = 0
-			let cpuCapacity = 0
-            this.dataSource.Cluster = ['全部']
-            this.cpu.forEach(u => {
-                this.dataSource.Cluster.push(u.host)
-                cpuUsage = cpuUsage + +u.cpu_usage
-                cpuCapacity = cpuCapacity + +u.cpu_capacity
+        loadData () {
+            let memoryUsage = 0
+			let memoryCapacity = 0
+			this.dataSoure.Cluster = ['全部']
+            this.memory.forEach(u => {
+                this.dataSoure.Cluster.push(u.host)
+                memoryUsage += u.memory_usage
+                memoryCapacity += u.memory_capacity
             })
-            this.dataSource.ChartsData[1].count = (cpuUsage / 1000).toFixed(2)
-            this.dataSource.ChartsData[0].count = (
-                cpuCapacity -
-                cpuUsage / 1000
+            this.dataSoure.ChartsData[0].count = (memoryUsage / 1024).toFixed(2)
+            this.dataSoure.ChartsData[1].count = (
+                memoryCapacity / 1024 / 1024 / 1024 -
+                memoryUsage / 1024
             ).toFixed(2)
-            this.dataSource.ChartsData[0].percent =
-                1 - cpuUsage / 1000 / (cpuCapacity - cpuUsage / 1000)
-            this.dataSource.ChartsData[1].percent =
-                cpuUsage / 1000 / (cpuCapacity - cpuUsage / 1000)
+            this.dataSoure.ChartsData[0].percent =
+                1 -
+                (memoryUsage / 1024).toFixed(2) /
+                    (memoryCapacity / 1024 / 1024 / 1024)
+            this.dataSoure.ChartsData[1].percent =
+                (memoryUsage / 1024).toFixed(2) /
+                (memoryCapacity / 1024 / 1024 / 1024)
         },
-        handleClick (value, title) {
-            const Arr = this.cpu.filter(u => u.host === value)
+        handleClick (val) {
+			const Arr = this.memory.filter(u => u.host === val)
             if (Arr.length === 1) {
-                const Used = {
-                    item: '已用容量',
-                    count: (Arr[0].cpu_usage / 1000).toFixed(2),
-                    percent:
-                        Arr[0].cpu_usage /
-                        1000 /
-                        (Arr[0].cpu_capacity - Arr[0].cpu_usage / 1000)
-                }
                 const Surplus = {
-                    item: 'CPU剩余容量',
+                    item: '剩余内存',
                     count: (
-                        Arr[0].cpu_capacity -
-                        Arr[0].cpu_usage / 1000
+                        Arr[0].memory_capacity / 1024 / 1024 / 1024 -
+                        Arr[0].memory_usage / 1024
                     ).toFixed(2),
                     percent:
                         1 -
-                        Arr[0].cpu_usage /
-                            1000 /
-                            (Arr[0].cpu_capacity - Arr[0].cpu_usage / 1000)
+                        (Arr[0].memory_usage / 1024).toFixed(2) /
+                            (Arr[0].memory_capacity / 1024 / 1024 / 1024)
                 }
-                this.dataSource.ChartsData[1] = [Surplus, Used]
+                const Used = {
+                    item: '已用内存',
+                    count: (Arr[0].memory_usage / 1024).toFixed(2),
+                    percent:
+                        (Arr[0].memory_usage / 1024).toFixed(2) /
+                        (Arr[0].memory_capacity / 1024 / 1024 / 1024)
+                }
+                this.dataSoure.ChartsData = [Surplus, Used]
             } else {
 				this.loadData()
 			}
-        },
-        deepGet,
-        isEmpty
+        }
     }
 }
 </script>

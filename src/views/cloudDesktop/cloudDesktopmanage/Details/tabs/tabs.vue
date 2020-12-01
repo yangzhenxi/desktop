@@ -37,6 +37,8 @@
           :data-source="dataSearch"
           style="width: 100%"
           placeholder="请输入你想要查询的计算机名称"
+          :defaultActiveFirstOption="false"
+          @keyup.enter.native="onSelect()"
           @select="onSelect"
           @search="handleSearch">
           <a-input>
@@ -602,7 +604,10 @@ export default {
             padding: 0 8px;
             font-size: 15px !important;
         }
-    }
+	}
+	.set:hover{
+		background:#40a9ff
+	}
 .ant-tabs-bar{
     margin: 0;
 }

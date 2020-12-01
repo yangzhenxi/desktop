@@ -13,7 +13,7 @@
   >
 
     <!-- <setting-drawer/> -->
-    <!-- <task-drawer/>s -->
+    <!-- <task-drawer/> -->
     <template v-slot:rightContentRender>
       <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme" />
     </template>

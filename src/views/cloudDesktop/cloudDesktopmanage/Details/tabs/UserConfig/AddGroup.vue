@@ -2,7 +2,7 @@
   <div>
     <a-modal
       title="设置用户组"
-      :width="700"
+      :width="830"
       :visible="visible"
       :confirmLoading="confirmLoading"
       @ok="handleSubmit"
@@ -10,22 +10,25 @@
       destroyOnClose>
       <a-spin :spinning="loading">
         <a-form :form="form">
-          <a-transfer
-            :data-source="GroupAll"
-            show-search
-            :list-style="{
-              width: '250px',
-              height: '300px',
-            }"
-            :operations="['移入', '移出']"
-            :titles="['全部用户组', '设置的用户组']"
-            :target-keys="Group"
-            :render="item => item.title"
-            @change="handleChange">
-            <span slot="notFoundContent">
-              没数据
-            </span>
-          </a-transfer>
+          <div @mousedown="move">
+            <a-transfer
+              :data-source="GroupAll"
+              show-search
+              :list-style="{
+                width: widths+'px',
+                height: heights+ 'px',
+                cursor:'all-scroll',
+              }"
+              :operations="['移入', '移出']"
+              :titles="['全部用户组', '已设置的用户组']"
+              :target-keys="Group"
+              :render="item => item.title"
+              @change="handleChange">
+              <span slot="notFoundContent">
+                没数据
+              </span>
+            </a-transfer>
+          </div>
         </a-form>
       </a-spin>
     </a-modal>
@@ -42,6 +45,8 @@ export default {
     mixins: [mixinFormModal],
     data () {
         return {
+			widths: 300,
+			heights: 500,
             GroupAll: [],
             Group: [],
             record: {},
@@ -81,19 +86,6 @@ export default {
                     obj.sids = [...this.UsersSid, ...this.Group]
                     try {
                         const id = this.deepGet(await CloudDesktopPolicyPatch(obj), 'task_id', '0')
-                        // const progress = this.deepGet(await CloudDesktopTaskGet({ id: id }), 'data', [])
-                        // const Settime = await setInterval(async () => {
-                        //     const progress = this.deepGet(await CloudDesktopTaskGet({ id: id }), 'data', [])
-                        //     if (progress.state === 'SYSTEM_TASK_STATE_SUCCESS') {
-                        //         clearInterval(Settime)
-                        //         await this.$store.dispatch('GetTab2')
-                        //         this.$message.success('添加成功')
-                        //         this.confirmLoading = false
-                        //         this.$emit('ok')
-                        //         this.visible = false
-                        //     }
-                        // }, 3000)
-
                         const f = () => {
                             const timer = setTimeout(async () => {
                                 const progress = this.deepGet(await CloudDesktopTaskGet({ id: id }), 'data', [])
@@ -110,16 +102,6 @@ export default {
                             }, 3000)
                         }
                         f()
-                        // await this.Gettask(id)
-                        // // const Settime = await setTimeout(async () => {
-                        // //     if (progress.state !== 'SYSTEM_TASK_STATE_SUCCESS') {
-                        // //         setTimeout(() => {
-
-                        // //         }, 3000)
-                        // //     } else {
-                        // //         clearTimeout(Settime)
-                        // //     }
-                        // // }, 3000)
                     } catch (error) {
                         this.$message.error('添加失败')
                         this.confirmLoading = false
@@ -135,7 +117,23 @@ export default {
             if (progress.state !== 'SYSTEM_TASK_STATE_SUCCESS') {
                 setTimeout(this.Gettask(item), 3000)
             }
-        }
+		},
+		move (e) {
+		const oDiv = e.target
+		const disX = e.clientX - oDiv.offsetLeft
+		const disY = e.clientY - oDiv.offsetTop
+		document.onmousemove = (e) => { // 鼠标按下并移动的事件
+        // 用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
+		// this.widths = 250 + e.clientX - disX
+		const width = 250 + e.clientX - disX
+		width > 350 ? this.widths = 350 : width <= 250 ? this.wdiths = 250 : this.widths = width
+		this.heights = 300 + e.clientY - disY
+		}
+		document.onmouseup = (e) => {
+			document.onmousemove = null
+			document.onmouseup = null
+		}
+	}
     }
 }
 </script>

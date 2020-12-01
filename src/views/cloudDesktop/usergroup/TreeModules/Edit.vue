@@ -31,10 +31,11 @@
 </template>
 
 <script>
+import { usermanageAllUser } from '@/api/CloudDesktop/userManage'
 import { mixinFormModal } from '@/utils/mixin'
 import { userModifyusergroup } from '@/api/CloudDesktop/usergroup'
 import { debounce } from '@/utils/util'
-import { TreeValidator } from '@/utils/validator'
+import { UserGroupTree } from '@/utils/validator'
 
 export default {
   mixins: [mixinFormModal],
@@ -48,15 +49,16 @@ export default {
     }
   },
   methods: {
-    Edit (record, TPgroupNameList) {
-        console.log(record)
-      this.visible = true
-      this.record = record
-      this.baseDN = record.baseDN
-      this.validatorName = TPgroupNameList
-      this.$nextTick(() => {
-        this.form.setFieldsValue({ newName: record.name })
-      })
+    async Edit (record, TPgroupNameList) {
+		this.visible = true
+		this.record = record
+		this.baseDN = record.baseDN
+		this.validatorName = TPgroupNameList
+		this.$nextTick(() => {
+			this.form.setFieldsValue({ newName: record.name })
+		})
+		this.userAll = []
+		this.userAll = this.deepGet(await usermanageAllUser({ name: 'ou=Users,ou=Citrix,dc=cloud,dc=com' }), 'list', [])
     },
     handleSubmit () {
       this.form.validateFields(async (errors, values) => {
@@ -75,15 +77,9 @@ export default {
     },
     // 校验重名称
     validator: debounce(function (rule, value, callback) {
-        TreeValidator({
-            data: () => {
-                try {
-                    const data = this.validatorName
-                    return data
-                } catch (error) {
-                    return []
-                }
-            },
+        UserGroupTree({
+			data: () => this.validatorName,
+			userData: () => this.userAll,
             field: 'name',
             initialValue: this.deepGet(this.record, 'name')
         },

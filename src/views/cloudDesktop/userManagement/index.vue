@@ -95,6 +95,8 @@
                     placeholder="输入要查询的用户名"
                     v-model="queryParam.username"
                     @select="onSelect"
+                    @keyup.enter.native="onSelect(queryParam.username)"
+                    :defaultActiveFirstOption="false"
                     @search="handleSearch">
                     <a-input>
                       <a-button
@@ -122,14 +124,24 @@
               rowKey="username"
               :scroll="{x}"
               :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }">
-              <template slot="username" slot-scope="text">
-                <ellipsis :length="14" tooltip>{{ text }}</ellipsis>
-              </template>
               <template slot="group" slot-scope="text">
-                <ellipsis :length="14" tooltip>{{ text }}</ellipsis>
-              </template>
-              <template slot="display_name" slot-scope="text">
-                <ellipsis :length="14" tooltip>{{ text }}</ellipsis>
+                <a-tooltip v-if="text">
+                  <span v-for="(item,index) in text.split(',')" :key="index">
+                    <a-tag v-if="index < 2" :color="random() === 0 ? '#20bab9' : random() === 1 ? '#87d068' : '#e8258b'" >
+                      {{ item }}
+                    </a-tag>
+                    <span v-else-if="(text.split(',').length >= 3)">...</span>
+                  </span>
+                  <template slot="title">
+                    <div v-if="text.split(',').length >= 3" >
+                      <span v-for="(item,index) in text.split(',')" :key="index">
+                        <a-tag v-if="index >= 2" :color="random() === 0 ? '#20bab9' : random() === 1 ? '#87d068' : '#e8258b'" >
+                          {{ item }}
+                        </a-tag>
+                      </span>
+                    </div>
+                  </template>
+                </a-tooltip>
               </template>
               <template
                 slot="accountControl"
@@ -243,24 +255,20 @@ export default {
                     title: '用户名',
                     dataIndex: 'username',
                     sorter: true,
-                    width: 150,
-                    fixed: 'left',
-                    scopedSlots: { customRender: 'username' }
-                },
-                {
-                    title: '组',
-                    dataIndex: 'group',
-                    sorter: true,
-                    width: 150,
-                    scopedSlots: { customRender: 'group' }
-
+                    width: 200,
+                    fixed: 'left'
                 },
                 {
                     title: '姓名',
                     dataIndex: 'display_name',
                     sorter: true,
-                    width: 150,
-                    scopedSlots: { customRender: 'display_name' }
+                    width: 200
+				},
+				{
+                    title: '组',
+                    dataIndex: 'group',
+					sorter: true,
+                    scopedSlots: { customRender: 'group' }
                 },
                 {
                     title: '状态',
@@ -270,19 +278,13 @@ export default {
                     width: 100
                 },
                 {
-                    title: '电话',
-                    dataIndex: 'telephone_number',
-                    sorter: true,
-                    width: 150
-                },
-                {
                     title: '操作',
                     dataIndex: 'action',
                     scopedSlots: { customRender: 'action' },
                     fixed: 'right',
-                    width: 200
+                    width: 150
                 }
-            ],
+			],
             // 加载数据方法 必须为 Promise 对象
             loadData: async parameter => {
                 try {
@@ -314,7 +316,7 @@ export default {
                 }
             }
         }
-    },
+	},
 	computed: {
 		// eslint-disable-next-line vue/return-in-computed-property
 		disabled: function () {
@@ -489,16 +491,12 @@ export default {
             this.selectedKeys = []
             this.record.dn = 'ou=Users,ou=Citrix,dc=cloud,dc=com'
             this.$refs.table.refresh()
-            // console.log(this.loadData())
         },
 
         onSelect (value) {
             value ? this.queryParam.username = value : this.queryParam.username = ''
 			this.dataSource = []
 			this.$refs.table.refresh()
-			// if (this.record.dn === 'ou=Users,ou=Citrix,dc=cloud,dc=com') {
-			// 	console.log(this.queryParam)
-			// }
         },
         // 开关加载
         load (val) {
@@ -515,12 +513,15 @@ export default {
                 }
             })
             res = [...new Set(res)]
-            this.TAbleData.includes(value) ? this.dataSource = [value] : this.dataSource = [...res]
+			this.TAbleData.includes(value) ? this.dataSource = [value] : this.dataSource = [...res]
         },
         customizeColumns (value) {
             this.columns = value
             this.$refs.table.refresh()
-        },
+		},
+		random () {
+			return Math.floor(Math.random() * 3)
+		},
         isEmpty
     }
 }

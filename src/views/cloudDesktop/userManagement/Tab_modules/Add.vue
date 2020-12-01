@@ -19,7 +19,7 @@
                     placeholder="请输入姓名"
                     v-decorator="['display_name',
                                   { rules: [
-                                      {max:20,message:'名称长度不得大于20个字符'},
+                                      {max:12,message:'名称长度不得超过12个字符'},
                                       { required: true, message: '请输入姓名！' },{validator:blankValidator},
                                     ],
                                     validateFirst: true
@@ -43,7 +43,7 @@
                     placeholder="请输入用户名"
                     v-decorator="['username',
                                   { rules: [
-                                      {max:20,message:'名称长度不得大于20个字符'},
+                                      {max:12,message:'名称长度不得超过12个字符'},
                                       { required: true, message: '请输入用户名' },
                                       {validator}
                                     ],

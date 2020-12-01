@@ -44,28 +44,33 @@ const columns = [
         dataIndex: 'username',
         disabled: true,
         sorter: true,
-        width: 150,
+        width: 200,
         fixed: 'left',
         scopedSlots: { customRender: 'username' }
 
-    },
-    {
-        title: '组织单位',
-        dataIndex: 'group',
-        disabled: true,
-        sorter: true,
-        width: 150,
-        scopedSlots: { customRender: 'group' }
-
-    },
-    {
+	},
+	{
         title: '姓名',
         dataIndex: 'display_name',
         disabled: true,
         sorter: true,
-        width: 150,
+        width: 200,
         scopedSlots: { customRender: 'display_name' }
-
+    },
+	{
+		title: '组',
+		dataIndex: 'group',
+		disabled: true,
+		sorter: true,
+        width: 200,
+        scopedSlots: { customRender: 'group' }
+    },
+    {
+		title: '组织单位',
+		dataIndex: 'ou',
+		disabled: true,
+        width: 200,
+        sorter: true
     },
     {
         title: '状态',
@@ -78,7 +83,6 @@ const columns = [
         title: '电话',
         dataIndex: 'telephone_number',
         sorter: true,
-        disabled: true,
         width: 140
     },
     {

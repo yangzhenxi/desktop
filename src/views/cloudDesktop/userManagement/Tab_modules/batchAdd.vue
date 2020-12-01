@@ -254,8 +254,8 @@ export default {
 
         option () {
             const obj = [{
-                '用户名(英文加数字,长度在20个字符以内)': 'TestOne',
-                '姓名(长度为20个字符以内)': '豪联科技',
+                '用户名(英文加数字,长度在12个字符以内)': 'TestOne',
+                '姓名(长度为12个字符以内)': '豪联科技',
                 '密码(长度为6-16)': '123456789',
                 '手机号码(选填)': '18814990929',
                 '邮箱(选填)': '8980361@qq.com',
@@ -299,12 +299,12 @@ export default {
                     if (!val) {
                         return key + '不能为空'
                     }
-                    return this.length(val, 2, 8)
+                    return this.length(val, 1, 12)
                 case '密码':
                     if (!val) {
                         return key + '不能为空'
                     }
-                    return this.length(val, 7, 16)
+                    return this.length(val, 6, 16)
                 case '是否不能修改密码':
                     if (!val) {
                         return key + '不能为空'
@@ -337,7 +337,7 @@ export default {
             if (!pattern.test(value)) {
                 return '不能输入特殊字符'
             }
-            this.length(value, 1, 20)
+            this.length(value, 1, 12)
             const target = this.validatorName.find(u => u['username'] === value)
             if (target) {
                 return '用户名重复'

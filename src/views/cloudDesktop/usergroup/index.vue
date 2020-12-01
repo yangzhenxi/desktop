@@ -24,7 +24,7 @@
                 <a-button
                   type="primary"
                   shape="circle"
-                  :disabled="disabled"
+                  :disabled="group_disabled"
                   style="margin-left:10px;"
                   @click="handleTreeEdit()">
                   <a-icon
@@ -34,7 +34,7 @@
                 <a-button
                   type="danger"
                   shape="circle"
-                  :disabled="disabled"
+                  :disabled="group_disabled"
                   style="margin-left:10px;"
                   @click="DeleteTree">
                   <a-icon
@@ -69,6 +69,8 @@
                     style="width: 100%"
                     placeholder="输入要查询的用户名"
                     v-model="queryParam.username"
+                    :defaultActiveFirstOption="false"
+                    @keyup.enter.native="onSelect(queryParam.username)"
                     @select="onSelect"
                     @search="handleSearch">
                     <a-input>
@@ -96,14 +98,27 @@
               ref="table"
               :columns="columns"
               :data="loadData">
-              <template slot="username" slot-scope="text">
+              <template slot="ou" slot-scope="text">
                 <ellipsis :length="14" tooltip>{{ text }}</ellipsis>
               </template>
               <template slot="group" slot-scope="text">
-                <ellipsis :length="14" tooltip>{{ text }}</ellipsis>
-              </template>
-              <template slot="display_name" slot-scope="text">
-                <ellipsis :length="14" tooltip>{{ text }}</ellipsis>
+                <a-tooltip v-if="text">
+                  <span v-for="(item,index) in text.split(',')" :key="index">
+                    <a-tag v-if="index < 2" :color="random() === 0 ? '#20bab9' : random() === 1 ? '#87d068' : '#e8258b'" >
+                      {{ item }}
+                    </a-tag>
+                    <span v-else-if="(text.split(',').length >= 3)">...</span>
+                  </span>
+                  <template slot="title">
+                    <div v-if="text.split(',').length >= 3" >
+                      <span v-for="(item,index) in text.split(',')" :key="index">
+                        <a-tag v-if="index >= 2" :color="random() === 0 ? '#20bab9' : random() === 1 ? '#87d068' : '#e8258b'" >
+                          {{ item }}
+                        </a-tag>
+                      </span>
+                    </div>
+                  </template>
+                </a-tooltip>
               </template>
               <template
                 slot-scope="text"
@@ -193,40 +208,39 @@ export default {
                     title: '用户名',
                     dataIndex: 'username',
                     sorter: true,
-                    width: 150,
-                    fixed: 'left',
-                    scopedSlots: { customRender: 'username' }
-                },
-                {
-                    title: '组织单位',
-                    dataIndex: 'group',
-                    sorter: true,
-                    width: 150,
-                    scopedSlots: { customRender: 'group' }
-                },
-                {
+                    width: 200,
+                    fixed: 'left'
+				},
+				{
                     title: '姓名',
                     dataIndex: 'display_name',
                     sorter: true,
-                    width: 150,
+                    width: 200,
                     scopedSlots: { customRender: 'display_name' }
+                },
+                {
+                    title: '组',
+                    dataIndex: 'group',
+					sorter: true,
+                    scopedSlots: { customRender: 'group' }
+                },
+                {
+                    title: '组织单位',
+					dataIndex: 'ou',
+					width: 150,
+                    scopedSlots: { customRender: 'ou' },
+                    sorter: true
                 },
                 {
                     title: '状态',
                     dataIndex: 'account_control',
                     scopedSlots: { customRender: 'status' },
-                    width: 120
-                },
-                {
-                    title: '电话',
-                    dataIndex: 'telephone_number',
-                    sorter: true,
-                    width: 140
+                    width: 80
                 },
                 {
                     title: '操作',
                     scopedSlots: { customRender: 'action' },
-                    width: 120,
+                    width: 100,
                     fixed: 'right'
                 }
             ],
@@ -234,7 +248,8 @@ export default {
             users: [], // 当前用户
             Allusers: [],
             dataSource: [],
-            TAbleData: [],
+			TAbleData: [],
+			group_disabled: false,
             loadData: async parameter => {
                 try {
 					const obj = {}
@@ -272,6 +287,14 @@ export default {
 				return true
 			}
 			return false
+		}
+	},
+	watch: {
+		checkedval: {
+			handler (newval) {
+				newval === 'Domain Admins' ? this.group_disabled = true : this.group_disabled = false
+			},
+			deep: true
 		}
 	},
     mounted () {
@@ -377,7 +400,10 @@ export default {
         customizeColumns (value) {
             this.columns = value
             this.$refs.table.refresh()
-        },
+		},
+		random () {
+			return Math.floor(Math.random() * 3)
+		},
         isEmpty
     }
 }
@@ -445,4 +471,7 @@ export default {
         }
     }
 }
+// .ant-transfer-list{
+// 	curr
+// }
 </style>

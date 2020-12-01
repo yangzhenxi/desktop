@@ -4,7 +4,8 @@
       <a-card>
         <template slot="title">
           <div class="head-title">
-            <span><a-button type="primary" size="small" @click="handleBack">返回</a-button> <span style="margin-left:15px;">{{ moduleData.name }}</span> </span>
+            <span style="margin-left:15px;">模版名称：{{ moduleData.name }}</span>
+            <a-button type="primary" @click="handleBack">返回</a-button>
           </div>
         </template>
         <a-row :gutter="16">
@@ -92,25 +93,14 @@
                 <a-col :span="16">
                   <div
                     class="modules_title"
-                    style="margin:5px 0px">{{ moduleData.name }}</div>
-                  <!-- <div class="modules_text">
-                    <span>最新版本: </span>
-                    <a-tag color="#108ee9">
-                      {{ moduleData.version | Isversion }}
-                    </a-tag>
-                  </div>
-                  <div
-                    class="modules_text"
-                    style="overflow: inherit;">
-                    <span>运行状态: </span>
-                    <a-tag :color="toDict(moduleData.is_running,'C_STATE').color">
-                      {{ moduleData.is_running | convert('C_STATE') }}
-                    </a-tag>
-                  </div> -->
+                    style="margin:5px 0px">模版名：{{ moduleData.name }}</div>
                   <div class="modules_text" v-for="(i,index) in TPDetails" :key="index">
                     <span>{{ i.title }}:  </span>
-                    <a-tag v-if="i.tag" color="#108ee9">
+                    <a-tag v-if="i.tag && i.tag ==='version'" color="#108ee9">
                       {{ i.value | Isversion }}
+                    </a-tag>
+                    <a-tag v-else-if="i.tag && i.tag ==='running'" :color="toDict(i.value,'C_STATE').color">
+                      {{ i.value | convert('C_STATE') }}
                     </a-tag>
                     <span v-else>{{ i.value }}</span>
                   </div>
@@ -177,12 +167,15 @@ export default {
         })
 	},
 	watch: {
-		ModuleData (old) {
-			this.TPDetails = this.TPDetails.map(u => {
-				return Object.assign(u, {
-					value: this.convert(this.deepGet(old, u.key), u.filters)
+		'$store.state.DesktopManage.ModuleData': {
+			deep: true,
+			handler: function (newdata) {
+				this.TPDetails = this.TPDetails.map(u => {
+					return Object.assign(u, {
+						value: this.deepGet(newdata, u.key)
+					})
 				})
-			})
+			}
 		}
 	},
     data () {
@@ -211,14 +204,14 @@ export default {
 					title: '最新版本',
 					key: 'version',
 					value: '1',
-					tag: true,
+					tag: 'version',
 					filters: false
 				},
 				{
 					title: '运行状态',
 					key: 'is_running',
-					value: '开机',
-					tag: true,
+					value: '开启',
+					tag: 'running',
 					filters: 'C_STATE'
 				},
 				{
@@ -266,7 +259,6 @@ export default {
             const obj = { name: this.moduleData.name }
             DesktopTemplatePatch(obj).then(res => { window.location.href = res.data })
             this.moduleData.is_running = '开启'
-            console.log(this.moduleData)
             this.SET_MODULEDATA(this.moduleData)
         },
         // 还原版本
@@ -411,6 +403,9 @@ export default {
     padding: 13px 0px;
     border: 1px solid;
 }
+.box:hover{
+	background: #0c1433;
+}
 .icon {
     font-size: 35px;
     display: block;
@@ -486,7 +481,6 @@ export default {
     display: flex;
 }
 /deep/.ant-card-head-wrapper {
-    padding-left: 20px;
     background: #272e48;
     border-radius: 10px;
 }

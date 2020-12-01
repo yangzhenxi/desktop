@@ -182,3 +182,35 @@ export async function TreeValidator ({ data, message = '名称已存在，请重
     }
     callback()
 }
+/**
+ * UserGroupTree操作的校验 不区分大小写
+ *  @param {*} 验证参数
+ */
+export async function UserGroupTree ({ data, userData, message = '名称已存在，请重新输入！', initialValue, field = 'name' }, { rule, value, callback }) {
+    try {
+      if (initialValue && value.toUpperCase() === initialValue.toUpperCase()) {
+        callback()
+      }
+      const patt = /^[\u4E00-\u9FA5A-Za-z0-9]{1,999}$/
+      if (!patt.test(value)) {
+        callback(new Error('不能输入特殊字符'))
+      }
+      const pattern = /^[^\s]*$/
+      if (!pattern.test(value)) {
+          callback(new Error('名称不能带空格！'))
+      }
+      const r = await data()
+      const target = r.find(u => u[field].toUpperCase() === value.toUpperCase())
+      if (target) {
+        callback(new Error(message))
+	}
+	const res = await userData()
+	const IsError = res.find(u => u.username.toUpperCase() === value.toUpperCase())
+	if (IsError) {
+		callback(new Error('组名不能跟用户名重复'))
+	}
+    } catch (error) {
+      callback()
+    }
+    callback()
+}

@@ -121,12 +121,12 @@ const vueConfig = {
       //       '': ''
       //   }
       // }
-      // '/api': {
-      //   target: 'http://192.168.2.220:8083',
-      //   pathRewrite: {
-      //       '': ''
-      //   }
-      // }
+    //   '/api': {
+    //     target: 'http://192.168.5.15:80',
+    //     pathRewrite: {
+    //         '': ''
+    //     }
+    //   }
       // '/api': {
       //   target: 'http://192.168.2.223:8081',
       //   pathRewrite: {
@@ -134,7 +134,7 @@ const vueConfig = {
       //   }
       // }
       '/api': {
-        target: 'http://192.168.5.15:80',
+        target: 'http://192.168.5.11:8090',
         pathRewrite: {
             '': ''
         }

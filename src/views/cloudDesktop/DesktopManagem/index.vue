@@ -56,7 +56,7 @@
               <div>
                 <div v-if="IsAllmodule">
                   <div class="title"> {{ record.title }} </div>
-                  <a-card style="height:730px;">
+                  <a-card style="height:800px;">
                     <a-row :gutter="[36,24]">
                       <!-- 添加按钮 -->
                       <a-col
@@ -108,7 +108,7 @@
                                   <span> groupName</span>
                                 </div>
                                 <div class="text blurry_text">
-                                  <span>服务器: </span>
+                                  <span>数据中心: </span>
                                   <span>0/20</span>
                                 </div>
                                 <div class="text blurry_text">
@@ -161,18 +161,15 @@
                               @click="details(i)">
                               <div
                                 class="modules_title"
-                                style="margin:5px 0px">{{ i.name }}</div>
+                                style="margin:5px 0px">
+                                <ellipsis :length="20" tooltip>模版名：{{ i.name }}</ellipsis></div>
                               <div class="text">
                                 <span>所属分组: </span>
                                 <span> {{ i.group_name }}</span>
                               </div>
                               <div class="text">
-                                <span>服务器: </span>
-                                <span> {{ i.host }}</span>
-                              </div>
-                              <div class="text">
-                                <span>创建时间: </span>
-                                <span>{{ i.create_time | convert('unix','YYYY-MM-DD') }}</span>
+                                <span>数据中心: </span>
+                                <span> {{ i.datacenter }}</span>
                               </div>
                               <div class="text">
                                 <span>版本状态: </span>
@@ -183,6 +180,10 @@
                               <div class="text">
                                 <span>主机: </span>
                                 <span>{{ i.host }}</span>
+                              </div>
+                              <div class="text">
+                                <span>创建时间: </span>
+                                <span>{{ i.create_time | convert('unix','YYYY-MM-DD') }}</span>
                               </div>
                             </a-col>
                             <div class="hover">
@@ -237,9 +238,9 @@
 </template>
 
 <script>
+import { Ellipsis, MIcon } from '@/components'
 import { mapMutations } from 'vuex'
 import Tree from '../components/Tree'
-import MIcon from '@/components/Icon'
 import Empty from '@/components/Empty'
 import XTreeadd from './Tree_modules/Add'
 import { mixinTable } from '@/utils/mixin'
@@ -264,7 +265,8 @@ export default {
         Empty,
         MIcon,
         Tree,
-        Water,
+		Water,
+		Ellipsis,
         XTreeadd,
         XManageadd,
         XTreeedit,
@@ -657,10 +659,7 @@ export default {
 .modules_title {
     font-size: 17px;
     font-weight: 500;
-    white-space: nowrap;
     width: 85%;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 .icon-modules {
     border: 1px solid #ccc;
